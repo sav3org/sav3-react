@@ -1,5 +1,7 @@
 import IPFS from 'ipfs'
-import ipfsUtils from './utils'
+import ipUtils from './utils/ip'
+import webRtcUtils from './utils/webRtc'
+import PeerId from 'peer-id'
 
 export class Sav3Ipfs {
   constructor() {
@@ -16,7 +18,7 @@ export class Sav3Ipfs {
 
     ;(async () => {
       this.ipfs = await IPFS.create(ipfsOptions)
-      this.ipfs = ipfsUtils.withWebRtcSdpCache(this.ipfs)
+      this.ipfs = webRtcUtils.withWebRtcSdpCache(this.ipfs)
       window.ipfs = this.ipfs
       window.sav3Ipfs = this
 
@@ -86,24 +88,33 @@ export class Sav3Ipfs {
     })()
   }
 
+  /**
+  * get information and stats about all connected peers
+  * @returns {{peerCid: String, ip: String|undefined, port: Number|undefined, protocol: String|undefined, dataReceived: Number, dataSent: Number}}
+  */
   async getPeersStats() {
+    const metrics = this.ipfs.libp2p.metrics
     const peers = await this.ipfs.swarm.peers()
     const peersStats = []
     for (const peer of peers) {
-      const peerId = peer.peer
-      const peerStats = {
-        peerId, ...ipfsUtils.getWebRtcPeerConnectionInfo(peerId)
+      const peerCid = peer.peer
+      let ip, port, protocol
+      try {
+        const connectionInfo = webRtcUtils.getWebRtcPeerConnectionInfo(peerCid)
+        ip = connectionInfo.ip
+        port = connectionInfo.port
+        protocol = connectionInfo.protocol
       }
+      catch (e) {}
+
+      const peerMetrics = metrics.forPeer(PeerId.createFromCID(peerCid)).toJSON()
+      const dataReceived = Number(peerMetrics.dataReceived)
+      const dataSent = Number(peerMetrics.dataSent)
+
+      const peerStats = {peerCid, ip, port, protocol, dataReceived, dataSent}
       peersStats.push(peerStats)
-      console.log(peerStats)
     }
     return peersStats
-    // const metrics = this.ipfs.libp2p.metrics
-    // const peerIds = metrics.peers
-    // for (const peerId of peerIds) {
-    //   console.log(peerId)
-    //   console.log(metrics.forPeer(peerId))
-    // }
   }
 }
 
