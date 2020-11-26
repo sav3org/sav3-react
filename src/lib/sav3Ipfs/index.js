@@ -1,103 +1,118 @@
 import IPFS from 'ipfs'
-import ipUtils from './utils/ip'
 import webRtcUtils from './utils/webRtc'
 import PeerId from 'peer-id'
+import delay from 'delay'
 
 export class Sav3Ipfs {
   constructor() {
+    this._initIpfs()
+  }
+
+  async _initIpfs() {
     const ipfsOptions = {
       preload: { enabled: false },
+      // a random repo allows multiple tabs to have different peers
+      // which id good for testing
       repo: Math.random().toString(36).substring(7),
       config: {
         Bootstrap: [],
-        Addresses: {
-          Swarm: ['/dns4/starservertest.sav3.org/tcp/443/wss/p2p-webrtc-star/']
-        }
+        Addresses: {Swarm: ['/dns4/starservertest.sav3.org/tcp/443/wss/p2p-webrtc-star/']}
       }
     }
 
-    ;(async () => {
-      this.ipfs = await IPFS.create(ipfsOptions)
-      this.ipfs = webRtcUtils.withWebRtcSdpCache(this.ipfs)
-      window.ipfs = this.ipfs
-      window.sav3Ipfs = this
+    const ipfs = await IPFS.create(ipfsOptions)
+    this.ipfs = webRtcUtils.withWebRtcSdpCache(ipfs)
 
-      setInterval(async () => {
-        const stat = await this.ipfs.bitswap.stat()
-        let statString = ''
-        for (const i in stat) {
-          statString += `${i} ${stat[i].toString()} `
-        }
-        console.log(statString)
-      }, 30000)
+    // add to window for testing and debugging in console
+    window.ipfs = this.ipfs
+    window.sav3Ipfs = this
 
-      this.ipfs.libp2p.on('peer:discovery', (peer) => {
-        console.log('discovered', peer)
-      })
-
-      this.ipfs.libp2p.on('peer:connect', async (peer) => {
-        console.log('connected', peer)
-
-        this.ipfs.swarm.peers().then(peers => console.log('current peers connected: ', peers))
-      })
-
-      window.testAdd = async () => {
-        const data = {
-          content: 'hello world ' + Math.random()
-        }
-        const res = await this.ipfs.add(data)
-        console.log(res)
-        // for await (const res of ipfs.add(data)) {
-        //   console.log(res)
-        // }
+    // everything below is debug test stuff
+    setInterval(async () => {
+      const stat = await this.ipfs.bitswap.stat()
+      let statString = ''
+      for (const i in stat) {
+        statString += `${i} ${stat[i].toString()} `
       }
+      console.log(statString)
+    }, 30000)
 
-      window.testGet = async (cid) => {
-        for await (const file of this.ipfs.get(cid)) {
-          console.log(file.path)
+    this.ipfs.libp2p.on('peer:discovery', (peer) => {
+      console.log('discovered', peer)
+    })
 
-          if (!file.content) continue;
+    this.ipfs.libp2p.on('peer:connect', async (peer) => {
+      console.log('connected', peer)
 
-          const content = []
+      this.ipfs.swarm.peers().then(peers => console.log('current peers connected: ', peers))
+    })
 
-          for await (const chunk of file.content) {
-            content.push(chunk)
-          }
+    window.testAdd = async () => {
+      const data = {
+        content: 'hello world ' + Math.random()
+      }
+      const res = await this.ipfs.add(data)
+      console.log(res)
+      // for await (const res of ipfs.add(data)) {
+      //   console.log(res)
+      // }
+    }
 
-          console.log(content.toString())
+    window.testGet = async (cid) => {
+      for await (const file of this.ipfs.get(cid)) {
+        console.log(file.path)
+
+        if (!file.content) continue;
+
+        const content = []
+
+        for await (const chunk of file.content) {
+          content.push(chunk)
+        }
+
+        console.log(content.toString())
+      }
+    }
+
+    window.addresses = async () => {
+      const res = await this.ipfs.swarm.addrs()
+      for (const i in res) {
+        for (const addr of res[i].addrs) {
+          addr.string = addr.toString()
         }
       }
+      console.log(res)
+    }
 
-      window.addresses = async () => {
-        const res = await this.ipfs.swarm.addrs()
-        for (const i in res) {
-          for (const addr of res[i].addrs) {
-            addr.string = addr.toString()
-          }
-        }
-        console.log(res)
+    window.peers = async () => {
+      const res = await this.ipfs.swarm.peers()
+      for (const peer of res) {
+        peer.addrString = peer.addr.toString()
       }
-
-      window.peers = async () => {
-        const res = await this.ipfs.swarm.peers()
-        for (const peer of res) {
-          peer.addrString = peer.addr.toString()
-        }
-        console.log(res)
-      }
-    })()
+      console.log(res)
+    }
   }
 
   /**
   * get information and stats about all connected peers
-  * @returns {{peerCid: String, ip: String|undefined, port: Number|undefined, protocol: String|undefined, dataReceived: Number, dataSent: Number}}
+  * @returns {Promise<{peerCid: String, ip: String|undefined, port: Number|undefined, protocol: String|undefined, dataReceived: Number, dataSent: Number}>}
   */
   async getPeersStats() {
+    await this._waitForReady()
+
     const metrics = this.ipfs.libp2p.metrics
     const peers = await this.ipfs.swarm.peers()
     const peersStats = []
+    const peerCids = new Set()
     for (const peer of peers) {
       const peerCid = peer.peer
+
+      // finds duplicate peers sometimes for unknown reason
+      if (peerCids.has(peerCid)) {
+        continue
+      }
+      peerCids.add(peerCid)
+
       let ip, port, protocol
       try {
         const connectionInfo = webRtcUtils.getWebRtcPeerConnectionInfo(peerCid)
@@ -114,7 +129,24 @@ export class Sav3Ipfs {
       const peerStats = {peerCid, ip, port, protocol, dataReceived, dataSent}
       peersStats.push(peerStats)
     }
+    console.log(peersStats)
     return peersStats
+  }
+
+  /**
+  * ipfs has finished initializing and its methods are ready to use
+  * @returns {Boolean}
+  */
+  isReady() {
+    return !!this.ipfs
+  }
+
+  async _waitForReady() {
+    if (this.ipfs) {
+      return
+    }
+    await delay(10)
+    await this._waitForReady()
   }
 }
 

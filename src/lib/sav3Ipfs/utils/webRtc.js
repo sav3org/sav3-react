@@ -23,7 +23,6 @@ import QuickLRU from 'quick-lru'
 import assert from 'assert'
 const sdpCache = new QuickLRU({maxSize: 1000})
 
-
 /**
  * cache webrtc sdp of each peer to get their ip addresses later
  * @param {IPFS} ipfs
@@ -40,7 +39,7 @@ export const withWebRtcSdpCache = (ipfs) => {
 /**
  * wrap WebRTCStar._connect function to cache each peer sdp
  * @param {function} webRtcStarConnect - get it from ipfs.libp2p.transportManager._transports.get('WebRTCStar')._connect
- * @returns {SimplePeer} a simple peer instance from the npm module 'simple-peer'
+ * @returns {function} a wrapped WebRTCStar._connect function
  */
 const webRtcStarConnectWithSdpCache = (webRtcStarConnect) => async (multiaddress, options) => {
   const simplePeer = await webRtcStarConnect(multiaddress, options)
