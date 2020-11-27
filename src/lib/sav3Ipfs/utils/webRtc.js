@@ -21,10 +21,11 @@ a=ice-pwd:BBIh/kIoQ58WUUj9GxikRqZN
 import * as sdpTransform from 'sdp-transform'
 import QuickLRU from 'quick-lru'
 import assert from 'assert'
-const sdpCache = new QuickLRU({maxSize: 1000})
+const sdpCache = new QuickLRU({ maxSize: 1000 })
 
 /**
  * cache webrtc sdp of each peer to get their ip addresses later
+ *
  * @param {IPFS} ipfs
  * @returns {IPFS}
  */
@@ -44,8 +45,9 @@ export const withWebRtcSdpCache = (ipfs) => {
 
 /**
  * wrap WebRTCStar._connect function to cache each peer sdp
- * @param {function} webRtcStarConnect - get it from ipfs.libp2p.transportManager._transports.get('WebRTCStar')._connect
- * @returns {function} a wrapped WebRTCStar._connect function
+ *
+ * @param {Function} webRtcStarConnect - get it from ipfs.libp2p.transportManager._transports.get('WebRTCStar')._connect
+ * @returns {Function} a wrapped WebRTCStar._connect function
  */
 const webRtcStarConnectWithSdpCache = (webRtcStarConnect) => async (multiaddress, options) => {
   const simplePeer = await webRtcStarConnect(multiaddress, options)
@@ -57,8 +59,9 @@ const webRtcStarConnectWithSdpCache = (webRtcStarConnect) => async (multiaddress
 
 /**
  * wrap WebRTCStar._upgrader.upgradeInbound function to cache each peer sdp
- * @param {function} webRtcStarUpgradeInbound - get it from ipfs.libp2p.transportManager._transports.get('WebRTCStar')._upgrader.upgradeInbound
- * @returns {function} a wrapped WebRTCStar._upgrader.upgradeInbound function
+ *
+ * @param {Function} webRtcStarUpgradeInbound - get it from ipfs.libp2p.transportManager._transports.get('WebRTCStar')._upgrader.upgradeInbound
+ * @returns {Function} a wrapped WebRTCStar._upgrader.upgradeInbound function
  */
 const webRtcStarUpgradeInboundWithSdpCache = (webRtcStarUpgradeInbound) => async (maConn) => {
   const connection = await webRtcStarUpgradeInbound(maConn)
@@ -70,8 +73,9 @@ const webRtcStarUpgradeInboundWithSdpCache = (webRtcStarUpgradeInbound) => async
 
 /**
  * get ip, port and protocol of a webrtc peer
- * @param {String} peerId
- * @returns {{ip: String, port: Number, protocol: String}}
+ *
+ * @param {string} peerId
+ * @returns {{ip: string, port: number, protocol: string}}
  */
 export const getWebRtcPeerConnectionInfo = (peerId) => {
   assert(peerId && typeof peerId === 'string', `invalid peer id ${peerId}`)
@@ -82,7 +86,7 @@ export const getWebRtcPeerConnectionInfo = (peerId) => {
   const webRtcPeerConnectionInfo = {
     ip: sdp.media[0].connection.ip,
     port: sdp.media[0].port,
-    protocol: sdp.media[0].protocol
+    protocol: sdp.media[0].protocol,
   }
   return webRtcPeerConnectionInfo
 }
@@ -90,5 +94,5 @@ export const getWebRtcPeerConnectionInfo = (peerId) => {
 export default {
   withWebRtcSdpCache,
   sdpCache,
-  getWebRtcPeerConnectionInfo
+  getWebRtcPeerConnectionInfo,
 }

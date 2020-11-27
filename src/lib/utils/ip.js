@@ -2,12 +2,16 @@ import assert from 'assert'
 import IdbLru from 'src/lib/utils/IdbLru'
 
 const getIsoCountryCodeFromIpAttempts = new Set()
-const ipIsoCountryCodeCache = IdbLru({name: 'ipIsoCountryCodeCache', maxSize: 500})
+const ipIsoCountryCodeCache = IdbLru({
+  name: 'ipIsoCountryCodeCache',
+  maxSize: 500,
+})
 
 /**
  * return iso country code if cached, if not attempt to cache it
- * @param {String} ip
- * @returns {Promise<String>} country iso code
+ *
+ * @param {string} ip
+ * @returns {Promise<string>} country iso code
  */
 export const getIsoCountryCodeFromIpCached = async (ip) => {
   const isoCountryCode = await ipIsoCountryCodeCache.get(ip)
@@ -18,16 +22,16 @@ export const getIsoCountryCodeFromIpCached = async (ip) => {
   if (!getIsoCountryCodeFromIpAttempts.has(ip)) {
     getIsoCountryCodeFromIpAttempts.add(ip)
     getIsoCountryCodeFromIp(ip)
-      .then(isoCountryCode => ipIsoCountryCodeCache.set(ip, isoCountryCode))
-      .catch(e => console.log(e))
+      .then((isoCountryCode) => ipIsoCountryCodeCache.set(ip, isoCountryCode))
+      .catch((e) => console.log(e))
   }
 
   throw Error(`iso country code for ip '${ip}' not cached yet`)
 }
 
 /**
- * @param {String} ip
- * @returns {Promise<String>} country iso code
+ * @param {string} ip
+ * @returns {Promise<string>} country iso code
  */
 export const getIsoCountryCodeFromIp = async (ip) => {
   assert(typeof ip === 'string', `invalid ip '${ip}' not a string`)
@@ -39,8 +43,7 @@ export const getIsoCountryCodeFromIp = async (ip) => {
     res = await res.text()
     isoCountryCode = res.trim().toUpperCase()
     assertIsIsoCountryCode(isoCountryCode)
-  }
-  catch (e) {
+  } catch (e) {
     e.message = `failed getting country iso code from '${apiUrl}' response '${res}': ${e.message}`
     throw e
   }
@@ -48,10 +51,10 @@ export const getIsoCountryCodeFromIp = async (ip) => {
 }
 
 /**
- * @param {String[]} ips
- * @returns {Promise<String[]>} country iso codes
+ * @param {string[]} ips
+ * @returns {Promise<string[]>} country iso codes
  */
-export const getIsoCountryCodesFromIps = async (ips) => {
+export const getIsoCountryCodesFromIps = (ips) => {
   const promises = []
   for (const ip of ips) {
     promises.push(getIsoCountryCodeFromIp(ip))
@@ -60,19 +63,19 @@ export const getIsoCountryCodesFromIps = async (ips) => {
 }
 
 /**
- * @param {String} isoCountryCode
- * @returns {String} country flag emoji
+ * @param {string} isoCountryCode
+ * @returns {string} country flag emoji
  */
 export const isoCountryCodeToCountryFlagEmoji = (isoCountryCode) => {
   assertIsIsoCountryCode(isoCountryCode)
-    // offset between uppercase ascii and regional indicator symbols
+  // offset between uppercase ascii and regional indicator symbols
   const charOffset = 127397
-  const chars = [...isoCountryCode.toUpperCase()].map(c => c.charCodeAt() + charOffset)
+  const chars = [...isoCountryCode.toUpperCase()].map((c) => c.charCodeAt() + charOffset)
   return String.fromCodePoint(...chars)
 }
 
 /**
- * @param {String} isoCountryCode
+ * @param {string} isoCountryCode
  */
 const assertIsIsoCountryCode = (isoCountryCode) => {
   const countryCodeRegex = /^[a-z]{2}$/i
@@ -84,5 +87,5 @@ export default {
   getIsoCountryCodeFromIpCached,
   getIsoCountryCodeFromIp,
   getIsoCountryCodesFromIps,
-  isoCountryCodeToCountryFlagEmoji
+  isoCountryCodeToCountryFlagEmoji,
 }

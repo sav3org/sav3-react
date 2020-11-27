@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import sav3Ipfs from 'src/lib/sav3Ipfs'
 import ipUtils from 'src/lib/utils/ip'
 
@@ -15,8 +15,7 @@ const usePeersStats = () => {
         let isoCountryCode
         try {
           isoCountryCode = await ipUtils.getIsoCountryCodeFromIpCached(peersStat.ip)
-        }
-        catch (e) {
+        } catch (e) {
           console.log(e)
           continue
         }

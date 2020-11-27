@@ -16,8 +16,10 @@ export class Sav3Ipfs {
       repo: Math.random().toString(36).substring(7),
       config: {
         Bootstrap: [],
-        Addresses: {Swarm: ['/dns4/starservertest.sav3.org/tcp/443/wss/p2p-webrtc-star/']}
-      }
+        Addresses: {
+          Swarm: ['/dns4/starservertest.sav3.org/tcp/443/wss/p2p-webrtc-star/'],
+        },
+      },
     }
 
     const ipfs = await IPFS.create(ipfsOptions)
@@ -41,15 +43,15 @@ export class Sav3Ipfs {
       console.log('discovered', peer)
     })
 
-    this.ipfs.libp2p.on('peer:connect', async (peer) => {
+    this.ipfs.libp2p.on('peer:connect', (peer) => {
       console.log('connected', peer)
 
-      this.ipfs.swarm.peers().then(peers => console.log('current peers connected: ', peers))
+      this.ipfs.swarm.peers().then((peers) => console.log('current peers connected: ', peers))
     })
 
     window.testAdd = async () => {
       const data = {
-        content: 'hello world ' + Math.random()
+        content: 'hello world ' + Math.random(),
       }
       const res = await this.ipfs.add(data)
       console.log(res)
@@ -62,7 +64,7 @@ export class Sav3Ipfs {
       for await (const file of this.ipfs.get(cid)) {
         console.log(file.path)
 
-        if (!file.content) continue;
+        if (!file.content) continue
 
         const content = []
 
@@ -94,9 +96,10 @@ export class Sav3Ipfs {
   }
 
   /**
-  * get information and stats about all connected peers
-  * @returns {Promise<{peerCid: String, ip: String|undefined, port: Number|undefined, protocol: String|undefined, dataReceived: Number, dataSent: Number}>}
-  */
+   * get information and stats about all connected peers
+   *
+   * @returns {Promise<{peerCid: string, ip: string | undefined, port: number | undefined, protocol: string | undefined, dataReceived: number, dataSent: number}>}
+   */
   async getPeersStats() {
     await this._waitForReady()
 
@@ -119,14 +122,13 @@ export class Sav3Ipfs {
         ip = connectionInfo.ip
         port = connectionInfo.port
         protocol = connectionInfo.protocol
-      }
-      catch (e) {}
+      } catch (e) {}
 
       const peerMetrics = metrics.forPeer(PeerId.createFromCID(peerCid)).toJSON()
       const dataReceived = Number(peerMetrics.dataReceived)
       const dataSent = Number(peerMetrics.dataSent)
 
-      const peerStats = {peerCid, ip, port, protocol, dataReceived, dataSent}
+      const peerStats = { peerCid, ip, port, protocol, dataReceived, dataSent }
       peersStats.push(peerStats)
     }
     console.log(peersStats)
@@ -134,9 +136,10 @@ export class Sav3Ipfs {
   }
 
   /**
-  * ipfs has finished initializing and its methods are ready to use
-  * @returns {Boolean}
-  */
+   * ipfs has finished initializing and its methods are ready to use
+   *
+   * @returns {boolean}
+   */
   isReady() {
     return !!this.ipfs
   }

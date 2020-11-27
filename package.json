@@ -24,12 +24,47 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "lint": "eslint --fix src",
+    "prettier": "prettier --write src && eslint --fix src"
   },
   "eslintConfig": {
     "extends": [
       "react-app",
-      "react-app/jest"
+      "react-app/jest",
+      "standard",
+      "plugin:jsdoc/recommended"
+    ],
+    "rules": {
+      "no-unused-vars": "warn",
+      "require-await": "error",
+      "import/no-anonymous-default-export": "off",
+      "space-in-parens": [
+        "warn",
+        "never"
+      ],
+      "object-curly-spacing": [
+        "warn",
+        "never"
+      ],
+      "array-bracket-spacing": [
+        "warn",
+        "never"
+      ],
+      "computed-property-spacing": [
+        "warn",
+        "never"
+      ],
+      "brace-style": [
+        "warn",
+        "stroustrup"
+      ],
+      "jsdoc/require-param-description": "off",
+      "jsdoc/require-returns-description": "off",
+      "jsdoc/no-undefined-types": "off"
+    },
+    "plugins": [
+      "jsdoc"
     ]
   },
   "browserslist": {
@@ -43,5 +78,29 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "eslint-config-standard": "^16.0.2",
+    "eslint-plugin-jsdoc": "^30.7.8",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-promise": "^4.2.1",
+    "husky": "^4.3.0",
+    "lint-staged": "^10.5.2",
+    "prettier": "^2.2.0"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "src/**/*.{js,jsx,ts,tsx,json,css,scss,md}": [
+      "prettier --write"
+    ]
+  },
+  "prettier": {
+    "semi": false,
+    "singleQuote": true,
+    "printWidth": 200
   }
 }

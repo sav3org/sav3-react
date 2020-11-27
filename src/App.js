@@ -1,9 +1,12 @@
-import logo from './logo.png';
-import './App.css';
+import logo from './logo.png'
+import './App.css'
 import sav3Ipfs from 'src/lib/sav3Ipfs'
 import usePeersStats from 'src/hooks/usePeersStats'
 import prettyBytes from 'pretty-bytes'
 
+/**
+ * @component
+ */
 function App() {
   const peersStats = usePeersStats()
   console.log(peersStats)
@@ -13,10 +16,17 @@ function App() {
     if (!peerStats.ip) {
       continue
     }
-    peersStatsElements.push(<div className="peer" key={peerStats.peerCid}>
-      <p>{peerStats.ip}:{peerStats.port} {peerStats.countryFlagEmoji}</p>
-      <p className="peer-data">⬆️{prettyBytes(peerStats.dataSent)} ⬇️{prettyBytes(peerStats.dataReceived)}</p>
-    </div>)
+    peersStatsElements.push(
+      <div className="peer" key={peerStats.peerCid}>
+        <p>
+          {peerStats.ip}:{peerStats.port} {peerStats.countryFlagEmoji}
+        </p>
+        <p className="peer-data">
+          ⬆️{prettyBytes(peerStats.dataSent)} ⬇️
+          {prettyBytes(peerStats.dataReceived)}
+        </p>
+      </div>
+    )
   }
 
   if (!peersStatsElements.length) {
@@ -27,9 +37,7 @@ function App() {
     <div className="App">
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
-        <div>
-          {peersStatsElements}
-        </div>
+        <div>{peersStatsElements}</div>
         {/*
         <a
           className="App-link"
@@ -42,7 +50,7 @@ function App() {
         */}
       </header>
     </div>
-  );
+  )
 }
 
-export default App;
+export default App
