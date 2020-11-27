@@ -4,22 +4,22 @@ import PeerId from 'peer-id'
 import delay from 'delay'
 
 export class Sav3Ipfs {
-  constructor() {
+  constructor () {
     this._initIpfs()
   }
 
-  async _initIpfs() {
+  async _initIpfs () {
     const ipfsOptions = {
-      preload: { enabled: false },
+      preload: {enabled: false},
       // a random repo allows multiple tabs to have different peers
       // which id good for testing
       repo: Math.random().toString(36).substring(7),
       config: {
         Bootstrap: [],
         Addresses: {
-          Swarm: ['/dns4/starservertest.sav3.org/tcp/443/wss/p2p-webrtc-star/'],
-        },
-      },
+          Swarm: ['/dns4/starservertest.sav3.org/tcp/443/wss/p2p-webrtc-star/']
+        }
+      }
     }
 
     const ipfs = await IPFS.create(ipfsOptions)
@@ -51,7 +51,7 @@ export class Sav3Ipfs {
 
     window.testAdd = async () => {
       const data = {
-        content: 'hello world ' + Math.random(),
+        content: 'hello world ' + Math.random()
       }
       const res = await this.ipfs.add(data)
       console.log(res)
@@ -100,7 +100,7 @@ export class Sav3Ipfs {
    *
    * @returns {Promise<{peerCid: string, ip: string | undefined, port: number | undefined, protocol: string | undefined, dataReceived: number, dataSent: number}>}
    */
-  async getPeersStats() {
+  async getPeersStats () {
     await this._waitForReady()
 
     const metrics = this.ipfs.libp2p.metrics
@@ -122,13 +122,14 @@ export class Sav3Ipfs {
         ip = connectionInfo.ip
         port = connectionInfo.port
         protocol = connectionInfo.protocol
-      } catch (e) {}
+      }
+      catch (e) {}
 
       const peerMetrics = metrics.forPeer(PeerId.createFromCID(peerCid)).toJSON()
       const dataReceived = Number(peerMetrics.dataReceived)
       const dataSent = Number(peerMetrics.dataSent)
 
-      const peerStats = { peerCid, ip, port, protocol, dataReceived, dataSent }
+      const peerStats = {peerCid, ip, port, protocol, dataReceived, dataSent}
       peersStats.push(peerStats)
     }
     console.log(peersStats)
@@ -140,11 +141,11 @@ export class Sav3Ipfs {
    *
    * @returns {boolean}
    */
-  isReady() {
+  isReady () {
     return !!this.ipfs
   }
 
-  async _waitForReady() {
+  async _waitForReady () {
     if (this.ipfs) {
       return
     }

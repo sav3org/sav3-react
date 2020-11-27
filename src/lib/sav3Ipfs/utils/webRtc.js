@@ -21,7 +21,7 @@ a=ice-pwd:BBIh/kIoQ58WUUj9GxikRqZN
 import * as sdpTransform from 'sdp-transform'
 import QuickLRU from 'quick-lru'
 import assert from 'assert'
-const sdpCache = new QuickLRU({ maxSize: 1000 })
+const sdpCache = new QuickLRU({maxSize: 1000})
 
 /**
  * cache webrtc sdp of each peer to get their ip addresses later
@@ -86,7 +86,7 @@ export const getWebRtcPeerConnectionInfo = (peerId) => {
   const webRtcPeerConnectionInfo = {
     ip: sdp.media[0].connection.ip,
     port: sdp.media[0].port,
-    protocol: sdp.media[0].protocol,
+    protocol: sdp.media[0].protocol
   }
   return webRtcPeerConnectionInfo
 }
@@ -94,5 +94,5 @@ export const getWebRtcPeerConnectionInfo = (peerId) => {
 export default {
   withWebRtcSdpCache,
   sdpCache,
-  getWebRtcPeerConnectionInfo,
+  getWebRtcPeerConnectionInfo
 }

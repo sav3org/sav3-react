@@ -39,26 +39,11 @@
       "no-unused-vars": "warn",
       "require-await": "error",
       "import/no-anonymous-default-export": "off",
-      "space-in-parens": [
-        "warn",
-        "never"
-      ],
-      "object-curly-spacing": [
-        "warn",
-        "never"
-      ],
-      "array-bracket-spacing": [
-        "warn",
-        "never"
-      ],
-      "computed-property-spacing": [
-        "warn",
-        "never"
-      ],
-      "brace-style": [
-        "warn",
-        "stroustrup"
-      ],
+      "space-in-parens": ["warn","never"],
+      "object-curly-spacing": ["warn", "never"],
+      "array-bracket-spacing": ["warn", "never"],
+      "computed-property-spacing": ["warn", "never"],
+      "brace-style": ["warn", "stroustrup"],
       "jsdoc/require-param-description": "off",
       "jsdoc/require-returns-description": "off",
       "jsdoc/no-undefined-types": "off"
@@ -101,6 +86,8 @@
   "prettier": {
     "semi": false,
     "singleQuote": true,
-    "printWidth": 200
+    "jsxSingleQuote" : true,
+    "printWidth": 200,
+    "bracketSpacing": false
   }
 }

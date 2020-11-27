@@ -5,7 +5,7 @@ import * as localForage from 'localforage'
 import assert from 'assert'
 import delay from 'delay'
 
-const IdbLru = ({ name, maxSize } = {}) => {
+const IdbLru = ({name, maxSize} = {}) => {
   assert(typeof name === 'string', `invalid idb lru cache '${name}' not a string`)
   assert(typeof maxSize === 'number', `invalid idb lru maxSize '${maxSize}' not a number`)
 
@@ -14,8 +14,8 @@ const IdbLru = ({ name, maxSize } = {}) => {
   // and should not cause any problem
   let ready = false
   const init = async () => {
-    const cache1 = localForage.createInstance({ name })
-    const cache2 = localForage.createInstance({ name: `_${name}` })
+    const cache1 = localForage.createInstance({name})
+    const cache2 = localForage.createInstance({name: `_${name}`})
     const cache1Size = await cache1.length()
     const cache2Size = await cache2.length()
     // the bigger cache should become _cache
@@ -23,7 +23,8 @@ const IdbLru = ({ name, maxSize } = {}) => {
       _cache = cache1
       cache = cache2
       size = cache1Size
-    } else {
+    }
+    else {
       _cache = cache2
       cache = cache1
       size = cache2Size
@@ -44,7 +45,7 @@ const IdbLru = ({ name, maxSize } = {}) => {
    * @param {string} key
    * @param {*} setValue
    */
-  async function update(key, setValue) {
+  async function update (key, setValue) {
     await cache.setItem(key, setValue)
     size++
     if (size >= maxSize) {
@@ -86,7 +87,8 @@ const IdbLru = ({ name, maxSize } = {}) => {
       const value = await cache.getItem(key)
       if (value !== null && value !== undefined) {
         await cache.setItem(key, setValue)
-      } else {
+      }
+      else {
         await update(key, setValue)
       }
     },
@@ -94,7 +96,7 @@ const IdbLru = ({ name, maxSize } = {}) => {
       await waitForReady()
       await cache.clear()
       await _cache.clear()
-    },
+    }
   }
 }
 

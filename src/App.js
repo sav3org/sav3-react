@@ -7,7 +7,7 @@ import prettyBytes from 'pretty-bytes'
 /**
  * @component
  */
-function App() {
+function App () {
   const peersStats = usePeersStats()
   console.log(peersStats)
 
@@ -17,11 +17,11 @@ function App() {
       continue
     }
     peersStatsElements.push(
-      <div className="peer" key={peerStats.peerCid}>
+      <div className='peer' key={peerStats.peerCid}>
         <p>
           {peerStats.ip}:{peerStats.port} {peerStats.countryFlagEmoji}
         </p>
-        <p className="peer-data">
+        <p className='peer-data'>
           ⬆️{prettyBytes(peerStats.dataSent)} ⬇️
           {prettyBytes(peerStats.dataReceived)}
         </p>
@@ -34,9 +34,9 @@ function App() {
   }
 
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
+    <div className='App'>
+      <header className='App-header'>
+        <img src={logo} className='App-logo' alt='logo' />
         <div>{peersStatsElements}</div>
         {/*
         <a

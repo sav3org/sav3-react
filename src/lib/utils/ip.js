@@ -4,7 +4,7 @@ import IdbLru from 'src/lib/utils/IdbLru'
 const getIsoCountryCodeFromIpAttempts = new Set()
 const ipIsoCountryCodeCache = IdbLru({
   name: 'ipIsoCountryCodeCache',
-  maxSize: 500,
+  maxSize: 500
 })
 
 /**
@@ -43,7 +43,8 @@ export const getIsoCountryCodeFromIp = async (ip) => {
     res = await res.text()
     isoCountryCode = res.trim().toUpperCase()
     assertIsIsoCountryCode(isoCountryCode)
-  } catch (e) {
+  }
+  catch (e) {
     e.message = `failed getting country iso code from '${apiUrl}' response '${res}': ${e.message}`
     throw e
   }
@@ -87,5 +88,5 @@ export default {
   getIsoCountryCodeFromIpCached,
   getIsoCountryCodeFromIp,
   getIsoCountryCodesFromIps,
-  isoCountryCodeToCountryFlagEmoji,
+  isoCountryCodeToCountryFlagEmoji
 }
