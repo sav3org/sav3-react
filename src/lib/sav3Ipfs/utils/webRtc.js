@@ -29,10 +29,16 @@ const sdpCache = new QuickLRU({maxSize: 1000})
  * @returns {IPFS}
  */
 export const withWebRtcSdpCache = (ipfs) => {
-  console.log('withWebRtcSdpCache', ipfs)
+  // outbound webrtc connections
   let webRtcStarConnect = ipfs.libp2p.transportManager._transports.get('WebRTCStar')._connect
   webRtcStarConnect = webRtcStarConnect.bind(ipfs.libp2p.transportManager._transports.get('WebRTCStar'))
   ipfs.libp2p.transportManager._transports.get('WebRTCStar')._connect = webRtcStarConnectWithSdpCache(webRtcStarConnect)
+
+  // inbound webrtc connections
+  let webRtcStarUpgradeInbound = ipfs.libp2p.transportManager._transports.get('WebRTCStar')._upgrader.upgradeInbound
+  webRtcStarUpgradeInbound = webRtcStarUpgradeInbound.bind(ipfs.libp2p.transportManager._transports.get('WebRTCStar')._upgrader)
+  ipfs.libp2p.transportManager._transports.get('WebRTCStar')._upgrader.upgradeInbound = webRtcStarUpgradeInboundWithSdpCache(webRtcStarUpgradeInbound)
+
   return ipfs
 }
 
@@ -43,10 +49,23 @@ export const withWebRtcSdpCache = (ipfs) => {
  */
 const webRtcStarConnectWithSdpCache = (webRtcStarConnect) => async (multiaddress, options) => {
   const simplePeer = await webRtcStarConnect(multiaddress, options)
-  // TODO: check if simplePeer._pc.localDescription.sdp is more accurate
-  sdpCache.set(multiaddress.getPeerId(), simplePeer._pc.remoteDescription.sdp)
-  // console.log('new simple peer', multiaddress.getPeerId(), simplePeer._pc.remoteDescription.sdp)
+  const cid = multiaddress.getPeerId()
+  sdpCache.set(cid, simplePeer._pc.remoteDescription.sdp)
+  console.log('outbound webrtc connection', cid, simplePeer._pc.remoteDescription.sdp)
   return simplePeer
+}
+
+/**
+ * wrap WebRTCStar._upgrader.upgradeInbound function to cache each peer sdp
+ * @param {function} webRtcStarUpgradeInbound - get it from ipfs.libp2p.transportManager._transports.get('WebRTCStar')._upgrader.upgradeInbound
+ * @returns {function} a wrapped WebRTCStar._upgrader.upgradeInbound function
+ */
+const webRtcStarUpgradeInboundWithSdpCache = (webRtcStarUpgradeInbound) => async (maConn) => {
+  const connection = await webRtcStarUpgradeInbound(maConn)
+  const cid = connection.remotePeer.toB58String()
+  sdpCache.set(cid, maConn.conn._pc.remoteDescription.sdp)
+  console.log('inbound webrtc connection', cid, maConn.conn._pc.remoteDescription.sdp)
+  return connection
 }
 
 /**
