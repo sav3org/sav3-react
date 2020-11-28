@@ -1,5 +1,5 @@
 import IPFS from 'ipfs'
-import webRtcUtils from './utils/webRtc'
+import webRtcUtils from './utils/webrtc'
 import PeerId from 'peer-id'
 import delay from 'delay'
 

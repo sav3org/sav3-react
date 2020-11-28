@@ -1,5 +1,5 @@
 import assert from 'assert'
-import IdbLru from 'src/lib/utils/IdbLru'
+import IdbLru from 'src/lib/utils/idb-lru'
 
 const getIsoCountryCodeFromIpAttempts = new Set()
 const ipIsoCountryCodeCache = IdbLru({

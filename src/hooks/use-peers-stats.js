@@ -1,5 +1,5 @@
 import {useEffect, useState} from 'react'
-import sav3Ipfs from 'src/lib/sav3Ipfs'
+import sav3Ipfs from 'src/lib/sav3-ipfs'
 import ipUtils from 'src/lib/utils/ip'
 
 const usePeersStats = () => {

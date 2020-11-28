@@ -32,7 +32,7 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "lint": "eslint --fix src",
-    "prettier": "prettier --write src && eslint --fix src"
+    "prettier": "prettier --write src && npm run lint"
   },
   "eslintConfig": {
     "extends": [
@@ -87,14 +87,8 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "lint-staged"
+      "pre-commit": "npm run prettier"
     }
-  },
-  "lint-staged": {
-    "src/**/*.{js,jsx,ts,tsx,json,css,scss,md}": [
-      "prettier --write",
-      "eslint --fix"
-    ]
   },
   "prettier": {
     "semi": false,
