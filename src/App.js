@@ -1,11 +1,10 @@
 import logo from './logo.png'
 import './App.css'
-import sav3Ipfs from 'src/lib/sav3Ipfs'
 import usePeersStats from 'src/hooks/usePeersStats'
 import prettyBytes from 'pretty-bytes'
 
 /**
- * @component
+ * @returns {JSX.Element}
  */
 function App () {
   const peersStats = usePeersStats()
