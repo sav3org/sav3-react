@@ -100,4 +100,6 @@ const IdbLru = ({name, maxSize} = {}) => {
   }
 }
 
+window.IdbLru = IdbLru
+
 export default IdbLru
