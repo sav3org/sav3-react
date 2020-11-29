@@ -9,7 +9,7 @@ function App () {
   return (
     <div className='App'>
       <Switch>
-        <Route path="/demo/peers-ips">
+        <Route path='/demo/peers-ips'>
           <PeersIps />
         </Route>
       </Switch>
@@ -17,7 +17,7 @@ function App () {
         <h1>Demo</h1>
         <ul>
           <li>
-            <Link to="/demo/peers-ips">Peers IPs</Link>
+            <Link to='/demo/peers-ips'>Peers IPs</Link>
           </li>
         </ul>
       </div>

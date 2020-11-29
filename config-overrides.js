@@ -46,6 +46,15 @@ module.exports = function override(config, env) {
       keepGeneratedAssets: false
     }))
   }
+  else {
+    for (const plugin of config.plugins) {
+      // add --fix to eslint on hot reloads
+      // could be too slow to use all the time
+      if (plugin.constructor.name === 'ESLintWebpackPlugin') {
+        plugin.options.fix = true
+      }
+    }
+  }
 
   return config
 }
