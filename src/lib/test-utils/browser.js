@@ -2,12 +2,12 @@ import puppeteer from 'puppeteer'
 
 class Browser {
   async open () {
-    this._browser = await puppeteer.launch()
-    this.page = await this._browser.newPage()
+    this.browser = await puppeteer.launch()
+    this.page = await this.browser.newPage()
   }
 
   async close () {
-    await this._browser.close()
+    await this.browser.close()
   }
 
   gotoHome () {
