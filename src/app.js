@@ -14,7 +14,7 @@ function App () {
         </Route>
       </Switch>
       <div>
-        <h1>Demo</h1>
+        <h1>Demos</h1>
         <ul>
           <li>
             <Link to='/demo/peers-ips'>Peers IPs</Link>
