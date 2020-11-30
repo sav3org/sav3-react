@@ -2,6 +2,7 @@ import IPFS from 'ipfs'
 import webRtcUtils from './utils/webrtc'
 import PeerId from 'peer-id'
 import delay from 'delay'
+import assert from 'assert'
 
 export class Sav3Ipfs {
   constructor () {
@@ -135,6 +136,55 @@ export class Sav3Ipfs {
     console.log(peersStats)
     return peersStats
   }
+
+  async getIpnsFile (ipnsCid) {
+    const fileCid = (await this.ipfs.name.resolve(ipnsCid).next()).value
+    const file = (await this.ipfs.get(fileCid).next()).value
+    let content
+    if (file.content) {
+      content = (await file.content.next()).value.toString()
+    }
+    console.log('getIpnsFile', {ipnsCid, fileCid, file, content})
+    return content
+  }
+
+  async getOwnIpnsData () {
+    const ownIpnsCid = (await this.ipfs.id()).id
+    const lastIpnsData = await this.getIpnsFile(ownIpnsCid)
+    console.log('getOwnIpnsData', {ownIpnsCid, lastIpnsData})
+    if (!lastIpnsData) {
+      return {}
+    }
+    return JSON.parse(lastIpnsData)
+  }
+
+  async publishPost ({content, parentPostCid} = {}) {
+    assert(content && typeof content === 'string')
+    assert(content.length <= 140)
+    assert(!parentPostCid || typeof parentPostCid === 'string')
+
+    const ipnsData = await this.getOwnIpnsData()
+    const newPost = {}
+    newPost.previousPostCid = ipnsData.lastPostCid
+    newPost.timestamp = Math.round(Date.now() / 1000)
+    newPost.publisherCid = (await this.ipfs.id()).id
+    newPost.contentCid = (await this.ipfs.add(content)).cid.toString()
+
+    const newPostCid = (await this.ipfs.add(JSON.stringify(newPost))).cid.toString()
+    const newIpnsData = {lastPostCid: newPostCid}
+    const newIpnsDataCid = (await this.ipfs.add(JSON.stringify(newIpnsData))).cid.toString()
+    const publishRes = await this.ipfs.name.publish(newIpnsDataCid)
+
+    console.log('publishPost', {publishRes, newIpnsDataCid, newPost, newIpnsData, ipnsData, newPostCid})
+    return newPostCid
+  }
+
+  async getOwnUserPosts () {
+    const ownIpnsCid = (await this.ipfs.id()).id
+    return this.getUserPosts(ownIpnsCid)
+  }
+
+  async getUserPosts (userIpnsCid) {}
 
   /**
    * ipfs has finished initializing and its methods are ready to use
