@@ -1,3 +1,5 @@
+set up the publish pub sub example, and if still confuse ask on github
+
 set up material ui
 make using ipns demo
 find way to send random data to peers

@@ -31,14 +31,14 @@ export class Sav3Ipfs {
     window.sav3Ipfs = this
 
     // everything below is debug test stuff
-    setInterval(async () => {
-      const stat = await this.ipfs.bitswap.stat()
-      let statString = ''
-      for (const i in stat) {
-        statString += `${i} ${stat[i].toString()} `
-      }
-      console.log(statString)
-    }, 30000)
+    // setInterval(async () => {
+    //   const stat = await this.ipfs.bitswap.stat()
+    //   let statString = ''
+    //   for (const i in stat) {
+    //     statString += `${i} ${stat[i].toString()} `
+    //   }
+    //   console.log(statString)
+    // }, 30000)
 
     this.ipfs.libp2p.on('peer:discovery', (peer) => {
       console.log('discovered', peer)
@@ -138,13 +138,20 @@ export class Sav3Ipfs {
   }
 
   async getIpnsFile (ipnsCid) {
+    assert(ipnsCid && typeof ipnsCid === 'string')
     const fileCid = (await this.ipfs.name.resolve(ipnsCid).next()).value
+    const file = await this.getIpfsFile(fileCid)
+    return file
+  }
+
+  async getIpfsFile (fileCid) {
+    assert(fileCid && typeof fileCid === 'string')
     const file = (await this.ipfs.get(fileCid).next()).value
     let content
     if (file.content) {
       content = (await file.content.next()).value.toString()
     }
-    console.log('getIpnsFile', {ipnsCid, fileCid, file, content})
+    console.log('getIpfsFile', {fileCid, file, content})
     return content
   }
 
@@ -184,7 +191,39 @@ export class Sav3Ipfs {
     return this.getUserPosts(ownIpnsCid)
   }
 
-  async getUserPosts (userIpnsCid) {}
+  async getUserPosts (userIpnsCid) {
+    assert(userIpnsCid && typeof userIpnsCid === 'string')
+    const posts = []
+
+    const maxPostCount = 5
+
+    let lastPostCid, ipnsData
+    try {
+      ipnsData = await this.getIpnsFile(userIpnsCid)
+      ipnsData = JSON.parse(ipnsData)
+      lastPostCid = ipnsData.lastPostCid
+    }
+    catch (e) {}
+
+    while (true) {
+      // no more last post id so reached the first post by that user
+      if (!lastPostCid) {
+        break
+      }
+      if (posts.length >= maxPostCount) {
+        break
+      }
+
+      const post = JSON.parse(await this.getIpfsFile(lastPostCid))
+      lastPostCid = post.previousPostCid
+
+      post.content = await this.getIpfsFile(post.contentCid)
+      posts.push(post)
+    }
+
+    console.log('getUserPosts', {userIpnsCid, ipnsData, lastPostCid, posts})
+    return posts
+  }
 
   /**
    * ipfs has finished initializing and its methods are ready to use

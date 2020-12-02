@@ -53,7 +53,7 @@ const webRtcStarConnectWithSdpCache = (webRtcStarConnect) => async (multiaddress
   const simplePeer = await webRtcStarConnect(multiaddress, options)
   const cid = multiaddress.getPeerId()
   sdpCache.set(cid, simplePeer._pc.remoteDescription.sdp)
-  console.log('outbound webrtc connection', cid, simplePeer._pc.remoteDescription.sdp)
+  // console.log('outbound webrtc connection', cid, simplePeer._pc.remoteDescription.sdp)
   return simplePeer
 }
 
@@ -67,7 +67,7 @@ const webRtcStarUpgradeInboundWithSdpCache = (webRtcStarUpgradeInbound) => async
   const connection = await webRtcStarUpgradeInbound(maConn)
   const cid = connection.remotePeer.toB58String()
   sdpCache.set(cid, maConn.conn._pc.remoteDescription.sdp)
-  console.log('inbound webrtc connection', cid, maConn.conn._pc.remoteDescription.sdp)
+  // console.log('inbound webrtc connection', cid, maConn.conn._pc.remoteDescription.sdp)
   return connection
 }
 
