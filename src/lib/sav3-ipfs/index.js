@@ -1,10 +1,11 @@
-import IPFS from 'ipfs'
+import Ipfs from 'ipfs'
 import webRtcUtils from './utils/webrtc'
 import PeerId from 'peer-id'
 import delay from 'delay'
 import assert from 'assert'
+import IpnsClient from './ipns-client'
 
-export class Sav3Ipfs {
+class Sav3Ipfs {
   constructor () {
     this._initIpfs()
   }
@@ -18,17 +19,23 @@ export class Sav3Ipfs {
       config: {
         Bootstrap: [],
         Addresses: {
-          Swarm: ['/dns4/starservertest.sav3.org/tcp/443/wss/p2p-webrtc-star/']
+          Swarm: ['/dns4/star.sav3.org/tcp/443/wss/p2p-webrtc-star/']
         }
       }
+      // libp2p: {
+      //   config: {
+      //     dht: {
+      //       enabled: true
+      //     }
+      //   }
+      // }
     }
 
-    const ipfs = await IPFS.create(ipfsOptions)
+    const ipfs = await Ipfs.create(ipfsOptions)
     this.ipfs = webRtcUtils.withWebRtcSdpCache(ipfs)
 
     // add to window for testing and debugging in console
     window.ipfs = this.ipfs
-    window.sav3Ipfs = this
 
     // everything below is debug test stuff
     // setInterval(async () => {
@@ -102,7 +109,7 @@ export class Sav3Ipfs {
    * @returns {Promise<{peerCid: string, ip: string | undefined, port: number | undefined, protocol: string | undefined, dataReceived: number, dataSent: number}>}
    */
   async getPeersStats () {
-    await this._waitForReady()
+    await this.waitForReady()
 
     const metrics = this.ipfs.libp2p.metrics
     const peers = await this.ipfs.swarm.peers()
@@ -234,14 +241,20 @@ export class Sav3Ipfs {
     return !!this.ipfs
   }
 
-  async _waitForReady () {
+  async waitForReady () {
     if (this.ipfs) {
       return
     }
     await delay(10)
-    await this._waitForReady()
+    await this.waitForReady()
   }
 }
 
+export const sav3Ipfs = new Sav3Ipfs()
+
+// useful for testing
+window.sav3Ipfs = sav3Ipfs
+window.Ipfs = Ipfs
+
 // export a singleton to be used throughout the app
-export default new Sav3Ipfs()
+export default sav3Ipfs
