@@ -29,7 +29,7 @@ function PeersIps () {
   }
 
   if (!peersStatsElements.length) {
-    peersStatsElements.push(<p>Looking for peers...</p>)
+    peersStatsElements.push(<p key='looking for peers'>Looking for peers...</p>)
   }
 
   return (
