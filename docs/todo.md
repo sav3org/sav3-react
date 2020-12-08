@@ -1,11 +1,6 @@
-finish publishing and subscribing demo
 
 set up material ui
-make using ipns demo
-find way to send random data to peers
 release demo
-
-
 
 possible data in sav3
 ----

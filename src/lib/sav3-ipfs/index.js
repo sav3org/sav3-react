@@ -4,9 +4,13 @@ import PeerId from 'peer-id'
 import delay from 'delay'
 import assert from 'assert'
 import IpnsClient from './ipns-client'
+import EventEmitter from 'events'
 
-class Sav3Ipfs {
+class Sav3Ipfs extends EventEmitter {
   constructor () {
+    super()
+    this.ipfs = null
+    this.ipnsClient = null
     this._initIpfs()
   }
 
@@ -33,6 +37,13 @@ class Sav3Ipfs {
 
     const ipfs = await Ipfs.create(ipfsOptions)
     this.ipfs = webRtcUtils.withWebRtcSdpCache(ipfs)
+
+    // init ipns client
+    this.ipnsClient = IpnsClient({ipfs})
+    // subscribe to new publishes
+    this.ipnsClient.on('publish', (ipnsPath, ipnsValue) => {
+      this.emit('publish', ipnsPath, ipnsValue)
+    })
 
     // add to window for testing and debugging in console
     window.ipfs = this.ipfs
@@ -140,11 +151,17 @@ class Sav3Ipfs {
       const peerStats = {peerCid, ip, port, protocol, dataReceived, dataSent}
       peersStats.push(peerStats)
     }
-    console.log(peersStats)
+    console.log('getPeersStats', {peersStats})
     return peersStats
   }
 
+  async getOwnPeerCid () {
+    await this.waitForReady()
+    return (await sav3Ipfs.ipfs.id()).id
+  }
+
   async getIpnsFile (ipnsCid) {
+    await this.waitForReady()
     assert(ipnsCid && typeof ipnsCid === 'string')
     const fileCid = (await this.ipfs.name.resolve(ipnsCid).next()).value
     const file = await this.getIpfsFile(fileCid)
@@ -152,6 +169,7 @@ class Sav3Ipfs {
   }
 
   async getIpfsFile (fileCid) {
+    await this.waitForReady()
     assert(fileCid && typeof fileCid === 'string')
     const file = (await this.ipfs.get(fileCid).next()).value
     let content
@@ -163,6 +181,7 @@ class Sav3Ipfs {
   }
 
   async getOwnIpnsData () {
+    await this.waitForReady()
     const ownIpnsCid = (await this.ipfs.id()).id
     const lastIpnsData = await this.getIpnsFile(ownIpnsCid)
     console.log('getOwnIpnsData', {ownIpnsCid, lastIpnsData})
@@ -172,7 +191,14 @@ class Sav3Ipfs {
     return JSON.parse(lastIpnsData)
   }
 
+  async subscribeToIpnsPath (ipnsPath) {
+    await this.waitForReady()
+    const ipnsValues = await this.ipnsClient.subscribe([ipnsPath])
+    return ipnsValues[0]
+  }
+
   async publishPost ({content, parentPostCid} = {}) {
+    await this.waitForReady()
     assert(content && typeof content === 'string')
     assert(content.length <= 140)
     assert(!parentPostCid || typeof parentPostCid === 'string')
@@ -187,30 +213,22 @@ class Sav3Ipfs {
     const newPostCid = (await this.ipfs.add(JSON.stringify(newPost))).cid.toString()
     const newIpnsData = {lastPostCid: newPostCid}
     const newIpnsDataCid = (await this.ipfs.add(JSON.stringify(newIpnsData))).cid.toString()
+
+    // use the ipns server until ipfs.name.publish is implemented in browser
+    await this.ipnsClient.publish(newIpnsDataCid)
+    // still need to store own records locally
     const publishRes = await this.ipfs.name.publish(newIpnsDataCid)
 
     console.log('publishPost', {publishRes, newIpnsDataCid, newPost, newIpnsData, ipnsData, newPostCid})
     return newPostCid
   }
 
-  async getOwnUserPosts () {
-    const ownIpnsCid = (await this.ipfs.id()).id
-    return this.getUserPosts(ownIpnsCid)
-  }
-
-  async getUserPosts (userIpnsCid) {
-    assert(userIpnsCid && typeof userIpnsCid === 'string')
+  async getUserPostsFromLastPostCid (lastPostCid) {
+    await this.waitForReady()
+    assert(lastPostCid && typeof lastPostCid === 'string')
     const posts = []
 
     const maxPostCount = 5
-
-    let lastPostCid, ipnsData
-    try {
-      ipnsData = await this.getIpnsFile(userIpnsCid)
-      ipnsData = JSON.parse(ipnsData)
-      lastPostCid = ipnsData.lastPostCid
-    }
-    catch (e) {}
 
     while (true) {
       // no more last post id so reached the first post by that user
@@ -228,7 +246,7 @@ class Sav3Ipfs {
       posts.push(post)
     }
 
-    console.log('getUserPosts', {userIpnsCid, ipnsData, lastPostCid, posts})
+    console.log('getUserPosts', {lastPostCid, posts})
     return posts
   }
 

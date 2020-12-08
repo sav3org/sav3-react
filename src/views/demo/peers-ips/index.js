@@ -16,7 +16,7 @@ function PeersIps () {
       continue
     }
     peersStatsElements.push(
-      <div className='peer' key={peerStats.peerCid}>
+      <div className='peer' key={peerStats.peerCid + peerStats.ip + peerStats.port}>
         <p>
           {peerStats.ip}:{peerStats.port} {peerStats.countryFlagEmoji}
         </p>

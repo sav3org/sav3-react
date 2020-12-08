@@ -16,6 +16,9 @@ function App () {
         <Route path='/demo/peers-posts'>
           <PeersPosts />
         </Route>
+        <Route path='/'>
+          <PeersPosts />
+        </Route>
       </Switch>
       <div>
         <h1>Demos</h1>

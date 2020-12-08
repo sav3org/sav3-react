@@ -42,5 +42,11 @@ p {
 }
 
 .peer-data {
-  font-size: 14px;
+  font-size: 10px;
+  display: inline-block;
+}
+
+.peer-message {
+  font-size: 16px;
+  font-style: italic;
 }

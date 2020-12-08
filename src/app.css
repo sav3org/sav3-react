@@ -44,3 +44,8 @@ p {
 .peer-data {
   font-size: 14px;
 }
+
+ul {
+  list-style-type: none;
+  padding: 0;
+}

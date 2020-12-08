@@ -26,11 +26,11 @@ describe('IpnsClient', () => {
     const res = await browser.page.evaluate(async () => {
       // publish
       const res = await new Promise((resolve) => {
-        // once subscribed should get real time publish updates
+        // once subscribed to own peer cid, should get real time publish updates
         window.ipnsClient.on('publish', (ipnsPath, ipnsValue) => {
           resolve([ipnsPath, ipnsValue])
         })
-        window.ipnsClient.publish(window.ownPeerCid, 'QmYjtig7VJQ6XsnUjqqJvj7QaMcCAwtrgNdahSiFofrE71')
+        window.ipnsClient.publish('QmYjtig7VJQ6XsnUjqqJvj7QaMcCAwtrgNdahSiFofrE71')
       })
       return res
     })

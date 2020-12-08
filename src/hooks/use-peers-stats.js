@@ -6,7 +6,7 @@ const usePeersStats = () => {
   const [peersStats, setPeersStats] = useState([])
   const [pollCount, setPollCount] = useState(0)
 
-  const pollTime = 1000
+  const pollTime = 10000
   useEffect(() => {
     const interval = setInterval(() => {
       setPollCount(pollCount + 1)

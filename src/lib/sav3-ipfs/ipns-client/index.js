@@ -12,6 +12,7 @@ class IpnsClient extends EventEmitter {
     this.ipfs = ipfs
     this.privateKey = null
     this.webSocketClient = null
+    this.peerCid = null
     this.url = 'https://ipns.sav3.org'
 
     this.start()
@@ -22,6 +23,7 @@ class IpnsClient extends EventEmitter {
     this.webSocketClient = WebSocketClient(this.url)
     const encryptedPrivateKeyString = await this.ipfs.key.export('self', 'password')
     this.privateKey = await crypto.keys.import(encryptedPrivateKeyString, 'password')
+    this.peerCid = (await this.ipfs.id()).id
 
     // subscribe to new publishes
     this.webSocketClient.on('publish', (ipnsPath, ipnsValue) => {
@@ -59,8 +61,7 @@ class IpnsClient extends EventEmitter {
     await this.webSocketClient.emit('unsubscribe', ipnsPaths)
   }
 
-  async publish (ipnsPath, ipfsValue) {
-    assert(typeof ipnsPath === 'string')
+  async publish (ipfsValue) {
     assert(typeof ipfsValue === 'string')
     await this.waitForReady()
 
@@ -72,6 +73,7 @@ class IpnsClient extends EventEmitter {
     await ipns.embedPublicKey(this.privateKey.public, record) // required to verify marshalled record
     const marshalledRecord = Buffer.from(ipns.marshal(record))
 
+    const ipnsPath = this.peerCid
     await this.webSocketClient.emit('publish', ipnsPath, marshalledRecord)
   }
 }
