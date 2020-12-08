@@ -21,4 +21,4 @@ Launch `npm start` before `npm test`.
 
 ### `npm run build`
 
-Builds the single HTML file for production to the `build` folder.\
+Builds the single HTML file for production to the `build` folder.

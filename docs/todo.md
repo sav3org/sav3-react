@@ -1,4 +1,4 @@
-set up the publish pub sub example, and if still confuse ask on github
+finish publishing and subscribing demo
 
 set up material ui
 make using ipns demo
