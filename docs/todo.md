@@ -1,6 +1,11 @@
-
+fix problems with ipns server
+cache which ip sent what file cid
 set up material ui
-release demo
+pages needed
+  - profile
+  - feed
+  
+
 
 possible data in sav3
 ----

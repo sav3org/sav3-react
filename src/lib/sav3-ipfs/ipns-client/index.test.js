@@ -30,12 +30,12 @@ describe('IpnsClient', () => {
         window.ipnsClient.on('publish', (ipnsPath, ipnsValue) => {
           resolve([ipnsPath, ipnsValue])
         })
-        window.ipnsClient.publish('QmYjtig7VJQ6XsnUjqqJvj7QaMcCAwtrgNdahSiFofrE71')
+        window.ipnsClient.publish({value: '/ipfs/QmYjtig7VJQ6XsnUjqqJvj7QaMcCAwtrgNdahSiFofrE71', sequence: Date.now()})
       })
       return res
     })
     const ownPeerCid = await await browser.page.evaluate(() => window.ownPeerCid)
-    expect(res).toStrictEqual([ownPeerCid, 'QmYjtig7VJQ6XsnUjqqJvj7QaMcCAwtrgNdahSiFofrE71'])
+    expect(res).toStrictEqual([ownPeerCid, '/ipfs/QmYjtig7VJQ6XsnUjqqJvj7QaMcCAwtrgNdahSiFofrE71'])
   })
 
   afterAll(() => {

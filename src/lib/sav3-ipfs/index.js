@@ -5,6 +5,8 @@ import delay from 'delay'
 import assert from 'assert'
 import IpnsClient from './ipns-client'
 import EventEmitter from 'events'
+import ipns from 'ipns'
+import crypto from 'libp2p-crypto'
 
 class Sav3Ipfs extends EventEmitter {
   constructor () {
@@ -168,6 +170,40 @@ class Sav3Ipfs extends EventEmitter {
     return file
   }
 
+  async getOwnIpnsRecord () {
+    await this.waitForReady()
+    const ownCid = await sav3Ipfs.getOwnPeerCid()
+    const peerId = PeerId.createFromCID(ownCid)
+    const datastoreValue = await this.ipfs.libp2p.datastore.get(ipns.getLocalKey(peerId.id))
+    const ipnsRecord = ipns.unmarshal(datastoreValue)
+    return ipnsRecord
+  }
+
+  async putOwnIpnsRecord ({value, sequence} = {}) {
+    await this.waitForReady()
+    assert(value && typeof value === 'string')
+    assert(typeof sequence === 'number')
+
+    // needs /ipfs/ prefix to ipfs.name.resolve correctly
+    if (!value.startsWith('/ipfs/')) {
+      value = `/ipfs/${value}`
+    }
+
+    const validity = 1000 * 60 * 60 * 24 * 365 * 10 // 10 years
+    const encryptedPrivateKeyString = await this.ipfs.key.export('self', 'password')
+    const privateKey = await crypto.keys.import(encryptedPrivateKeyString, 'password')
+    const ipnsRecord = await ipns.create(privateKey, value, sequence, validity)
+    const marshalledIpnsRecord = ipns.marshal(ipnsRecord)
+
+    const ownCid = await sav3Ipfs.getOwnPeerCid()
+    const peerId = PeerId.createFromCID(ownCid)
+    await this.ipfs.libp2p.datastore.put(ipns.getLocalKey(peerId.id), marshalledIpnsRecord)
+
+    // resolve name right away or won't be available right away putting it
+    await this.ipfs.name.resolve(ownCid)
+    return ipnsRecord
+  }
+
   async getIpfsFile (fileCid) {
     await this.waitForReady()
     assert(fileCid && typeof fileCid === 'string')
@@ -182,9 +218,10 @@ class Sav3Ipfs extends EventEmitter {
 
   async getOwnIpnsData () {
     await this.waitForReady()
-    const ownIpnsCid = (await this.ipfs.id()).id
-    const lastIpnsData = await this.getIpnsFile(ownIpnsCid)
-    console.log('getOwnIpnsData', {ownIpnsCid, lastIpnsData})
+    const record = await this.getOwnIpnsRecord()
+    const ownIpfsValue = record.value.toString()
+    const lastIpnsData = await this.getIpfsFile(ownIpfsValue)
+    console.log('getOwnIpnsData', {ownIpfsValue, lastIpnsData})
     if (!lastIpnsData) {
       return {}
     }
@@ -215,12 +252,27 @@ class Sav3Ipfs extends EventEmitter {
     const newIpnsDataCid = (await this.ipfs.add(JSON.stringify(newIpnsData))).cid.toString()
 
     // use the ipns server until ipfs.name.publish is implemented in browser
-    await this.ipnsClient.publish(newIpnsDataCid)
-    // still need to store own records locally
-    const publishRes = await this.ipfs.name.publish(newIpnsDataCid)
+    const sequence = (await this.getOwnIpnsRecordSequence()) + 1
+    await this.ipnsClient.publish({value: newIpnsDataCid, sequence})
+    await this.putOwnIpnsRecord({value: newIpnsDataCid, sequence})
 
-    console.log('publishPost', {publishRes, newIpnsDataCid, newPost, newIpnsData, ipnsData, newPostCid})
+    console.log('publishPost', {newIpnsDataCid, newPost, sequence, newIpnsData, ipnsData, newPostCid})
     return newPostCid
+  }
+
+  async getOwnIpnsRecordSequence () {
+    await this.waitForReady()
+    const ipnsRecord = await this.getOwnIpnsRecord()
+    const sequence = ipnsRecord
+    const ownCid = await sav3Ipfs.getOwnPeerCid()
+    const [remoteIpnsRecord] = await this.ipnsClient.getRecords([ownCid])
+    const remoteSequence = (remoteIpnsRecord && remoteIpnsRecord.sequence) || 0
+    if (sequence > remoteSequence) {
+      return sequence
+    }
+    else {
+      return remoteSequence
+    }
   }
 
   async getUserPostsFromLastPostCid (lastPostCid) {
@@ -246,7 +298,7 @@ class Sav3Ipfs extends EventEmitter {
       posts.push(post)
     }
 
-    console.log('getUserPosts', {lastPostCid, posts})
+    console.log('getUserPostsFromLastPostCid', {lastPostCid, posts})
     return posts
   }
 

@@ -36,6 +36,7 @@
   "scripts": {
     "start": "react-app-rewired start",
     "build": "react-app-rewired build",
+    "build:demo": "react-scripts build",
     "test": "react-app-rewired test",
     "eject": "react-scripts eject",
     "lint": "eslint --fix src",
