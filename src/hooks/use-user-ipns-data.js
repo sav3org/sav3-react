@@ -7,7 +7,7 @@ const useUserIpnsData = (ipnsPath) => {
   const [userIpnsData, setUserIpnsData] = useState()
   console.log('useUserIpnsData', {ipnsPath, userIpnsData})
 
-  useEffect(async () => {
+  useEffect(() => {
     if (!ipnsPath) {
       return
     }
@@ -19,13 +19,15 @@ const useUserIpnsData = (ipnsPath) => {
       const ipnsData = await sav3Ipfs.getIpfsFile(ipnsValue)
       setUserIpnsData(JSON.parse(ipnsData))
     })
-    const ipnsValue = await sav3Ipfs.subscribeToIpnsPath(ipnsPath)
-    if (!ipnsValue) {
-      // user has not published anything yet
-      return
-    }
-    const ipnsData = await sav3Ipfs.getIpfsFile(ipnsValue)
-    setUserIpnsData(JSON.parse(ipnsData))
+    ;(async () => {
+      const ipnsValue = await sav3Ipfs.subscribeToIpnsPath(ipnsPath)
+      if (!ipnsValue) {
+        // user has not published anything yet
+        return
+      }
+      const ipnsData = await sav3Ipfs.getIpfsFile(ipnsValue)
+      setUserIpnsData(JSON.parse(ipnsData))
+    })()
   }, [ipnsPath])
 
   return userIpnsData

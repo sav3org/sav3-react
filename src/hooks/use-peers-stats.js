@@ -6,33 +6,35 @@ const usePeersStats = () => {
   const [peersStats, setPeersStats] = useState([])
   const [pollCount, setPollCount] = useState(0)
 
-  const pollTime = 10000
+  const pollTime = 10000 // if too fast will break the peer posts demo
   useEffect(() => {
     const interval = setInterval(() => {
       setPollCount(pollCount + 1)
     }, pollTime)
   }, [])
 
-  useEffect(async () => {
-    const peersStats = await sav3Ipfs.getPeersStats()
-    for (const peersStat of peersStats) {
-      if (!peersStat.ip) {
-        continue
-      }
-      let isoCountryCode
-      try {
-        isoCountryCode = await ipUtils.getIsoCountryCodeFromIpCached(peersStat.ip)
-      }
-      catch (e) {
-        console.log(e)
-        continue
-      }
-      const countryFlagEmoji = ipUtils.isoCountryCodeToCountryFlagEmoji(isoCountryCode)
+  useEffect(() => {
+    ;(async () => {
+      const peersStats = await sav3Ipfs.getPeersStats()
+      for (const peersStat of peersStats) {
+        if (!peersStat.ip) {
+          continue
+        }
+        let isoCountryCode
+        try {
+          isoCountryCode = await ipUtils.getIsoCountryCodeFromIpCached(peersStat.ip)
+        }
+        catch (e) {
+          console.log(e)
+          continue
+        }
+        const countryFlagEmoji = ipUtils.isoCountryCodeToCountryFlagEmoji(isoCountryCode)
 
-      peersStat.isoCountryCode = isoCountryCode
-      peersStat.countryFlagEmoji = countryFlagEmoji
-    }
-    setPeersStats(peersStats)
+        peersStat.isoCountryCode = isoCountryCode
+        peersStat.countryFlagEmoji = countryFlagEmoji
+      }
+      setPeersStats(peersStats)
+    })()
   }, [pollCount])
 
   return peersStats
