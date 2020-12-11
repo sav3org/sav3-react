@@ -1,5 +1,5 @@
-fix problems with ipns server
-cache which ip sent what file cid
+
+make profile page demo?
 set up material ui
 pages needed
   - profile

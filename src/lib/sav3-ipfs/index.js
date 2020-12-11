@@ -1,5 +1,6 @@
 import Ipfs from 'ipfs'
 import webRtcUtils from './utils/webrtc'
+import bitswapUtils from './utils/bitswap'
 import PeerId from 'peer-id'
 import delay from 'delay'
 import assert from 'assert'
@@ -20,11 +21,12 @@ class Sav3Ipfs extends EventEmitter {
     const ipfsOptions = {
       preload: {enabled: false},
       // a random repo allows multiple tabs to have different peers
-      // which id good for testing
+      // which is good for testing
       repo: Math.random().toString(36).substring(7),
       config: {
         Bootstrap: [],
         Addresses: {
+          Delegates: [],
           Swarm: ['/dns4/star.sav3.org/tcp/443/wss/p2p-webrtc-star/']
         }
       }
@@ -39,6 +41,7 @@ class Sav3Ipfs extends EventEmitter {
 
     const ipfs = await Ipfs.create(ipfsOptions)
     this.ipfs = webRtcUtils.withWebRtcSdpCache(ipfs)
+    this.ipfs = bitswapUtils.withBlockReceivedPeerCidCache(ipfs)
 
     // init ipns client
     this.ipnsClient = IpnsClient({ipfs})
