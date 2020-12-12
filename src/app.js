@@ -7,53 +7,44 @@ import {useContext} from 'react'
 import Select from '@material-ui/core/Select'
 import MenuItem from '@material-ui/core/MenuItem'
 import themes from 'src/themes'
+import Grid from '@material-ui/core/Grid'
+import Container from '@material-ui/core/Container'
+import Paper from '@material-ui/core/Paper'
+import Box from '@material-ui/core/Box'
+import {makeStyles, useTheme} from '@material-ui/core/styles'
+
+const useStyles = makeStyles((theme) => ({
+  leftColumn: {
+    width: theme.sav3.layout.columns.left.maxWidth
+  },
+  middleColumn: {
+    width: theme.sav3.layout.columns.middle.maxWidth
+  },
+  rightColumn: {
+    width: theme.sav3.layout.columns.right.maxWidth
+  }
+}))
 
 /**
  * @returns {JSX.Element}
  */
 function App () {
-  const {currentTheme, setTheme} = useContext(ThemeContext)
-  const handleThemeChange = (event) => {
-    setTheme(event.target.value)
-  }
-  const themeMenuItems = []
-  for (const themeName in themes) {
-    themeMenuItems.push(
-      <MenuItem key={themeName} value={themeName}>
-        {themeName}
-      </MenuItem>
-    )
-  }
+  const classes = useStyles()
+  const theme = useTheme()
+  console.log({theme})
 
   return (
-    <div className='App'>
-      <Select value={currentTheme} onChange={handleThemeChange} label='Theme' variant='outlined'>
-        {themeMenuItems}
-      </Select>
-
-      <Switch>
-        <Route path='/demo/peers-ips'>
-          <PeersIps />
-        </Route>
-        <Route path='/demo/peers-posts'>
-          <PeersPosts />
-        </Route>
-        <Route path='/'>
-          <Profile />
-        </Route>
-      </Switch>
-      <div>
-        <h1>Demos</h1>
-        <ul>
-          <li>
-            <Link to='/demo/peers-ips'>Peers IPs</Link>
-          </li>
-          <li>
-            <Link to='/demo/peers-posts'>Peers Posts</Link>
-          </li>
-        </ul>
-      </div>
-    </div>
+    <Grid container justify='center'>
+      <Grid item className={classes.leftColumn}>
+        <Paper>xs=3</Paper>
+      </Grid>
+      <Grid item className={classes.middleColumn}>
+        <Paper>xs=3</Paper>
+      </Grid>
+      <Grid item className={classes.rightColumn}>
+        <Paper>xs=3</Paper>
+      </Grid>
+    </Grid>
   )
 }
 
