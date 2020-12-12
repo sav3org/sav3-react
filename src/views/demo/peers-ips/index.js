@@ -1,5 +1,4 @@
 import logo from 'src/assets/images/logo.png'
-import './index.css'
 import usePeersStats from 'src/hooks/use-peers-stats'
 import prettyBytes from 'pretty-bytes'
 

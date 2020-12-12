@@ -1,4 +1,4 @@
-
+add license to all repos
 make profile page demo?
 set up material ui
 pages needed

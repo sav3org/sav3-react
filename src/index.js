@@ -1,16 +1,18 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import './index.css'
 import App from './app'
 import reportWebVitals from './report-web-vitals'
 import {HashRouter} from 'react-router-dom'
+import ThemeProvider from 'src/themes/theme-provider'
+import CssBaseline from '@material-ui/core/CssBaseline'
 
 ReactDOM.render(
-  <React.StrictMode>
-    <HashRouter>
+  <HashRouter>
+    <ThemeProvider>
+      <CssBaseline />
       <App />
-    </HashRouter>
-  </React.StrictMode>,
+    </ThemeProvider>
+  </HashRouter>,
   document.getElementById('root')
 )
 
