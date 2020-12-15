@@ -40,14 +40,14 @@ const useStyles = makeStyles((theme) => ({
   avatar: {
     position: 'absolute',
     // make avatar 25% of the middle col
-    width: theme.sav3.layout.columns.middle.md.width / 4,
-    height: theme.sav3.layout.columns.middle.md.width / 4,
-    marginTop: theme.sav3.layout.columns.middle.md.width / -8,
+    width: theme.sav3.layout.columns.middle.width.md / 4,
+    height: theme.sav3.layout.columns.middle.width.md / 4,
+    marginTop: theme.sav3.layout.columns.middle.width.md / -8,
     marginLeft: theme.spacing(2),
     borderWidth: theme.spacing(0.5),
     borderStyle: 'solid',
     borderColor: theme.palette.background.default,
-    [theme.breakpoints.down(theme.sav3.layout.columns.middle.md.width)]: {
+    [theme.breakpoints.down(theme.sav3.layout.columns.middle.width.md)]: {
       width: '25vw',
       height: '25vw',
       marginTop: '-12.5vw',
@@ -82,7 +82,7 @@ function Profile() {
       </Box>
       <CardHeader className={classes.profileName} pb={0} title='John M' subheader='Qma9T5YraSnpRDZqRR4krcSJabThc8nwZuJV3LercPHufi' />
       <Box p={2} pt={0}>
-        <Typography variant='body2' color='textSecondary' component='p'>
+        <Typography variant='body2'>
           This impressive paella is a perfect party dish and a fun meal to cook together with your guests. Add 1 cup of frozen peas along with the mussels, if you like.
         </Typography>
       </Box>

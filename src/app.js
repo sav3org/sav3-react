@@ -16,6 +16,7 @@ import LeftMenu from 'src/components/menus/left-menu'
 import BottomMenu from 'src/components/menus/bottom-menu'
 import ThemeSwitcher from 'src/components/theme-switcher'
 import TranslationSwitcher from 'src/components/translation-switcher'
+import Divider from '@material-ui/core/Divider'
 
 // app bar
 import AppBar from '@material-ui/core/AppBar'
@@ -30,13 +31,13 @@ const useStyles = makeStyles((theme) => ({
       display: 'none'
     },
     [theme.breakpoints.down('md')]: {
-      width: theme.sav3.layout.columns.left.sm.width
+      width: theme.sav3.layout.columns.left.width.sm
     },
     [theme.breakpoints.down('lg')]: {
-      width: theme.sav3.layout.columns.left.xs.width
+      width: theme.sav3.layout.columns.left.width.xs
     },
     [theme.breakpoints.up('lg')]: {
-      width: theme.sav3.layout.columns.left.md.width
+      width: theme.sav3.layout.columns.left.width.md
     }
   },
   middleColumn: {
@@ -44,18 +45,25 @@ const useStyles = makeStyles((theme) => ({
       width: '100%'
     },
     [theme.breakpoints.up('xs')]: {
-      width: theme.sav3.layout.columns.middle.md.width
-    }
+      width: theme.sav3.layout.columns.middle.width.md
+    },
+    // borders
+    borderLeftWidth: theme.sav3.borderWidth,
+    borderRightWidth: theme.sav3.borderWidth,
+    borderTopWidth: 0,
+    borderBottomWidth: 0,
+    borderStyle: 'solid',
+    borderColor: theme.sav3.borderColor
   },
   rightColumn: {
     [theme.breakpoints.down('sm')]: {
       display: 'none'
     },
     [theme.breakpoints.down('lg')]: {
-      width: theme.sav3.layout.columns.right.md.width
+      width: theme.sav3.layout.columns.right.width.md
     },
     [theme.breakpoints.up('lg')]: {
-      width: theme.sav3.layout.columns.right.lg.width
+      width: theme.sav3.layout.columns.right.width.lg
     }
   },
   bottomMenu: {
@@ -91,6 +99,7 @@ function App () {
               </IconButton>
               <Typography variant='h6'>Some User</Typography>
             </Toolbar>
+            <Divider />
           </AppBar>
           <Profile />
         </Grid>

@@ -2,18 +2,14 @@ make profile page
 
 
 make profile page demo?
-pages needed
-  - profile
-  - feed
-    - post
-      - thumnail
-      - mame
-      -id
-      - date
-      - content
-      -embed image
-      -actions
-      -borders
+hooks
+  - use user posts
+  - user user profile
+  - use user following
+  - use feed posts
+  
+
+
 
 possible data in sav3
 ----

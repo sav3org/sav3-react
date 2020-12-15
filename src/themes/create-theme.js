@@ -1,6 +1,8 @@
 import merge from 'lodash.merge'
 import {createMuiTheme, responsiveFontSizes} from '@material-ui/core/styles'
 
+const borderColor = 'rgb(127, 127, 127, 0.05)'
+
 const baseMuiThemeOptions = {
   breakpoints: {
     values: {
@@ -15,19 +17,31 @@ const baseMuiThemeOptions = {
     layout: {
       columns: {
         left: {
-          md: {width: 275},
-          sm: {width: 88},
-          xs: {width: 68}
+          width: {
+            md: 275,
+            sm: 88,
+            xs: 68
+          }
         },
         middle: {
-          md: {width: 600}
+          width: {
+            md: 600
+          },
+          borderWidth: 1
         },
         right: {
-          lg: {width: 350},
-          md: {width: 290}
+          width: {
+            lg: 350,
+            md: 290
+          }
         }
       }
-    }
+    },
+    borderWidth: 1,
+    borderColor
+  },
+  palette: {
+    divider: borderColor
   },
   overrides: {
     MuiToolbar: {
