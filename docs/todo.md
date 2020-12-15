@@ -1,18 +1,19 @@
-layout with theme changer on left
+make profile page
+
+
 make profile page demo?
 pages needed
   - profile
-    - 600px width
-    - thumbnail
-    - banner
-    - follow button
-    - name
-    - user id
-    - description
-    
   - feed
-  
-https://2014.jsconf.eu/speakers/sebastian-markbage-minimal-api-surface-area-learning-patterns-instead-of-frameworks.html
+    - post
+      - thumnail
+      - mame
+      -id
+      - date
+      - content
+      -embed image
+      -actions
+      -borders
 
 possible data in sav3
 ----

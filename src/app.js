@@ -12,16 +12,59 @@ import Container from '@material-ui/core/Container'
 import Paper from '@material-ui/core/Paper'
 import Box from '@material-ui/core/Box'
 import {makeStyles, useTheme} from '@material-ui/core/styles'
+import LeftMenu from 'src/components/menus/left-menu'
+import BottomMenu from 'src/components/menus/bottom-menu'
+import ThemeSwitcher from 'src/components/theme-switcher'
+import TranslationSwitcher from 'src/components/translation-switcher'
+
+// app bar
+import AppBar from '@material-ui/core/AppBar'
+import Toolbar from '@material-ui/core/Toolbar'
+import IconButton from '@material-ui/core/IconButton'
+import Typography from '@material-ui/core/Typography'
+import ArrowBack from '@material-ui/icons/ArrowBack'
 
 const useStyles = makeStyles((theme) => ({
   leftColumn: {
-    width: theme.sav3.layout.columns.left.maxWidth
+    [theme.breakpoints.down('xs')]: {
+      display: 'none'
+    },
+    [theme.breakpoints.down('md')]: {
+      width: theme.sav3.layout.columns.left.sm.width
+    },
+    [theme.breakpoints.down('lg')]: {
+      width: theme.sav3.layout.columns.left.xs.width
+    },
+    [theme.breakpoints.up('lg')]: {
+      width: theme.sav3.layout.columns.left.md.width
+    }
   },
   middleColumn: {
-    width: theme.sav3.layout.columns.middle.maxWidth
+    [theme.breakpoints.down('xs')]: {
+      width: '100%'
+    },
+    [theme.breakpoints.up('xs')]: {
+      width: theme.sav3.layout.columns.middle.md.width
+    }
   },
   rightColumn: {
-    width: theme.sav3.layout.columns.right.maxWidth
+    [theme.breakpoints.down('sm')]: {
+      display: 'none'
+    },
+    [theme.breakpoints.down('lg')]: {
+      width: theme.sav3.layout.columns.right.md.width
+    },
+    [theme.breakpoints.up('lg')]: {
+      width: theme.sav3.layout.columns.right.lg.width
+    }
+  },
+  bottomMenu: {
+    [theme.breakpoints.up('sm')]: {
+      display: 'none'
+    }
+  },
+  appBar: {
+    backgroundColor: theme.palette.background.default
   }
 }))
 
@@ -31,20 +74,33 @@ const useStyles = makeStyles((theme) => ({
 function App () {
   const classes = useStyles()
   const theme = useTheme()
+  window.theme = theme
   console.log({theme})
 
   return (
-    <Grid container justify='center'>
-      <Grid item className={classes.leftColumn}>
-        <Paper>xs=3</Paper>
+    <div>
+      <Grid container justify='center'>
+        <Grid item className={classes.leftColumn}>
+          <LeftMenu />
+        </Grid>
+        <Grid item className={classes.middleColumn}>
+          <AppBar position='sticky' color='transparent' elevation={0} className={classes.appBar}>
+            <Toolbar disableGutters>
+              <IconButton>
+                <ArrowBack />
+              </IconButton>
+              <Typography variant='h6'>Some User</Typography>
+            </Toolbar>
+          </AppBar>
+          <Profile />
+        </Grid>
+        <Grid item className={classes.rightColumn}>
+          <ThemeSwitcher />
+          <TranslationSwitcher />
+        </Grid>
       </Grid>
-      <Grid item className={classes.middleColumn}>
-        <Paper>xs=3</Paper>
-      </Grid>
-      <Grid item className={classes.rightColumn}>
-        <Paper>xs=3</Paper>
-      </Grid>
-    </Grid>
+      <BottomMenu className={classes.bottomMenu} />
+    </div>
   )
 }
 

@@ -1,11 +1,11 @@
 import light from './themes/light'
 import dark from './themes/dark'
-import sav3 from './themes/sav3'
+import sav3Light from './themes/sav3-light'
 
 const themes = {
-  light,
-  dark,
-  sav3
+  Light: light,
+  Dark: dark,
+  'SAV3 Light': sav3Light
 }
 Object.freeze(themes)
 

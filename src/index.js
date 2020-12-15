@@ -3,14 +3,17 @@ import ReactDOM from 'react-dom'
 import App from './app'
 import reportWebVitals from './report-web-vitals'
 import {HashRouter} from 'react-router-dom'
+import LanguageCodeProvider from 'src/translations/language-code-provider'
 import ThemeProvider from 'src/themes/theme-provider'
 import CssBaseline from '@material-ui/core/CssBaseline'
 
 ReactDOM.render(
   <HashRouter>
     <ThemeProvider>
-      <CssBaseline />
-      <App />
+      <LanguageCodeProvider>
+        <CssBaseline />
+        <App />
+      </LanguageCodeProvider>
     </ThemeProvider>
   </HashRouter>,
   document.getElementById('root')

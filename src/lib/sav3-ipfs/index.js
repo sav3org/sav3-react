@@ -14,7 +14,7 @@ class Sav3Ipfs extends EventEmitter {
     super()
     this.ipfs = null
     this.ipnsClient = null
-    this._initIpfs()
+    this._initIpfs().catch(console.log)
   }
 
   async _initIpfs () {

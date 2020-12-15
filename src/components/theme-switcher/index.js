@@ -8,7 +8,7 @@ import themes from 'src/themes'
  * @returns {JSX.Element}
  */
 function ThemeSwitcher () {
-  const {currentTheme, setTheme} = useContext(ThemeContext)
+  const {theme, setTheme} = useContext(ThemeContext)
   const handleThemeChange = (event) => {
     setTheme(event.target.value)
   }
@@ -22,7 +22,7 @@ function ThemeSwitcher () {
   }
 
   return (
-    <Select value={currentTheme} onChange={handleThemeChange} label='Theme' variant='outlined'>
+    <Select value={theme} onChange={handleThemeChange} label='Theme' variant='outlined'>
       {themeMenuItems}
     </Select>
   )
