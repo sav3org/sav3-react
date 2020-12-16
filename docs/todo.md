@@ -17,7 +17,7 @@ post: a post or reply to a post
 post.cid
 post.parentPostCid: cid of post replying to
 post.previousPostCid: cid of previous post (to be able to iterate through all)
-post.publisherCid: cid of publisher (to be able to get profile)
+post.userCid: cid of publisher (to be able to get profile)
 post.contentCid: cid of content (max 140 chars)
 post.timestamp: seconds
 

@@ -117,6 +117,34 @@ class Sav3Ipfs extends EventEmitter {
       }
       console.log(res)
     }
+
+    window.testProfile = async () => {
+      await this.editUserProfile({
+        displayName: 'John J',
+        description: 'John J\'s description',
+        thumbnailUrl: 'https://i.imgur.com/Jkua4yg.jpeg',
+        bannerUrl: 'https://i.imgur.com/DWCOaz9.jpeg'
+      })
+
+      let postCount = 5
+      while (postCount--) {
+        await this.publishPost({content: `test ${Math.random()}`})
+      }
+    }
+
+    window.testProfileLink = async () => {
+      await this.editUserProfile({
+        displayName: 'John J',
+        description: 'John J\'s description',
+        thumbnailUrl: 'https://i.imgur.com/Jkua4yg.jpeg',
+        bannerUrl: 'https://i.imgur.com/DWCOaz9.jpeg'
+      })
+
+      let postCount = 20
+      while (postCount--) {
+        await this.publishPost({content: `test ${Math.random()} i.imgur.com/DWCOaz9.jpeg`})
+      }
+    }
   }
 
   /**
@@ -247,20 +275,62 @@ class Sav3Ipfs extends EventEmitter {
     const newPost = {}
     newPost.previousPostCid = ipnsData.lastPostCid
     newPost.timestamp = Math.round(Date.now() / 1000)
-    newPost.publisherCid = (await this.ipfs.id()).id
+    newPost.userCid = (await this.ipfs.id()).id
     newPost.contentCid = (await this.ipfs.add(content)).cid.toString()
 
     const newPostCid = (await this.ipfs.add(JSON.stringify(newPost))).cid.toString()
     const newIpnsData = {lastPostCid: newPostCid}
     const newIpnsDataCid = (await this.ipfs.add(JSON.stringify(newIpnsData))).cid.toString()
 
+    await this.publishIpnsRecord(newIpnsDataCid)
+    console.log('publishPost', {newIpnsDataCid, newPost, newIpnsData, ipnsData, newPostCid})
+    return newPostCid
+  }
+
+  async publishIpnsRecord (newIpnsDataCid) {
+    assert(typeof newIpnsDataCid === 'string')
     // use the ipns server until ipfs.name.publish is implemented in browser
     const sequence = (await this.getOwnIpnsRecordSequence()) + 1
     await this.ipnsClient.publish({value: newIpnsDataCid, sequence})
     await this.putOwnIpnsRecord({value: newIpnsDataCid, sequence})
+    console.log('publishIpnsRecord', {newIpnsDataCid, sequence})
+  }
 
-    console.log('publishPost', {newIpnsDataCid, newPost, sequence, newIpnsData, ipnsData, newPostCid})
-    return newPostCid
+  async editUserProfile ({displayName, description, thumbnailUrl, bannerUrl} = {}) {
+    assert(typeof displayName === 'string')
+    assert(typeof description === 'string')
+    assert(typeof thumbnailUrl === 'string')
+    assert(thumbnailUrl.startsWith('https://'), `thumbnail url '${thumbnailUrl}' does not start with https://`)
+    assert(typeof bannerUrl === 'string')
+    assert(bannerUrl.startsWith('https://'), `banner url '${bannerUrl}' does not start with https://`)
+
+    const profile = {}
+    profile.diplayNameCid = (await this.ipfs.add(displayName)).cid.toString()
+    profile.descriptionCid = (await this.ipfs.add(description)).cid.toString()
+    profile.thumbnailUrlCid = (await this.ipfs.add(thumbnailUrl)).cid.toString()
+    profile.bannerUrlCid = (await this.ipfs.add(bannerUrl)).cid.toString()
+    const profileCid = (await this.ipfs.add(JSON.stringify(profile))).cid.toString()
+
+    const ipnsData = await this.getOwnIpnsData()
+    ipnsData.profileCid = profileCid
+    const newIpnsDataCid = (await this.ipfs.add(JSON.stringify(ipnsData))).cid.toString()
+    await this.publishIpnsRecord(newIpnsDataCid)
+    console.log('editProfile', {displayName, description, thumbnailUrl, bannerUrl, ipnsData, profile, profileCid, newIpnsDataCid})
+
+    return profileCid
+  }
+
+  async getUserProfile (profileCid) {
+    assert(typeof profileCid === 'string')
+    const profileCids = JSON.parse(await this.getIpfsFile(profileCid))
+    const profile = {}
+    profile.displayName = await this.getIpfsFile(profileCids.diplayNameCid)
+    profile.description = await this.getIpfsFile(profileCids.descriptionCid)
+    profile.thumbnailUrl = await this.getIpfsFile(profileCids.thumbnailUrlCid)
+    profile.bannerUrl = await this.getIpfsFile(profileCids.bannerUrlCid)
+
+    console.log('getProfile', {profileCid, profileCids, profile})
+    return profile
   }
 
   async getOwnIpnsRecordSequence () {

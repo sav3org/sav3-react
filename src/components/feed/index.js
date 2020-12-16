@@ -8,20 +8,21 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 /**
+ * @param {object} props
+ * @param {string} props.posts
  * @returns {JSX.Element}
  */
-function Feed () {
+function Feed ({posts} = {}) {
   const classes = useStyles()
-  const posts = []
+  const postComponents = []
 
-  let postCount = 10
-  while (postCount--) {
-    posts.push(<Divider key={postCount + 'divider'} />)
-    posts.push(<Post key={postCount} />)
+  for (const post of posts) {
+    postComponents.push(<Divider key={post.contentCid + post.timestamp + 'feed divider'} />)
+    postComponents.push(<Post post={post} key={post.contentCid + post.timestamp} />)
   }
-  posts.push(<Divider key='final divider' />)
+  postComponents.push(<Divider key='last feed divider' />)
 
-  return <div className={classes.root}>{posts}</div>
+  return <div className={classes.root}>{postComponents}</div>
 }
 
 export default Feed

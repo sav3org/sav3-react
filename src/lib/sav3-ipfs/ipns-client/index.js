@@ -7,6 +7,7 @@ import delay from 'delay'
 import uint8ArrayToString from 'uint8arrays/to-string'
 import PeerId from 'peer-id'
 import isIpfs from 'is-ipfs'
+import QuickLRU from 'quick-lru'
 
 class IpnsClient extends EventEmitter {
   constructor ({ipfs} = {}) {
@@ -17,6 +18,7 @@ class IpnsClient extends EventEmitter {
     this.webSocketClient = null
     this.peerCid = null
     this.url = 'https://ipns.sav3.org'
+    this.subscriptionIpnsValueCache = new QuickLRU({maxSize: 10000})
 
     this.start()
   }
@@ -31,6 +33,7 @@ class IpnsClient extends EventEmitter {
     // subscribe to new publishes
     this.webSocketClient.on('publish', async (ipnsPath, ipnsRecord) => {
       const ipnsValue = await getIpnsValueFromIpnsRecord(ipnsPath, ipnsRecord)
+      this.subscriptionIpnsValueCache.set(ipnsPath, ipnsValue)
       this.emit('publish', ipnsPath, ipnsValue)
     })
   }
@@ -55,8 +58,35 @@ class IpnsClient extends EventEmitter {
   async subscribe (ipnsPaths) {
     assert(Array.isArray(ipnsPaths))
     await this.waitForReady()
+
+    // cache ipns values to call ipnsClient.subscribe
+    // multiple times without wasting websocket calls
+    let allResultsAreCached = true
+    const cachedIpnsValues = []
+    for (const ipnsPath of ipnsPaths) {
+      const cachedIpnsValue = this.subscriptionIpnsValueCache.get(ipnsPath)
+      cachedIpnsValues.push(cachedIpnsValue)
+      if (!cachedIpnsValue) {
+        allResultsAreCached = false
+      }
+    }
+    // if all values are cached, it must necessarily mean
+    // all ipns paths are already subscribed to
+    if (allResultsAreCached) {
+      console.log('ipns.subscribe', {allResultsAreCached, ipnsPaths, cachedIpnsValues})
+      return cachedIpnsValues
+    }
+
     const ipnsRecords = await new Promise((resolve) => this.webSocketClient.emit('subscribe', ipnsPaths, resolve))
     const ipnsValues = await getIpnsValuesFromIpnsRecords(ipnsPaths, ipnsRecords)
+
+    // cache inital values received from subscribe
+    // future values are cached in webSocketClient.on('publish')
+    for (const i in ipnsPaths) {
+      this.subscriptionIpnsValueCache.set(ipnsPaths[i], ipnsValues[i])
+    }
+
+    console.log('ipns.subscribe', {allResultsAreCached, ipnsPaths, ipnsValues})
     return ipnsValues
   }
 
@@ -71,6 +101,12 @@ class IpnsClient extends EventEmitter {
   async unsubscribe (ipnsPaths) {
     assert(Array.isArray(ipnsPaths))
     await this.waitForReady()
+
+    // delete values from cache or resubscribing will
+    // never get new data
+    for (const ipnsPath of ipnsPaths) {
+      this.subscriptionIpnsValueCache.delete(ipnsPath)
+    }
     await this.webSocketClient.emit('unsubscribe', ipnsPaths)
   }
 

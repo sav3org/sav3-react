@@ -1,10 +1,7 @@
-/* eslint-disable */
-
 import React from 'react'
 import {makeStyles} from '@material-ui/core/styles'
 import clsx from 'clsx'
 import Card from '@material-ui/core/Card'
-import CardHeader from '@material-ui/core/CardHeader'
 import CardMedia from '@material-ui/core/CardMedia'
 import CardContent from '@material-ui/core/CardContent'
 import CardActions from '@material-ui/core/CardActions'
@@ -12,40 +9,55 @@ import Collapse from '@material-ui/core/Collapse'
 import Avatar from '@material-ui/core/Avatar'
 import IconButton from '@material-ui/core/IconButton'
 import Typography from '@material-ui/core/Typography'
-import {red} from '@material-ui/core/colors'
 import FavoriteIcon from '@material-ui/icons/Favorite'
 import ShareIcon from '@material-ui/icons/Share'
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
 import MoreVertIcon from '@material-ui/icons/MoreVert'
-import Grid from '@material-ui/core/Grid'
+import Link from '@material-ui/core/Link'
 import Box from '@material-ui/core/Box'
+import {format as formatTimeAgo} from 'timeago.js'
+import useLanguageCode from 'src/translations/use-language-code'
+import assert from 'assert'
+import urlRegex from 'url-regex'
 
 const useStyles = makeStyles((theme) => ({
   root: {},
   media: {
     height: 0,
-    paddingTop: '56.25%', // 16:9
+    paddingTop: '56.25%' // 16:9
   },
   expand: {
     transform: 'rotate(0deg)',
     marginLeft: 'auto',
     transition: theme.transitions.create('transform', {
-      duration: theme.transitions.duration.shortest,
-    }),
+      duration: theme.transitions.duration.shortest
+    })
   },
   expandOpen: {
-    transform: 'rotate(180deg)',
+    transform: 'rotate(180deg)'
   },
   avatar: {
-    width: theme.spacing(7),
-    height: theme.spacing(7),
+    // slightly higher placement than the user name seems more pleasing
+    marginTop: theme.spacing(-0.25),
+    width: theme.spacing(6),
+    height: theme.spacing(6),
+    // borders
+    borderWidth: theme.sav3.borderWidth,
+    borderStyle: 'solid',
+    borderColor: theme.sav3.borderColor
   },
   userCid: {
-    wordBreak: 'break-all',
-  },
+    wordBreak: 'break-all'
+  }
 }))
 
-function Post() {
+/**
+ * @param {object} props
+ * @param {string} props.post
+ * @returns {JSX.Element}
+ */
+function Post ({post} = {}) {
+  const languageCode = useLanguageCode()
   const classes = useStyles()
   const [expanded, setExpanded] = React.useState(false)
 
@@ -53,10 +65,7 @@ function Post() {
     setExpanded(!expanded)
   }
 
-  let mediaSrc
-  if (Math.random() > 0.5) {
-    mediaSrc = 'https://i.imgur.com/DWCOaz9.jpeg'
-  }
+  const date = formatDate(post.timestamp, languageCode)
 
   return (
     <div>
@@ -67,18 +76,20 @@ function Post() {
         </Box>
 
         {/* right col header + content + bottom actions */}
-        <Box>
+        <Box width='100%'>
           {/* header */}
           <Box display='flex'>
             <Box flexGrow={1}>
               <Box display='flex'>
-                <Typography variant='subtitle2'>John M</Typography>
-                {' - '}
-                <Typography variant='subtitle2'>20h</Typography>
+                <Typography variant='subtitle2'>{post.profile.displayName}</Typography>
+                &nbsp;
+                <Typography variant='subtitle2'>·</Typography>
+                &nbsp;
+                <Typography variant='subtitle2'>{date}</Typography>
               </Box>
               <Box>
                 <Typography variant='caption' color='textSecondary' className={classes.userCid}>
-                  Qma9T5YraSnpRDZqRR4krcSJabThc8nwZuJV3LercPHufi
+                  {post.userCid}
                 </Typography>
               </Box>
             </Box>
@@ -90,12 +101,7 @@ function Post() {
           </Box>
 
           {/* content */}
-          <Box>
-            <Typography variant='body2'>
-              This impressive paella is a perfect party dish and a fun meal to cook together with your guests. Add 1 cup of frozen peas along with the mussels, if you like.
-            </Typography>
-            {mediaSrc && <CardMedia className={classes.media} image={mediaSrc} />}
-          </Box>
+          <PostContent content={post.content} />
 
           {/* actions */}
           <CardActions disableSpacing>
@@ -107,7 +113,7 @@ function Post() {
             </IconButton>
             <IconButton
               className={clsx(classes.expand, {
-                [classes.expandOpen]: expanded,
+                [classes.expandOpen]: expanded
               })}
               onClick={handleExpandClick}
               aria-expanded={expanded}
@@ -137,6 +143,99 @@ function Post() {
       </Box>
     </div>
   )
+}
+
+/**
+ * @param {object} props
+ * @param {string} props.content
+ * @returns {JSX.Element}
+ */
+function PostContent ({content} = {}) {
+  const classes = useStyles()
+  const link = getPostContentLink(content)
+  const mediaSrc = getPostContentMediaSrc(content)
+
+  if (link) {
+    const [contentPart1, contentPart2] = content.split(link)
+    let href = link
+    if (!link.match(/$https?:\/\//)) {
+      href = `https://${link}`
+    }
+    content = []
+    if (contentPart1) {
+      content.push(contentPart1)
+    }
+    content.push(
+      <Link variant='body2' href={href} target='_blank' rel='noopener'>
+        {link}
+      </Link>
+    )
+    if (contentPart2) {
+      content.push(contentPart2)
+    }
+  }
+
+  const media = mediaSrc && (
+    <Box pt={1}>
+      <Card elevation={0}>
+        <CardMedia className={classes.media} image={mediaSrc} />
+      </Card>
+    </Box>
+  )
+
+  return (
+    <Box width>
+      <Typography variant='body2'>{content}</Typography>
+      {media}
+    </Box>
+  )
+}
+
+// only use the first link in a post
+const getPostContentLink = (content) => {
+  if (!content) {
+    return
+  }
+  assert(typeof content === 'string')
+  const links = content.match(urlRegex({strict: false}))
+  return links[0]
+}
+
+const getPostContentMediaSrc = (content) => {
+  if (!content) {
+    return
+  }
+  assert(typeof content === 'string')
+  const links = content.match(urlRegex({strict: false}))
+  let link = links[0]
+  if (!link) {
+    return
+  }
+  if (linkIsMedia(link)) {
+    if (!link.match(/$https?:\/\//)) {
+      link = `https://${link}`
+    }
+    return link
+  }
+}
+
+const linkIsMedia = (link) => {
+  // remove query string and match extension
+  return link.replace(/[#?].*/).match(/\.(jpeg|jpg|png|gif|mp4|webm)$/)
+}
+
+const formatDate = (postTimestamp, languageCode) => {
+  const day = 1000 * 60 * 60 * 24
+  const year = 365 * day
+  const timestamp = postTimestamp * 1000
+  let date = new Date(timestamp).toLocaleString(languageCode, {month: 'short', day: 'numeric'})
+  if (Date.now() > timestamp + year) {
+    date = new Date(timestamp).toLocaleString(languageCode, {year: 'numeric', month: 'short', day: 'numeric'})
+  }
+  if (Date.now() < timestamp + day) {
+    date = formatTimeAgo(timestamp, languageCode)
+  }
+  return date
 }
 
 export default Post

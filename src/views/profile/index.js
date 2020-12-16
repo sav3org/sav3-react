@@ -21,6 +21,8 @@ import useTranslation from 'src/translations/use-translation'
 import Button from '@material-ui/core/Button'
 import Box from '@material-ui/core/Box'
 import Feed from 'src/components/feed'
+import useUserPosts from 'src/hooks/use-user-posts'
+import useUserProfile from 'src/hooks/use-user-profile'
 
 const useStyles = makeStyles((theme) => ({
   root: {},
@@ -59,9 +61,23 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
-function Profile() {
+/**
+ * @param {object} props
+ * @param {string} props.userCid
+ * @returns {JSX.Element}
+ */
+function Profile({userCid} = {}) {
   const t = useTranslation()
   const classes = useStyles()
+  const posts = useUserPosts(userCid)
+  const profile = useUserProfile(userCid)
+  console.log({posts, profile})
+
+  let description = profile.description
+  if (description && description.length > 140) {
+    description = description.substring(0, 140)
+  }
+
   const [expanded, setExpanded] = React.useState(false)
 
   const handleExpandClick = () => {
@@ -70,8 +86,8 @@ function Profile() {
 
   return (
     <div className={classes.root}>
-      <CardMedia className={classes.media} image='https://i.imgur.com/DWCOaz9.jpeg' />
-      <Avatar src='https://i.imgur.com/Jkua4yg.jpeg' className={classes.avatar} />
+      <CardMedia className={classes.media} image={profile.bannerUrl} />
+      <Avatar src={profile.thumbnailUrl} className={classes.avatar} />
       <Box p={2} pb={0} display='flex' flexDirection='row-reverse'>
         <Button variant='outlined' size='large' color='primary'>
           {t['Follow']()}
@@ -80,14 +96,12 @@ function Profile() {
           <MoreVertIcon />
         </IconButton>
       </Box>
-      <CardHeader className={classes.profileName} pb={0} title='John M' subheader='Qma9T5YraSnpRDZqRR4krcSJabThc8nwZuJV3LercPHufi' />
+      <CardHeader className={classes.profileName} pb={0} title={profile.displayName} subheader={userCid} />
       <Box p={2} pt={0}>
-        <Typography variant='body2'>
-          This impressive paella is a perfect party dish and a fun meal to cook together with your guests. Add 1 cup of frozen peas along with the mussels, if you like.
-        </Typography>
+        <Typography variant='body2'>{description}</Typography>
       </Box>
 
-      <Feed />
+      <Feed posts={posts} />
     </div>
   )
 }

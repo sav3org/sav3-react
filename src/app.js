@@ -17,6 +17,7 @@ import BottomMenu from 'src/components/menus/bottom-menu'
 import ThemeSwitcher from 'src/components/theme-switcher'
 import TranslationSwitcher from 'src/components/translation-switcher'
 import Divider from '@material-ui/core/Divider'
+import useOwnPeerCid from 'src/hooks/use-own-peer-cid'
 
 // app bar
 import AppBar from '@material-ui/core/AppBar'
@@ -82,6 +83,7 @@ const useStyles = makeStyles((theme) => ({
 function App () {
   const classes = useStyles()
   const theme = useTheme()
+  const ownCid = useOwnPeerCid()
   window.theme = theme
   console.log({theme})
 
@@ -101,7 +103,11 @@ function App () {
             </Toolbar>
             <Divider />
           </AppBar>
-          <Profile />
+          <Switch>
+            <Route path='/profile' exact>
+              <Profile userCid={ownCid} />
+            </Route>
+          </Switch>
         </Grid>
         <Grid item className={classes.rightColumn}>
           <ThemeSwitcher />

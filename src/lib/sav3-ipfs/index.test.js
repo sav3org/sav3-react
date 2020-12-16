@@ -36,6 +36,29 @@ describe('sav3Ipfs', () => {
     expect(typeof posts[0].timestamp).toBe('number')
   })
 
+  test('sav3Ipfs sav3Ipfs.editUserProfile and sav3Ipfs.getUserProfile', async () => {
+    const profileCid = await browser.page.evaluate(async () => {
+      const profileCid = await window.sav3Ipfs.editUserProfile({
+        displayName: 'John J',
+        description: 'John J\'s description',
+        thumbnailUrl: 'https://i.imgur.com/Jkua4yg.jpeg',
+        bannerUrl: 'https://i.imgur.com/DWCOaz9.jpeg'
+      })
+      return profileCid
+    })
+    expect(isIpfs.cid(profileCid)).toBe(true)
+
+    const profile = await browser.page.evaluate(async (profileCid) => {
+      const profile = await window.sav3Ipfs.getUserProfile(profileCid)
+      return profile
+    }, profileCid)
+    expect(profile && typeof profile === 'object').toBe(true)
+    expect(profile.displayName).toBe('John J')
+    expect(profile.description).toBe('John J\'s description')
+    expect(profile.thumbnailUrl).toBe('https://i.imgur.com/Jkua4yg.jpeg')
+    expect(profile.bannerUrl).toBe('https://i.imgur.com/DWCOaz9.jpeg')
+  })
+
   afterAll(() => {
     browser.close()
   })
