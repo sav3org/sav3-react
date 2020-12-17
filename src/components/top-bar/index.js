@@ -5,7 +5,10 @@ import Toolbar from '@material-ui/core/Toolbar'
 
 const useStyles = makeStyles((theme) => ({
   appBar: {
-    backgroundColor: theme.palette.background.default
+    backgroundColor: theme.palette.background.default,
+    // fix weird bug when scrolling chrome adds 1 extra pixel at top
+    top: -1,
+    borderTop: `1px solid ${theme.palette.background.default}`
   }
 }))
 

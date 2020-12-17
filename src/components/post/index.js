@@ -72,7 +72,7 @@ function Post ({post} = {}) {
       <Box px={2} py={1.5} display='flex'>
         {/* left col avatar */}
         <Box pr={1.5}>
-          <Avatar src='https://i.imgur.com/Jkua4yg.jpeg' className={classes.avatar} />
+          <Avatar src={post.profile.thumbnailUrl} className={classes.avatar} />
         </Box>
 
         {/* right col header + content + bottom actions */}
@@ -184,7 +184,7 @@ function PostContent ({content} = {}) {
   )
 
   return (
-    <Box width>
+    <Box>
       <Typography variant='body2'>{content}</Typography>
       {media}
     </Box>
@@ -198,7 +198,7 @@ const getPostContentLink = (content) => {
   }
   assert(typeof content === 'string')
   const links = content.match(urlRegex({strict: false}))
-  return links[0]
+  return links && links[0]
 }
 
 const getPostContentMediaSrc = (content) => {
@@ -207,7 +207,7 @@ const getPostContentMediaSrc = (content) => {
   }
   assert(typeof content === 'string')
   const links = content.match(urlRegex({strict: false}))
-  let link = links[0]
+  let link = links && links[0]
   if (!link) {
     return
   }

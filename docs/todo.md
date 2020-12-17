@@ -1,5 +1,8 @@
+add profile page link to sidebar
+add publish button to sidebar
+add home button to sidebar
+
 publish post modal and button
-edit profile modal and button
 
 hooks
   - use user posts

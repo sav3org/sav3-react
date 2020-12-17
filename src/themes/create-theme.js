@@ -1,6 +1,8 @@
 import merge from 'lodash.merge'
 import {createMuiTheme, responsiveFontSizes} from '@material-ui/core/styles'
 
+// use neutral grey border color so it looks OK on
+// both light and dark theme
 const borderColor = 'rgb(127, 127, 127, 0.05)'
 
 const baseMuiThemeOptions = {
@@ -52,10 +54,9 @@ const baseMuiThemeOptions = {
         minHeight: '54px!important'
       }
     },
-    MuiAppBar: {
-      positionSticky: {
-        // fix weird bug when scrolling chrome adds 1 extra pixel at top
-        top: -1
+    MuiDialog: {
+      paper: {
+        margin: 0
       }
     }
   }

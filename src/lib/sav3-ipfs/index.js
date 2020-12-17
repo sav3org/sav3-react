@@ -195,7 +195,7 @@ class Sav3Ipfs extends EventEmitter {
 
   async getIpnsFile (ipnsCid) {
     await this.waitForReady()
-    assert(ipnsCid && typeof ipnsCid === 'string')
+    assert(ipnsCid && typeof ipnsCid === 'string', `sav3Ipfs.getIpnsFile ipnsCid '${ipnsCid}' not a string`)
     const fileCid = (await this.ipfs.name.resolve(ipnsCid).next()).value
     const file = await this.getIpfsFile(fileCid)
     return file
@@ -212,8 +212,8 @@ class Sav3Ipfs extends EventEmitter {
 
   async putOwnIpnsRecord ({value, sequence} = {}) {
     await this.waitForReady()
-    assert(value && typeof value === 'string')
-    assert(typeof sequence === 'number')
+    assert(value && typeof value === 'string', `sav3Ipfs.putOwnIpnsRecord value '${value}' not a string`)
+    assert(typeof sequence === 'number', `sav3Ipfs.putOwnIpnsRecord sequence '${sequence}' not a number`)
 
     // needs /ipfs/ prefix to ipfs.name.resolve correctly
     if (!value.startsWith('/ipfs/')) {
@@ -237,7 +237,7 @@ class Sav3Ipfs extends EventEmitter {
 
   async getIpfsFile (fileCid) {
     await this.waitForReady()
-    assert(fileCid && typeof fileCid === 'string')
+    assert(fileCid && typeof fileCid === 'string', `sav3Ipfs.getIpfsFile fileCid '${fileCid}' not a string`)
     const file = (await this.ipfs.get(fileCid).next()).value
     let content
     if (file.content) {
@@ -267,9 +267,9 @@ class Sav3Ipfs extends EventEmitter {
 
   async publishPost ({content, parentPostCid} = {}) {
     await this.waitForReady()
-    assert(content && typeof content === 'string')
-    assert(content.length <= 140)
-    assert(!parentPostCid || typeof parentPostCid === 'string')
+    assert(content && typeof content === 'string', `sav3Ipfs.publishPost content '${content}' not a string`)
+    assert(content.length <= 140, `sav3Ipfs.publishPost content '${content}' longer than 140 chars`)
+    assert(!parentPostCid || typeof parentPostCid === 'string', `sav3Ipfs.publishPost parentPostCid '${parentPostCid}' not a string`)
 
     const ipnsData = await this.getOwnIpnsData()
     const newPost = {}
@@ -288,7 +288,7 @@ class Sav3Ipfs extends EventEmitter {
   }
 
   async publishIpnsRecord (newIpnsDataCid) {
-    assert(typeof newIpnsDataCid === 'string')
+    assert(typeof newIpnsDataCid === 'string', `sav3Ipfs.publishIpnsRecord '${newIpnsDataCid}' not a string`)
     // use the ipns server until ipfs.name.publish is implemented in browser
     const sequence = (await this.getOwnIpnsRecordSequence()) + 1
     await this.ipnsClient.publish({value: newIpnsDataCid, sequence})
@@ -297,18 +297,31 @@ class Sav3Ipfs extends EventEmitter {
   }
 
   async editUserProfile ({displayName, description, thumbnailUrl, bannerUrl} = {}) {
-    assert(typeof displayName === 'string')
-    assert(typeof description === 'string')
-    assert(typeof thumbnailUrl === 'string')
-    assert(thumbnailUrl.startsWith('https://'), `thumbnail url '${thumbnailUrl}' does not start with https://`)
-    assert(typeof bannerUrl === 'string')
-    assert(bannerUrl.startsWith('https://'), `banner url '${bannerUrl}' does not start with https://`)
-
     const profile = {}
-    profile.diplayNameCid = (await this.ipfs.add(displayName)).cid.toString()
-    profile.descriptionCid = (await this.ipfs.add(description)).cid.toString()
-    profile.thumbnailUrlCid = (await this.ipfs.add(thumbnailUrl)).cid.toString()
-    profile.bannerUrlCid = (await this.ipfs.add(bannerUrl)).cid.toString()
+
+    if (displayName !== undefined) {
+      assert(typeof displayName === 'string', 'display name not a string')
+      assert(displayName.length <= 50, `display name '${displayName}' longer than 50 chars`)
+      profile.diplayNameCid = (await this.ipfs.add(displayName)).cid.toString()
+    }
+    if (description !== undefined) {
+      assert(typeof description === 'string', 'description not a string')
+      assert(description.length <= 140, `description '${description}' longer than 140 chars`)
+      profile.descriptionCid = (await this.ipfs.add(description)).cid.toString()
+    }
+    if (thumbnailUrl !== undefined) {
+      assert(typeof thumbnailUrl === 'string', 'thumbnail url not a string')
+      assert(thumbnailUrl.startsWith('https://'), `thumbnail url '${thumbnailUrl}' does not start with https://`)
+      assert(thumbnailUrl.length <= 140, `thumbnail url '${thumbnailUrl}' longer than 140 chars`)
+      profile.thumbnailUrlCid = (await this.ipfs.add(thumbnailUrl)).cid.toString()
+    }
+    if (bannerUrl !== undefined) {
+      assert(typeof bannerUrl === 'string', 'banner url not a string')
+      assert(bannerUrl.startsWith('https://'), `banner url '${bannerUrl}' does not start with https://`)
+      assert(bannerUrl.length <= 140, `banner url '${thumbnailUrl}' longer than 140 chars`)
+      profile.bannerUrlCid = (await this.ipfs.add(bannerUrl)).cid.toString()
+    }
+
     const profileCid = (await this.ipfs.add(JSON.stringify(profile))).cid.toString()
 
     const ipnsData = await this.getOwnIpnsData()
@@ -321,13 +334,21 @@ class Sav3Ipfs extends EventEmitter {
   }
 
   async getUserProfile (profileCid) {
-    assert(typeof profileCid === 'string')
+    assert(typeof profileCid === 'string', `sav3Ipfs.getUserProfile profileCid '${profileCid}' not a string`)
     const profileCids = JSON.parse(await this.getIpfsFile(profileCid))
     const profile = {}
-    profile.displayName = await this.getIpfsFile(profileCids.diplayNameCid)
-    profile.description = await this.getIpfsFile(profileCids.descriptionCid)
-    profile.thumbnailUrl = await this.getIpfsFile(profileCids.thumbnailUrlCid)
-    profile.bannerUrl = await this.getIpfsFile(profileCids.bannerUrlCid)
+    if (profileCids.diplayNameCid) {
+      profile.displayName = await this.getIpfsFile(profileCids.diplayNameCid)
+    }
+    if (profileCids.descriptionCid) {
+      profile.description = await this.getIpfsFile(profileCids.descriptionCid)
+    }
+    if (profileCids.thumbnailUrlCid) {
+      profile.thumbnailUrl = await this.getIpfsFile(profileCids.thumbnailUrlCid)
+    }
+    if (profileCids.bannerUrlCid) {
+      profile.bannerUrl = await this.getIpfsFile(profileCids.bannerUrlCid)
+    }
 
     console.log('getProfile', {profileCid, profileCids, profile})
     return profile
@@ -350,7 +371,7 @@ class Sav3Ipfs extends EventEmitter {
 
   async getUserPostsFromLastPostCid (lastPostCid) {
     await this.waitForReady()
-    assert(lastPostCid && typeof lastPostCid === 'string')
+    assert(lastPostCid && typeof lastPostCid === 'string', `sav3Ipfs.getUserPostsFromLastPostCid lastPostCid '${lastPostCid}' not a string`)
     const posts = []
 
     const maxPostCount = 5
