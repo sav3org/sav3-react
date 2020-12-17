@@ -10,8 +10,6 @@ import CardContent from '@material-ui/core/CardContent'
 import CardActions from '@material-ui/core/CardActions'
 import Collapse from '@material-ui/core/Collapse'
 import Avatar from '@material-ui/core/Avatar'
-import IconButton from '@material-ui/core/IconButton'
-import Typography from '@material-ui/core/Typography'
 import {red} from '@material-ui/core/colors'
 import FavoriteIcon from '@material-ui/icons/Favorite'
 import ShareIcon from '@material-ui/icons/Share'
@@ -23,6 +21,11 @@ import Box from '@material-ui/core/Box'
 import Feed from 'src/components/feed'
 import useUserPosts from 'src/hooks/use-user-posts'
 import useUserProfile from 'src/hooks/use-user-profile'
+import TopBar from 'src/components/top-bar'
+import IconButton from '@material-ui/core/IconButton'
+import Typography from '@material-ui/core/Typography'
+import ArrowBack from '@material-ui/icons/ArrowBack'
+import {useHistory} from 'react-router-dom'
 
 const useStyles = makeStyles((theme) => ({
   root: {},
@@ -71,7 +74,9 @@ function Profile({userCid} = {}) {
   const classes = useStyles()
   const posts = useUserPosts(userCid)
   const profile = useUserProfile(userCid)
-  console.log({posts, profile})
+  const history = useHistory()
+
+  console.log('Profile', {userCid, posts, profile})
 
   let description = profile.description
   if (description && description.length > 140) {
@@ -86,6 +91,12 @@ function Profile({userCid} = {}) {
 
   return (
     <div className={classes.root}>
+      <TopBar>
+        <IconButton>
+          <ArrowBack onClick={() => history.goBack()} />
+        </IconButton>
+        <Typography variant='h6'>{profile.displayName}</Typography>
+      </TopBar>
       <CardMedia className={classes.media} image={profile.bannerUrl} />
       <Avatar src={profile.thumbnailUrl} className={classes.avatar} />
       <Box p={2} pb={0} display='flex' flexDirection='row-reverse'>

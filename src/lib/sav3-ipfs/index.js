@@ -121,7 +121,7 @@ class Sav3Ipfs extends EventEmitter {
     window.testProfile = async () => {
       await this.editUserProfile({
         displayName: 'John J',
-        description: 'John J\'s description',
+        description: "John J's description",
         thumbnailUrl: 'https://i.imgur.com/Jkua4yg.jpeg',
         bannerUrl: 'https://i.imgur.com/DWCOaz9.jpeg'
       })
@@ -135,7 +135,7 @@ class Sav3Ipfs extends EventEmitter {
     window.testProfileLink = async () => {
       await this.editUserProfile({
         displayName: 'John J',
-        description: 'John J\'s description',
+        description: "John J's description",
         thumbnailUrl: 'https://i.imgur.com/Jkua4yg.jpeg',
         bannerUrl: 'https://i.imgur.com/DWCOaz9.jpeg'
       })
@@ -279,7 +279,7 @@ class Sav3Ipfs extends EventEmitter {
     newPost.contentCid = (await this.ipfs.add(content)).cid.toString()
 
     const newPostCid = (await this.ipfs.add(JSON.stringify(newPost))).cid.toString()
-    const newIpnsData = {lastPostCid: newPostCid}
+    const newIpnsData = {...ipnsData, lastPostCid: newPostCid}
     const newIpnsDataCid = (await this.ipfs.add(JSON.stringify(newIpnsData))).cid.toString()
 
     await this.publishIpnsRecord(newIpnsDataCid)

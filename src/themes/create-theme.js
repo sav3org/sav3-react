@@ -43,6 +43,9 @@ const baseMuiThemeOptions = {
   palette: {
     divider: borderColor
   },
+  shape: {
+    borderRadius: 24
+  },
   overrides: {
     MuiToolbar: {
       root: {

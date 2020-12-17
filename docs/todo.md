@@ -1,7 +1,6 @@
-make profile page
+publish post modal and button
+edit profile modal and button
 
-
-make profile page demo?
 hooks
   - use user posts
   - user user profile

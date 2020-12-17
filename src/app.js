@@ -1,30 +1,18 @@
-import {Switch, Route, Link} from 'react-router-dom'
-import PeersIps from 'src/views/demo/peers-ips'
-import PeersPosts from 'src/views/demo/peers-posts'
-import Profile from 'src/views/profile'
-import {ThemeContext} from 'src/themes/theme-provider'
-import {useContext} from 'react'
-import Select from '@material-ui/core/Select'
-import MenuItem from '@material-ui/core/MenuItem'
-import themes from 'src/themes'
+import {Switch, Route} from 'react-router-dom'
 import Grid from '@material-ui/core/Grid'
-import Container from '@material-ui/core/Container'
-import Paper from '@material-ui/core/Paper'
-import Box from '@material-ui/core/Box'
 import {makeStyles, useTheme} from '@material-ui/core/styles'
 import LeftMenu from 'src/components/menus/left-menu'
 import BottomMenu from 'src/components/menus/bottom-menu'
+
+// components
 import ThemeSwitcher from 'src/components/theme-switcher'
 import TranslationSwitcher from 'src/components/translation-switcher'
-import Divider from '@material-ui/core/Divider'
+
+// hooks
 import useOwnPeerCid from 'src/hooks/use-own-peer-cid'
 
-// app bar
-import AppBar from '@material-ui/core/AppBar'
-import Toolbar from '@material-ui/core/Toolbar'
-import IconButton from '@material-ui/core/IconButton'
-import Typography from '@material-ui/core/Typography'
-import ArrowBack from '@material-ui/icons/ArrowBack'
+// routes
+import Profile from 'src/views/profile'
 
 const useStyles = makeStyles((theme) => ({
   leftColumn: {
@@ -61,10 +49,14 @@ const useStyles = makeStyles((theme) => ({
       display: 'none'
     },
     [theme.breakpoints.down('lg')]: {
-      width: theme.sav3.layout.columns.right.width.md
+      width: theme.sav3.layout.columns.right.width.md,
+      paddingLeft: theme.spacing(3),
+      paddingRight: theme.spacing(3)
     },
     [theme.breakpoints.up('lg')]: {
-      width: theme.sav3.layout.columns.right.width.lg
+      width: theme.sav3.layout.columns.right.width.lg,
+      paddingLeft: theme.spacing(4),
+      paddingRight: theme.spacing(4)
     }
   },
   bottomMenu: {
@@ -85,7 +77,6 @@ function App () {
   const theme = useTheme()
   const ownCid = useOwnPeerCid()
   window.theme = theme
-  console.log({theme})
 
   return (
     <div>
@@ -94,15 +85,6 @@ function App () {
           <LeftMenu />
         </Grid>
         <Grid item className={classes.middleColumn}>
-          <AppBar position='sticky' color='transparent' elevation={0} className={classes.appBar}>
-            <Toolbar disableGutters>
-              <IconButton>
-                <ArrowBack />
-              </IconButton>
-              <Typography variant='h6'>Some User</Typography>
-            </Toolbar>
-            <Divider />
-          </AppBar>
           <Switch>
             <Route path='/profile' exact>
               <Profile userCid={ownCid} />

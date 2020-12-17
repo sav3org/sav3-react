@@ -177,7 +177,7 @@ function PostContent ({content} = {}) {
 
   const media = mediaSrc && (
     <Box pt={1}>
-      <Card elevation={0}>
+      <Card variant='outlined'>
         <CardMedia className={classes.media} image={mediaSrc} />
       </Card>
     </Box>
