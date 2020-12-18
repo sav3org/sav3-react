@@ -1,8 +1,4 @@
-add profile page link to sidebar
-add publish button to sidebar
-add home button to sidebar
-
-publish post modal and button
+publish post modal
 
 hooks
   - use user posts
@@ -10,7 +6,7 @@ hooks
   - use user following
   - use feed posts
   
-
+possibly use pubsub for likes/retweets counts, but only display the usernames of people in your follow circle so people dont have incentive to spam, possibly use cloudflare country api to get own ip and country, and include it in the like/retweet count statistics?
 
 
 possible data in sav3

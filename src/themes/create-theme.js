@@ -58,6 +58,11 @@ const baseMuiThemeOptions = {
       paper: {
         margin: 0
       }
+    },
+    MuiSvgIcon: {
+      fontSizeLarge: {
+        fontSize: '1.8rem'
+      }
     }
   }
 }
