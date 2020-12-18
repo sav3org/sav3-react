@@ -1,4 +1,4 @@
-import React from 'react'
+import {Fragment, useState} from 'react'
 import {makeStyles} from '@material-ui/core/styles'
 import clsx from 'clsx'
 import Card from '@material-ui/core/Card'
@@ -59,7 +59,7 @@ const useStyles = makeStyles((theme) => ({
 function Post ({post} = {}) {
   const languageCode = useLanguageCode()
   const classes = useStyles()
-  const [expanded, setExpanded] = React.useState(false)
+  const [expanded, setExpanded] = useState(false)
 
   const handleExpandClick = () => {
     setExpanded(!expanded)
@@ -81,10 +81,14 @@ function Post ({post} = {}) {
           <Box display='flex'>
             <Box flexGrow={1}>
               <Box display='flex'>
-                <Typography variant='subtitle2'>{post.profile.displayName}</Typography>
-                &nbsp;
-                <Typography variant='subtitle2'>·</Typography>
-                &nbsp;
+                {post.profile.displayName && (
+                  <Fragment>
+                    <Typography variant='subtitle2'>{post.profile.displayName}</Typography>
+                    &nbsp;
+                    <Typography variant='subtitle2'>·</Typography>
+                    &nbsp;
+                  </Fragment>
+                )}
                 <Typography variant='subtitle2'>{date}</Typography>
               </Box>
               <Box>

@@ -34,10 +34,16 @@ const translation = createTranslation({
   'Banner URL': () => 'URL del banner',
   Cancel: () => 'Cancelar',
   Publish: () => 'Publicar',
+  editProfileWarning: () => 'El historial de edición del perfil no se puede eliminar y su dirección IP es pública.',
 
   // menu
   Home: () => 'Casa',
-  Profile: () => 'Perfil'
+  Profile: () => 'Perfil',
+
+  // post
+  'Publish post': () => 'Publicar publicación',
+  'Uncensorable content': () => 'Contenido sin censura',
+  publishPostWarning: () => 'Las publicaciones no se pueden eliminar y su dirección IP es pública.'
 })
 
 export default translation

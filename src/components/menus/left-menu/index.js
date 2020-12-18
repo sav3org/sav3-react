@@ -1,4 +1,4 @@
-import React from 'react'
+import {useState} from 'react'
 import {makeStyles} from '@material-ui/core/styles'
 import List from '@material-ui/core/List'
 import ListItem from '@material-ui/core/ListItem'
@@ -12,6 +12,7 @@ import CreateIcon from '@material-ui/icons/Create'
 import Fab from '@material-ui/core/Fab'
 import {Link as RouterLink} from 'react-router-dom'
 import useTranslation from 'src/translations/use-translation'
+import PublishPostModal from 'src/components/publish-post-modal'
 
 // not sure if should show logo or not
 // import IconButton from '@material-ui/core/IconButton'
@@ -80,19 +81,34 @@ function LeftMenu () {
           </ListItemIcon>
           <ListItemText primary={t.Profile()} className={classes.text} />
         </ListItem>
-
-        <Box my={2} mx={1} alignItems='center' display='flex' className={classes.createTextButtonBox}>
-          <Button fullWidth variant='contained' size='large' disableElevation>
-            SAV3
-          </Button>
-        </Box>
-
-        <Box my={2} pl={1} alignItems='center' display='flex' className={classes.createIconButtonBox}>
-          <Fab className={classes.createIconButton} size='medium'>
-            <CreateIcon />
-          </Fab>
-        </Box>
+        <PublishPostButton />
       </List>
+    </div>
+  )
+}
+
+/**
+ * @returns {JSX.Element}
+ */
+function PublishPostButton () {
+  const classes = useStyles()
+
+  const [openPublishPostModal, setOpenPublishPostModal] = useState(false)
+  return (
+    <div>
+      <Box my={2} mx={1} alignItems='center' display='flex' className={classes.createTextButtonBox} onClick={() => setOpenPublishPostModal(true)}>
+        <Button fullWidth variant='contained' size='large' disableElevation>
+          SAV3
+        </Button>
+      </Box>
+
+      <Box my={2} pl={1} alignItems='center' display='flex' className={classes.createIconButtonBox} onClick={() => setOpenPublishPostModal(true)}>
+        <Fab className={classes.createIconButton} size='medium'>
+          <CreateIcon />
+        </Fab>
+      </Box>
+
+      <PublishPostModal open={openPublishPostModal} onClose={() => setOpenPublishPostModal(false)} />
     </div>
   )
 }

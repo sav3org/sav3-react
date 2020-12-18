@@ -1,4 +1,4 @@
-import {useState, useEffect} from 'react'
+import {useState} from 'react'
 import Button from '@material-ui/core/Button'
 import TextField from '@material-ui/core/TextField'
 import Dialog from '@material-ui/core/Dialog'
@@ -9,15 +9,15 @@ import sav3Ipfs from 'src/lib/sav3-ipfs'
 import PropTypes from 'prop-types'
 import Alert from '@material-ui/lab/Alert'
 import {makeStyles} from '@material-ui/core/styles'
-import Box from '@material-ui/core/Box'
 import CloseIcon from '@material-ui/icons/Close'
 import IconButton from '@material-ui/core/IconButton'
+import Box from '@material-ui/core/Box'
 
 const useStyles = makeStyles((theme) => ({
   errorMessage: {
     overflow: 'hidden'
   },
-  description: {
+  content: {
     '& textarea': {
       overflow: 'hidden'
     }
@@ -36,31 +36,30 @@ const useStyles = makeStyles((theme) => ({
  * @param {object} props
  * @param {boolean} props.open
  * @param {Function} props.onClose
- * @param {object} props.previousProfile
  * @returns {JSX.Element}
  */
-function EditProfileModal ({open, onClose, previousProfile}) {
+function PublishPostModal ({open, onClose}) {
   const t = useTranslation()
   const classes = useStyles()
-  const [profile, setProfile] = useState(previousProfile)
+  const [content, setContent] = useState()
   const [errorMessage, setErrorMessage] = useState()
 
-  // set previous profile once
-  useEffect(() => {
-    setProfile(previousProfile)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [JSON.stringify(previousProfile)])
-
   const handleChange = (event) => {
-    const {id, value} = event.target
-    const newProfile = {...profile, [id]: value}
-    setProfile(newProfile)
+    let content = event.target.value
+    try {
+      if (content.length > 140) {
+        content = content.subtring(0, 140)
+      }
+      setContent(content)
+    }
+    catch (e) {}
   }
 
   const handlePublish = async () => {
     try {
-      await sav3Ipfs.editUserProfile(profile)
+      await sav3Ipfs.publishPost({content})
       setErrorMessage(null)
+      setContent(null)
       onClose()
     }
     catch (e) {
@@ -68,30 +67,25 @@ function EditProfileModal ({open, onClose, previousProfile}) {
     }
   }
 
-  // console.log('EditProfileModal', {open, onClose, profile, previousProfile})
-
   return (
-    <Dialog fullWidth maxWidth='xs' open={open} onClose={onClose}>
+    <Dialog fullWidth={true} maxWidth='xs' open={open} onClose={onClose}>
       <Box pl={2} pt={1}>
         <IconButton onClick={onClose}>
           <CloseIcon />
         </IconButton>
       </Box>
       <DialogContent className={classes.contentContainer}>
-        <TextField onChange={handleChange} autoFocus margin='dense' id='displayName' label={t['Display name']()} fullWidth variant='outlined' value={profile.displayName} />
-        <TextField onChange={handleChange} margin='dense' id='thumbnailUrl' label={t['Thumbnail URL']()} fullWidth variant='outlined' value={profile.thumbnailUrl} />
-        <TextField onChange={handleChange} margin='dense' id='bannerUrl' label={t['Banner URL']()} fullWidth variant='outlined' value={profile.bannerUrl} />
         <TextField
-          className={classes.description}
+          className={classes.content}
           onChange={handleChange}
           margin='dense'
-          id='description'
-          label={t.Description()}
+          id='content'
+          label={t['Uncensorable content']()}
           fullWidth
           multiline
           rows={4}
           variant='outlined'
-          value={profile.description}
+          value={content}
         />
         {errorMessage && (
           <Alert classes={{message: classes.errorMessage}} severity='error'>
@@ -108,10 +102,9 @@ function EditProfileModal ({open, onClose, previousProfile}) {
   )
 }
 
-EditProfileModal.propTypes = {
+PublishPostModal.propTypes = {
   open: PropTypes.bool.isRequired,
-  onClose: PropTypes.func.isRequired,
-  previousProfile: PropTypes.object.isRequired
+  onClose: PropTypes.func.isRequired
 }
 
-export default EditProfileModal
+export default PublishPostModal

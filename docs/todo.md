@@ -1,4 +1,3 @@
-publish post modal
 
 hooks
   - use user posts
