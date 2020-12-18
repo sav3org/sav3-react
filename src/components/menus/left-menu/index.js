@@ -11,6 +11,7 @@ import Box from '@material-ui/core/Box'
 import CreateIcon from '@material-ui/icons/Create'
 import Fab from '@material-ui/core/Fab'
 import {Link as RouterLink} from 'react-router-dom'
+import useTranslation from 'src/translations/use-translation'
 
 // not sure if should show logo or not
 // import IconButton from '@material-ui/core/IconButton'
@@ -55,6 +56,7 @@ const useStyles = makeStyles((theme) => ({
  */
 function LeftMenu () {
   const classes = useStyles()
+  const t = useTranslation()
 
   return (
     <div className={classes.root}>
@@ -70,13 +72,13 @@ function LeftMenu () {
           <ListItemIcon>
             <HomeIcon fontSize='large' />
           </ListItemIcon>
-          <ListItemText primary='Home' className={classes.text} />
+          <ListItemText primary={t.Home()} className={classes.text} />
         </ListItem>
         <ListItem button component={RouterLink} to='/profile'>
           <ListItemIcon>
             <AccountCircle fontSize='large' />
           </ListItemIcon>
-          <ListItemText primary='Profile' className={classes.text} />
+          <ListItemText primary={t.Profile()} className={classes.text} />
         </ListItem>
 
         <Box my={2} mx={1} alignItems='center' display='flex' className={classes.createTextButtonBox}>

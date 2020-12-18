@@ -24,6 +24,7 @@ const useUserPosts = (userCid) => {
       }
       setPeerPosts(posts)
     })()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [lastPostCid, JSON.stringify(profile)])
 
   return peerPosts

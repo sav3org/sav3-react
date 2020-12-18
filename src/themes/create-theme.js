@@ -3,6 +3,7 @@ import {createMuiTheme, responsiveFontSizes} from '@material-ui/core/styles'
 
 // use neutral grey border color so it looks OK on
 // both light and dark theme
+// default borders and dividers are too opaque
 const borderColor = 'rgb(127, 127, 127, 0.05)'
 
 const baseMuiThemeOptions = {
@@ -46,11 +47,13 @@ const baseMuiThemeOptions = {
     divider: borderColor
   },
   shape: {
+    // buttons are not rounded enough
     borderRadius: 24
   },
   overrides: {
     MuiToolbar: {
       root: {
+        // top bar is too wide
         minHeight: '54px!important'
       }
     },
@@ -61,6 +64,7 @@ const baseMuiThemeOptions = {
     },
     MuiSvgIcon: {
       fontSizeLarge: {
+        // left menu icons are too big
         fontSize: '1.8rem'
       }
     }

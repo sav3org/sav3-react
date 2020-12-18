@@ -25,6 +25,7 @@ const timeAgo = (number, index, totalSec) => {
 registerTimeAgo('es-MX', timeAgo)
 
 const translation = createTranslation({
+  // profile
   Follow: () => 'Seguir',
   'Edit profile': () => 'Editar perfil',
   'Display name': () => 'Nombre para mostrar',
@@ -32,7 +33,11 @@ const translation = createTranslation({
   'Thumbnail URL': () => 'URL de miniatura',
   'Banner URL': () => 'URL del banner',
   Cancel: () => 'Cancelar',
-  Publish: () => 'Publicar'
+  Publish: () => 'Publicar',
+
+  // menu
+  Home: () => 'Casa',
+  Profile: () => 'Perfil'
 })
 
 export default translation
