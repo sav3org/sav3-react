@@ -1,5 +1,3 @@
-navigation from sidebar on mobile
-possibly make modal better looking
 
 search for user by id
 view feed of every peer you're connected to

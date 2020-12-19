@@ -16,6 +16,7 @@ import Typography from '@material-ui/core/Typography'
 import ArrowBack from '@material-ui/icons/ArrowBack'
 import {useHistory} from 'react-router-dom'
 import EditProfileModal from './components/edit-profile-modal'
+import useOwnPeerCid from 'src/hooks/use-own-peer-cid'
 
 const useStyles = makeStyles((theme) => ({
   banner: {
@@ -44,11 +45,10 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 /**
- * @param {object} props
- * @param {string} props.userCid
  * @returns {JSX.Element}
  */
-function Profile ({userCid} = {}) {
+function Profile () {
+  const userCid = useOwnPeerCid()
   const classes = useStyles()
   const posts = useUserPosts(userCid)
   const profile = useUserProfile(userCid)
@@ -66,9 +66,11 @@ function Profile ({userCid} = {}) {
   return (
     <div className={classes.root}>
       <TopBar>
-        <IconButton onClick={() => history.goBack()}>
-          <ArrowBack />
-        </IconButton>
+        <Box pr={1}>
+          <IconButton onClick={() => history.goBack()}>
+            <ArrowBack />
+          </IconButton>
+        </Box>
         <Typography variant='h6'>{profile.displayName}</Typography>
       </TopBar>
       <CardMedia className={classes.banner} image={profile.bannerUrl || emptyImage} />

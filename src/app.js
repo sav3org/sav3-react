@@ -8,11 +8,9 @@ import BottomMenu from 'src/components/menus/bottom-menu'
 import ThemeSwitcher from 'src/components/theme-switcher'
 import TranslationSwitcher from 'src/components/translation-switcher'
 
-// hooks
-import useOwnPeerCid from 'src/hooks/use-own-peer-cid'
-
 // routes
 import Profile from 'src/views/profile'
+import Home from 'src/views/home'
 
 const useStyles = makeStyles((theme) => ({
   leftColumn: {
@@ -75,7 +73,6 @@ const useStyles = makeStyles((theme) => ({
 function App () {
   const classes = useStyles()
   const theme = useTheme()
-  const ownCid = useOwnPeerCid()
   window.theme = theme
 
   return (
@@ -86,8 +83,11 @@ function App () {
         </Grid>
         <Grid item className={classes.middleColumn}>
           <Switch>
+            <Route path='/' exact>
+              <Home />
+            </Route>
             <Route path='/profile' exact>
-              <Profile userCid={ownCid} />
+              <Profile />
             </Route>
           </Switch>
         </Grid>
