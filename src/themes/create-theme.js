@@ -6,6 +6,9 @@ import {createMuiTheme, responsiveFontSizes} from '@material-ui/core/styles'
 // default borders and dividers are too opaque
 const borderColor = 'rgb(127, 127, 127, 0.05)'
 
+// regular top bar is too big
+const topBarHeight = 54
+
 const baseMuiThemeOptions = {
   breakpoints: {
     values: {
@@ -41,7 +44,10 @@ const baseMuiThemeOptions = {
       }
     },
     borderWidth: 1,
-    borderColor
+    borderColor,
+    topBar: {
+      height: topBarHeight
+    }
   },
   palette: {
     divider: borderColor
@@ -54,12 +60,16 @@ const baseMuiThemeOptions = {
     MuiToolbar: {
       root: {
         // top bar is too wide
-        minHeight: '54px!important'
+        minHeight: `${topBarHeight}px!important`
       }
     },
     MuiDialog: {
       paper: {
         margin: 0
+      },
+      paperFullWidth: {
+        // regular full width has padding on mobile
+        width: '100%'
       }
     },
     MuiSvgIcon: {

@@ -61,15 +61,17 @@ function Profile ({userCid} = {}) {
     description = description.substring(0, 140)
   }
 
+  const emptyImage = 'data:image/png;base64,'
+
   return (
     <div className={classes.root}>
       <TopBar>
-        <IconButton>
-          <ArrowBack onClick={() => history.goBack()} />
+        <IconButton onClick={() => history.goBack()}>
+          <ArrowBack />
         </IconButton>
         <Typography variant='h6'>{profile.displayName}</Typography>
       </TopBar>
-      <CardMedia className={classes.banner} image={profile.bannerUrl} />
+      <CardMedia className={classes.banner} image={profile.bannerUrl || emptyImage} />
       <Avatar src={profile.thumbnailUrl} className={classes.avatar} />
       <Box p={2} pb={0} display='flex' flexDirection='row-reverse'>
         <EditProfileButton profile={profile} />

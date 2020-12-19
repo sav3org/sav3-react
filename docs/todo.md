@@ -1,3 +1,13 @@
+navigation from sidebar on mobile
+possibly make modal better looking
+
+search for user by id
+view feed of every peer you're connected to
+follow user
+view feed of users you're following
+--publish another demo
+feed of bootstrapped users (from google sheet)
+like, share, reply, retweet
 
 hooks
   - use user posts

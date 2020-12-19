@@ -1,17 +1,13 @@
 import {useState, useEffect} from 'react'
 import Button from '@material-ui/core/Button'
 import TextField from '@material-ui/core/TextField'
-import Dialog from '@material-ui/core/Dialog'
-import DialogActions from '@material-ui/core/DialogActions'
-import DialogContent from '@material-ui/core/DialogContent'
+import Box from '@material-ui/core/Box'
 import useTranslation from 'src/translations/use-translation'
 import sav3Ipfs from 'src/lib/sav3-ipfs'
 import PropTypes from 'prop-types'
 import Alert from '@material-ui/lab/Alert'
 import {makeStyles} from '@material-ui/core/styles'
-import Box from '@material-ui/core/Box'
-import CloseIcon from '@material-ui/icons/Close'
-import IconButton from '@material-ui/core/IconButton'
+import Modal from 'src/components/modal'
 
 const useStyles = makeStyles((theme) => ({
   errorMessage: {
@@ -22,13 +18,21 @@ const useStyles = makeStyles((theme) => ({
       overflow: 'hidden'
     }
   },
-  contentContainer: {
-    paddingTop: 0,
-    paddingBottom: 0
-  },
-  buttonContainer: {
-    paddingRight: theme.spacing(3),
-    paddingBottom: theme.spacing(2)
+  content: {
+    '& input': {
+      padding: theme.spacing(2),
+      paddingLeft: theme.spacing(2.5),
+      paddingRight: theme.spacing(2.5)
+    },
+    '& label[data-shrink="false"]': {
+      transform: 'translate(20px, 18px) scale(1)'
+    },
+    '& textarea': {
+      paddingTop: theme.spacing(1),
+      paddingBottom: theme.spacing(1),
+      paddingLeft: theme.spacing(0.5),
+      paddingRight: theme.spacing(0.5)
+    }
   }
 }))
 
@@ -68,44 +72,40 @@ function EditProfileModal ({open, onClose, previousProfile}) {
     }
   }
 
-  // console.log('EditProfileModal', {open, onClose, profile, previousProfile})
-
-  return (
-    <Dialog fullWidth maxWidth='xs' open={open} onClose={onClose}>
-      <Box pl={2} pt={1}>
-        <IconButton onClick={onClose}>
-          <CloseIcon />
-        </IconButton>
-      </Box>
-      <DialogContent className={classes.contentContainer}>
-        <TextField onChange={handleChange} autoFocus margin='dense' id='displayName' label={t['Display name']()} fullWidth variant='outlined' value={profile.displayName} />
-        <TextField onChange={handleChange} margin='dense' id='thumbnailUrl' label={t['Thumbnail URL']()} fullWidth variant='outlined' value={profile.thumbnailUrl} />
-        <TextField onChange={handleChange} margin='dense' id='bannerUrl' label={t['Banner URL']()} fullWidth variant='outlined' value={profile.bannerUrl} />
-        <TextField
-          className={classes.description}
-          onChange={handleChange}
-          margin='dense'
-          id='description'
-          label={t.Description()}
-          fullWidth
-          multiline
-          rows={4}
-          variant='outlined'
-          value={profile.description}
-        />
-        {errorMessage && (
-          <Alert classes={{message: classes.errorMessage}} severity='error'>
-            {errorMessage}
-          </Alert>
-        )}
-      </DialogContent>
-      <DialogActions className={classes.buttonContainer}>
-        <Button disableElevation variant='contained' onClick={handlePublish} color='primary'>
-          SAV3
-        </Button>
-      </DialogActions>
-    </Dialog>
+  const content = (
+    <Box pt={1} pb={1.5} className={classes.content}>
+      <TextField onChange={handleChange} autoFocus margin='dense' id='displayName' label={t['Display name']()} fullWidth variant='outlined' value={profile.displayName || ''} />
+      <TextField onChange={handleChange} margin='dense' id='thumbnailUrl' label={t['Thumbnail URL']()} fullWidth variant='outlined' value={profile.thumbnailUrl || ''} />
+      <TextField onChange={handleChange} margin='dense' id='bannerUrl' label={t['Banner URL']()} fullWidth variant='outlined' value={profile.bannerUrl || ''} />
+      <TextField
+        className={classes.description}
+        onChange={handleChange}
+        margin='dense'
+        id='description'
+        label={t.Description()}
+        fullWidth
+        multiline
+        rows={4}
+        variant='outlined'
+        value={profile.description || ''}
+      />
+      {errorMessage && (
+        <Alert classes={{message: classes.errorMessage}} severity='error'>
+          {errorMessage}
+        </Alert>
+      )}
+    </Box>
   )
+
+  const actions = (
+    <div>
+      <Button disableElevation variant='contained' onClick={handlePublish} color='primary'>
+        SAV3
+      </Button>
+    </div>
+  )
+
+  return <Modal open={open} onClose={onClose} content={content} actions={actions} />
 }
 
 EditProfileModal.propTypes = {

@@ -5,8 +5,10 @@ import Toolbar from '@material-ui/core/Toolbar'
 
 const useStyles = makeStyles((theme) => ({
   appBar: {
-    backgroundColor: theme.palette.background.default,
-    // fix weird bug when scrolling chrome adds 1 extra pixel at top
+    backgroundColor: theme.palette.background.default
+  },
+  appBarSticky: {
+    // fix weird bug when scrolling chrome adds 1 extra empty pixel at top
     top: -1,
     borderTop: `1px solid ${theme.palette.background.default}`
   }
@@ -20,7 +22,7 @@ const useStyles = makeStyles((theme) => ({
 function TopBar ({children}) {
   const classes = useStyles()
   return (
-    <MuiAppBar position='sticky' color='transparent' elevation={0} className={classes.appBar}>
+    <MuiAppBar position='sticky' color='transparent' elevation={0} classes={{positionSticky: classes.appBarSticky}} className={classes.appBar}>
       <Toolbar disableGutters>{children}</Toolbar>
       <Divider />
     </MuiAppBar>
