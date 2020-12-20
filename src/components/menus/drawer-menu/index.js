@@ -12,7 +12,7 @@ import TranslationSwitcher from 'src/components/translation-switcher'
 const useStyles = makeStyles((theme) => ({
   text: {},
   root: {
-    width: 280
+    width: theme.sav3.drawerMenu.width
   }
 }))
 

@@ -47,6 +47,9 @@ const baseMuiThemeOptions = {
     borderColor,
     topBar: {
       height: topBarHeight
+    },
+    drawerMenu: {
+      width: 280
     }
   },
   palette: {

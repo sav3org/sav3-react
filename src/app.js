@@ -11,6 +11,7 @@ import TranslationSwitcher from 'src/components/translation-switcher'
 // routes
 import Profile from 'src/views/profile'
 import Home from 'src/views/home'
+import Search from 'src/views/search'
 
 const useStyles = makeStyles((theme) => ({
   leftColumn: {
@@ -88,6 +89,9 @@ function App () {
             </Route>
             <Route path='/profile' exact>
               <Profile />
+            </Route>
+            <Route path='/search' exact>
+              <Search />
             </Route>
           </Switch>
         </Grid>

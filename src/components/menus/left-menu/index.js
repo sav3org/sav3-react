@@ -6,6 +6,7 @@ import ListItemIcon from '@material-ui/core/ListItemIcon'
 import ListItemText from '@material-ui/core/ListItemText'
 import HomeIcon from '@material-ui/icons/Home'
 import AccountCircle from '@material-ui/icons/AccountCircle'
+import SearchIcon from '@material-ui/icons/Search'
 import Button from '@material-ui/core/Button'
 import Box from '@material-ui/core/Box'
 import CreateIcon from '@material-ui/icons/Create'
@@ -13,10 +14,6 @@ import Fab from '@material-ui/core/Fab'
 import {Link as RouterLink} from 'react-router-dom'
 import useTranslation from 'src/translations/use-translation'
 import PublishPostModal from 'src/components/publish-post-modal'
-
-// not sure if should show logo or not
-// import IconButton from '@material-ui/core/IconButton'
-// import logoBase64 from 'src/assets/images/logo'
 
 const useStyles = makeStyles((theme) => ({
   logo: {
@@ -61,19 +58,18 @@ function LeftMenu () {
 
   return (
     <div className={classes.root}>
-      {/* not sure if should show logo or not
-      <Box height={55} pl={0.5} alignItems="center" display="flex">
-        <IconButton className={classes.logoButton}>
-          <img src={logoBase64} className={classes.logo}/>
-        </IconButton>
-      </Box>
-      */}
       <List>
         <ListItem button component={RouterLink} to='/'>
           <ListItemIcon>
             <HomeIcon fontSize='large' />
           </ListItemIcon>
           <ListItemText primary={t.Home()} className={classes.text} />
+        </ListItem>
+        <ListItem button component={RouterLink} to='/search'>
+          <ListItemIcon>
+            <SearchIcon fontSize='large' />
+          </ListItemIcon>
+          <ListItemText primary={t.Search()} className={classes.text} />
         </ListItem>
         <ListItem button component={RouterLink} to='/profile'>
           <ListItemIcon>

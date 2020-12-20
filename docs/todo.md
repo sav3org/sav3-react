@@ -1,3 +1,5 @@
+make user view
+add user view minus top bar to search result
 
 search for user by id
 view feed of every peer you're connected to

@@ -37,6 +37,8 @@ const translation = createTranslation({
   // menu
   Home: () => 'Casa',
   Profile: () => 'Perfil',
+  Search: () => 'Buscar',
+  'Search user ID': () => 'Buscar ID de usuario',
 
   // post
   'Uncensorable content': () => 'Contenido sin censura',

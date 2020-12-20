@@ -13,6 +13,8 @@ const translation = createTranslation({
   // menu
   Home: () => 'Home',
   Profile: () => 'Profile',
+  Search: () => 'Search',
+  'Search user ID': () => 'Search user ID',
 
   // post
   'Uncensorable content': () => 'Uncensorable content',
