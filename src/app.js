@@ -13,6 +13,7 @@ import Profile from 'src/views/profile'
 import Home from 'src/views/home'
 import Search from 'src/views/search'
 import User from 'src/views/user'
+import Peers from 'src/views/peers'
 
 const useStyles = makeStyles((theme) => ({
   leftColumn: {
@@ -99,6 +100,9 @@ function App () {
             </Route>
             <Route path='/user' exact>
               <User />
+            </Route>
+            <Route>
+              <Peers path='/peers' exact />
             </Route>
           </Switch>
         </Grid>

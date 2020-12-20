@@ -8,7 +8,7 @@ import SearchIcon from '@material-ui/icons/Search'
 import TextField from '@material-ui/core/TextField'
 import InputAdornment from '@material-ui/core/InputAdornment'
 import useTranslation from 'src/translations/use-translation'
-import User from 'src/views/user/components/user'
+import Profile from 'src/views/profile/components/profile'
 import isIpfs from 'is-ipfs'
 
 const useStyles = makeStyles((theme) => ({
@@ -71,7 +71,7 @@ function Search () {
           />
         </Box>
       </TopBar>
-      {isIpfs.cid(userCid) && <User userCid={userCid} />}
+      {isIpfs.cid(userCid) && <Profile userCid={userCid} />}
     </div>
   )
 }

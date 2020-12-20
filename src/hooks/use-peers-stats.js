@@ -11,6 +11,8 @@ const usePeersStats = () => {
     const interval = setInterval(() => {
       setPollCount(pollCount + 1)
     }, pollTime)
+
+    // return () => clearInterval(interval)
   }, [])
 
   useEffect(() => {

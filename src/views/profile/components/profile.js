@@ -1,3 +1,4 @@
+import {useState} from 'react'
 import {makeStyles} from '@material-ui/core/styles'
 import CardHeader from '@material-ui/core/CardHeader'
 import CardMedia from '@material-ui/core/CardMedia'
@@ -7,11 +8,15 @@ import useTranslation from 'src/translations/use-translation'
 import Button from '@material-ui/core/Button'
 import Box from '@material-ui/core/Box'
 import Feed from 'src/components/feed'
+import useOwnUserCid from 'src/hooks/use-own-user-cid'
 import useUserPosts from 'src/hooks/use-user-posts'
 import useUserProfile from 'src/hooks/use-user-profile'
 import IconButton from '@material-ui/core/IconButton'
 import PropTypes from 'prop-types'
 import Description from './description'
+import EditProfileModal from './edit-profile-modal'
+
+const emptyImage = 'data:image/png;base64,'
 
 const useStyles = makeStyles((theme) => ({
   banner: {
@@ -44,31 +49,39 @@ const useStyles = makeStyles((theme) => ({
  * @param {string} props.userCid
  * @returns {JSX.Element}
  */
-function User ({userCid} = {}) {
+function Profile ({userCid} = {}) {
+  const ownCid = useOwnUserCid()
   const classes = useStyles()
   const posts = useUserPosts(userCid)
   const profile = useUserProfile(userCid)
   const t = useTranslation()
 
-  console.log('User', {userCid, posts, profile})
+  console.log('Profile', {userCid, posts, profile})
+
+  let button
+  if (userCid === ownCid) {
+    button = <EditProfileButton profile={profile} />
+  }
+  // dont show button if dont know own cid yet
+  else if (ownCid) {
+    button = (
+      <Button variant='outlined' size='large' color='primary' onClick={() => {}}>
+        {t.Follow()}
+      </Button>
+    )
+  }
 
   let description = profile.description || ''
   if (description && description.length > 140) {
     description = description.substring(0, 140)
   }
 
-  const emptyImage = 'data:image/png;base64,'
-
-  const handleFollow = () => {}
-
   return (
     <div className={classes.root}>
       <CardMedia className={classes.banner} image={profile.bannerUrl || emptyImage} />
       <Avatar src={profile.thumbnailUrl} className={classes.avatar} />
       <Box p={2} pb={0} display='flex' flexDirection='row-reverse'>
-        <Button variant='outlined' size='large' color='primary' onClick={handleFollow}>
-          {t.Follow()}
-        </Button>
+        {button}
         <IconButton>
           <MoreVertIcon />
         </IconButton>
@@ -82,8 +95,26 @@ function User ({userCid} = {}) {
   )
 }
 
-User.propTypes = {
+Profile.propTypes = {
   userCid: PropTypes.string.isRequired
 }
 
-export default User
+/**
+ * @param {object} props
+ * @param {object} props.profile
+ * @returns {JSX.Element}
+ */
+function EditProfileButton ({profile}) {
+  const t = useTranslation()
+  const [openEditProfileModal, setOpenEditProfileModal] = useState(false)
+  return (
+    <div>
+      <Button variant='outlined' size='large' color='primary' onClick={() => setOpenEditProfileModal(true)}>
+        {t['Edit profile']()}
+      </Button>
+      <EditProfileModal previousProfile={profile} open={openEditProfileModal} onClose={() => setOpenEditProfileModal(false)} />
+    </div>
+  )
+}
+
+export default Profile

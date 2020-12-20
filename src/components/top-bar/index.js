@@ -7,10 +7,18 @@ const useStyles = makeStyles((theme) => ({
   appBar: {
     backgroundColor: theme.palette.background.default
   },
+  // default material ui sticky app bar doesn't stick unless it's at the top of dom
+  // and has a weird shaking bug when scrolling in chrome
   appBarSticky: {
-    // fix weird bug when scrolling chrome adds 1 extra empty pixel at top
-    top: -1,
-    borderTop: `1px solid ${theme.palette.background.default}`
+    position: 'fixed',
+    left: 'auto',
+    right: 'auto',
+    [theme.breakpoints.up('xs')]: {
+      width: theme.sav3.layout.columns.middle.width.md - theme.sav3.borderWidth * 2
+    },
+    [theme.breakpoints.down('xs')]: {
+      width: `calc(100% - ${theme.sav3.borderWidth * 2}px)`
+    }
   }
 }))
 

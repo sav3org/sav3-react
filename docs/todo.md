@@ -1,5 +1,10 @@
+merge profile and user page
 
-search for user by id
+
+make hooks
+use users posts
+
+peers stats page
 view feed of every peer you're connected to
 follow user
 view feed of users you're following

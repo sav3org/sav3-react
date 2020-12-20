@@ -72,41 +72,64 @@ class Sav3Ipfs extends EventEmitter {
   async getPeersStats () {
     await this.waitForReady()
 
-    const metrics = this.ipfs.libp2p.metrics
-    const peers = await this.ipfs.swarm.peers()
     const peersStats = []
-    const peerCids = new Set()
-    for (const peer of peers) {
-      const peerCid = peer.peer
-
-      // finds duplicate peers sometimes for unknown reason
-      if (peerCids.has(peerCid)) {
-        continue
-      }
-      peerCids.add(peerCid)
-
-      let ip, port, protocol
-      try {
-        const connectionInfo = webRtcUtils.getWebRtcPeerConnectionInfo(peerCid)
-        ip = connectionInfo.ip
-        port = connectionInfo.port
-        protocol = connectionInfo.protocol
-      }
-      catch (e) {}
-
-      const peerMetrics = metrics.forPeer(PeerId.createFromCID(peerCid)).toJSON()
-      const dataReceived = Number(peerMetrics.dataReceived)
-      const dataSent = Number(peerMetrics.dataSent)
-
-      const peerStats = {peerCid, ip, port, protocol, dataReceived, dataSent}
-      peersStats.push(peerStats)
+    const peerCids = await this.getPeersCids()
+    for (const peerCid of peerCids) {
+      peersStats.push(await this.getPeerStats(peerCid))
     }
     console.log('getPeersStats', {peersStats})
     return peersStats
   }
 
+  async getPeerStats (peerCid) {
+    await this.waitForReady()
+    assert(typeof peerCid === 'string', `sav3Ipfs.getPeerStats peerId '${peerCid}' not a string`)
+
+    const metrics = this.ipfs.libp2p.metrics
+
+    let ip, port, protocol
+    try {
+      const connectionInfo = webRtcUtils.getWebRtcPeerConnectionInfo(peerCid)
+      ip = connectionInfo.ip
+      port = connectionInfo.port
+      protocol = connectionInfo.protocol
+    }
+    catch (e) {}
+
+    const peerMetrics = metrics.forPeer(PeerId.createFromCID(peerCid)).toJSON()
+    const dataReceived = Number(peerMetrics.dataReceived)
+    const dataSent = Number(peerMetrics.dataSent)
+
+    const peerStats = {peerCid, ip, port, protocol, dataReceived, dataSent}
+    return peerStats
+  }
+
+  async getPeersCids () {
+    await this.waitForReady()
+    const peers = await this.ipfs.swarm.peers()
+    const peerCidsSet = new Set()
+    const peerCids = []
+    for (const peer of peers) {
+      const peerCid = peer.peer
+      // finds duplicate peers sometimes for unknown reason
+      if (peerCidsSet.has(peerCid)) {
+        continue
+      }
+      peerCidsSet.add(peerCid)
+      peerCids.push(peerCid)
+    }
+    return peerCids
+  }
+
   async getOwnPeerCid () {
     await this.waitForReady()
+    return (await sav3Ipfs.ipfs.id()).id
+  }
+
+  async getOwnUserCid () {
+    await this.waitForReady()
+    // currently same as peer cid, but eventually should
+    // be different for privacy
     return (await sav3Ipfs.ipfs.id()).id
   }
 
@@ -180,6 +203,12 @@ class Sav3Ipfs extends EventEmitter {
     await this.waitForReady()
     const ipnsValues = await this.ipnsClient.subscribe([ipnsPath])
     return ipnsValues[0]
+  }
+
+  async subscribeToIpnsPaths (ipnsPaths) {
+    await this.waitForReady()
+    const ipnsValues = await this.ipnsClient.subscribe(ipnsPaths)
+    return ipnsValues
   }
 
   async publishPost ({content, parentPostCid} = {}) {
@@ -306,6 +335,7 @@ class Sav3Ipfs extends EventEmitter {
       }
 
       const post = JSON.parse(await this.getIpfsFile(lastPostCid))
+      post.cid = lastPostCid
       lastPostCid = post.previousPostCid
 
       post.content = await this.getIpfsFile(post.contentCid)
