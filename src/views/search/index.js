@@ -8,6 +8,8 @@ import SearchIcon from '@material-ui/icons/Search'
 import TextField from '@material-ui/core/TextField'
 import InputAdornment from '@material-ui/core/InputAdornment'
 import useTranslation from 'src/translations/use-translation'
+import User from 'src/views/user/components/user'
+import isIpfs from 'is-ipfs'
 
 const useStyles = makeStyles((theme) => ({
   search: {
@@ -52,6 +54,7 @@ function Search () {
           <TextField
             onChange={handleChange}
             InputProps={{
+              spellCheck: false,
               classes: {root: classes.search},
               startAdornment: (
                 <Box pr={1}>
@@ -68,6 +71,7 @@ function Search () {
           />
         </Box>
       </TopBar>
+      {isIpfs.cid(userCid) && <User userCid={userCid} />}
     </div>
   )
 }

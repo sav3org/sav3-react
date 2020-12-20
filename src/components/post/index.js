@@ -22,7 +22,7 @@ import urlRegex from 'url-regex'
 
 const useStyles = makeStyles((theme) => ({
   root: {},
-  media: {
+  imgMedia: {
     height: 0,
     paddingTop: '56.25%' // 16:9
   },
@@ -156,40 +156,47 @@ function Post ({post} = {}) {
  */
 function PostContent ({content} = {}) {
   const classes = useStyles()
-  const link = getPostContentLink(content)
-  const mediaSrc = getPostContentMediaSrc(content)
+  let contentComponents = [content]
 
+  const link = getPostContentLink(content)
   if (link) {
     const [contentPart1, contentPart2] = content.split(link)
     let href = link
     if (!link.match(/$https?:\/\//)) {
       href = `https://${link}`
     }
-    content = []
+    contentComponents = []
     if (contentPart1) {
-      content.push(contentPart1)
+      contentComponents.push(contentPart1)
     }
-    content.push(
+    contentComponents.push(
       <Link variant='body2' href={href} target='_blank' rel='noopener'>
         {link}
       </Link>
     )
     if (contentPart2) {
-      content.push(contentPart2)
+      contentComponents.push(contentPart2)
+    }
+  }
+
+  const mediaSrc = getPostContentMediaSrc(content)
+  let cardMedia
+  if (mediaSrc) {
+    cardMedia = <CardMedia className={classes.imgMedia} image={mediaSrc} />
+    if (linkIsVideo(mediaSrc)) {
+      cardMedia = <CardMedia controls autoPlay muted component='video' image={mediaSrc} />
     }
   }
 
   const media = mediaSrc && (
     <Box pt={1}>
-      <Card variant='outlined'>
-        <CardMedia className={classes.media} image={mediaSrc} />
-      </Card>
+      <Card variant='outlined'>{cardMedia}</Card>
     </Box>
   )
 
   return (
     <Box>
-      <Typography variant='body2'>{content}</Typography>
+      <Typography variant='body2'>{contentComponents}</Typography>
       {media}
     </Box>
   )
@@ -200,7 +207,7 @@ const getPostContentLink = (content) => {
   if (!content) {
     return
   }
-  assert(typeof content === 'string')
+  assert(typeof content === 'string', `post content '${content}' is not a string`)
   const links = content.match(urlRegex({strict: false}))
   return links && links[0]
 }
@@ -209,18 +216,23 @@ const getPostContentMediaSrc = (content) => {
   if (!content) {
     return
   }
-  assert(typeof content === 'string')
+  assert(typeof content === 'string', `post content '${content}' is not a string`)
   const links = content.match(urlRegex({strict: false}))
   let link = links && links[0]
   if (!link) {
     return
   }
   if (linkIsMedia(link)) {
-    if (!link.match(/$https?:\/\//)) {
+    if (!link.match(/^https?:\/\//)) {
       link = `https://${link}`
     }
     return link
   }
+}
+
+const linkIsVideo = (link) => {
+  // remove query string and match extension
+  return link.replace(/[#?].*/).match(/\.(mp4|webm)$/)
 }
 
 const linkIsMedia = (link) => {

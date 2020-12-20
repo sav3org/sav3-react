@@ -1,10 +1,10 @@
-make user view
-add user view minus top bar to search result
 
 search for user by id
 view feed of every peer you're connected to
 follow user
 view feed of users you're following
+load more than 5 posts on scroll
+
 --publish another demo
 feed of bootstrapped users (from google sheet)
 like, share, reply, retweet

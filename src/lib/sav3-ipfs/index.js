@@ -8,6 +8,7 @@ import IpnsClient from './ipns-client'
 import EventEmitter from 'events'
 import ipns from 'ipns'
 import crypto from 'libp2p-crypto'
+import createWindowSav3IpfsTestMethods from './utils/create-window-sav3-ipfs-test-methods'
 
 class Sav3Ipfs extends EventEmitter {
   constructor () {
@@ -53,98 +54,14 @@ class Sav3Ipfs extends EventEmitter {
     // add to window for testing and debugging in console
     window.ipfs = this.ipfs
 
-    // everything below is debug test stuff
-    // setInterval(async () => {
-    //   const stat = await this.ipfs.bitswap.stat()
-    //   let statString = ''
-    //   for (const i in stat) {
-    //     statString += `${i} ${stat[i].toString()} `
-    //   }
-    //   console.log(statString)
-    // }, 30000)
-
     this.ipfs.libp2p.on('peer:discovery', (peer) => {
       console.log('discovered', peer)
     })
 
     this.ipfs.libp2p.on('peer:connect', (peer) => {
       console.log('connected', peer)
-
       this.ipfs.swarm.peers().then((peers) => console.log('current peers connected: ', peers))
     })
-
-    window.testAdd = async () => {
-      const data = {
-        content: 'hello world ' + Math.random()
-      }
-      const res = await this.ipfs.add(data)
-      console.log(res)
-      // for await (const res of ipfs.add(data)) {
-      //   console.log(res)
-      // }
-    }
-
-    window.testGet = async (cid) => {
-      for await (const file of this.ipfs.get(cid)) {
-        console.log(file.path)
-
-        if (!file.content) continue
-
-        const content = []
-
-        for await (const chunk of file.content) {
-          content.push(chunk)
-        }
-
-        console.log(content.toString())
-      }
-    }
-
-    window.addresses = async () => {
-      const res = await this.ipfs.swarm.addrs()
-      for (const i in res) {
-        for (const addr of res[i].addrs) {
-          addr.string = addr.toString()
-        }
-      }
-      console.log(res)
-    }
-
-    window.peers = async () => {
-      const res = await this.ipfs.swarm.peers()
-      for (const peer of res) {
-        peer.addrString = peer.addr.toString()
-      }
-      console.log(res)
-    }
-
-    window.testProfile = async () => {
-      await this.editUserProfile({
-        displayName: 'John J',
-        description: "John J's description",
-        thumbnailUrl: 'https://i.imgur.com/Jkua4yg.jpeg',
-        bannerUrl: 'https://i.imgur.com/DWCOaz9.jpeg'
-      })
-
-      let postCount = 5
-      while (postCount--) {
-        await this.publishPost({content: `test ${Math.random()}`})
-      }
-    }
-
-    window.testProfileLink = async () => {
-      await this.editUserProfile({
-        displayName: 'John J',
-        description: "John J's description",
-        thumbnailUrl: 'https://i.imgur.com/Jkua4yg.jpeg',
-        bannerUrl: 'https://i.imgur.com/DWCOaz9.jpeg'
-      })
-
-      let postCount = 20
-      while (postCount--) {
-        await this.publishPost({content: `test ${Math.random()} i.imgur.com/DWCOaz9.jpeg`})
-      }
-    }
   }
 
   /**
@@ -288,6 +205,7 @@ class Sav3Ipfs extends EventEmitter {
   }
 
   async publishIpnsRecord (newIpnsDataCid) {
+    await this.waitForReady()
     assert(typeof newIpnsDataCid === 'string', `sav3Ipfs.publishIpnsRecord '${newIpnsDataCid}' not a string`)
     // use the ipns server until ipfs.name.publish is implemented in browser
     const sequence = (await this.getOwnIpnsRecordSequence()) + 1
@@ -297,6 +215,7 @@ class Sav3Ipfs extends EventEmitter {
   }
 
   async editUserProfile ({displayName, description, thumbnailUrl, bannerUrl} = {}) {
+    await this.waitForReady()
     const profile = {}
 
     if (displayName !== undefined) {
@@ -334,6 +253,7 @@ class Sav3Ipfs extends EventEmitter {
   }
 
   async getUserProfile (profileCid) {
+    await this.waitForReady()
     assert(typeof profileCid === 'string', `sav3Ipfs.getUserProfile profileCid '${profileCid}' not a string`)
     const profileCids = JSON.parse(await this.getIpfsFile(profileCid))
     const profile = {}
@@ -419,6 +339,7 @@ export const sav3Ipfs = new Sav3Ipfs()
 // useful for testing
 window.sav3Ipfs = sav3Ipfs
 window.Ipfs = Ipfs
+createWindowSav3IpfsTestMethods(sav3Ipfs)
 
 // export a singleton to be used throughout the app
 export default sav3Ipfs

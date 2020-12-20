@@ -15,9 +15,8 @@ import IconButton from '@material-ui/core/IconButton'
 import Typography from '@material-ui/core/Typography'
 import ArrowBack from '@material-ui/icons/ArrowBack'
 import {useHistory} from 'react-router-dom'
-import EditProfileModal from './components/edit-profile-modal'
 import useOwnPeerCid from 'src/hooks/use-own-peer-cid'
-import Description from 'src/views/user/components/description'
+import UserBottom from './components/user'
 
 const useStyles = makeStyles((theme) => ({
   banner: {
@@ -48,21 +47,13 @@ const useStyles = makeStyles((theme) => ({
 /**
  * @returns {JSX.Element}
  */
-function Profile () {
+function User () {
   const userCid = useOwnPeerCid()
   const classes = useStyles()
-  const posts = useUserPosts(userCid)
   const profile = useUserProfile(userCid)
   const history = useHistory()
 
-  console.log('Profile', {userCid, posts, profile})
-
-  let description = profile.description
-  if (description && description.length > 140) {
-    description = description.substring(0, 140)
-  }
-
-  const emptyImage = 'data:image/png;base64,'
+  console.log('User', {userCid, profile})
 
   return (
     <div className={classes.root}>
@@ -74,40 +65,9 @@ function Profile () {
         </Box>
         <Typography variant='h6'>{profile.displayName}</Typography>
       </TopBar>
-      <CardMedia className={classes.banner} image={profile.bannerUrl || emptyImage} />
-      <Avatar src={profile.thumbnailUrl} className={classes.avatar} />
-      <Box p={2} pb={0} display='flex' flexDirection='row-reverse'>
-        <EditProfileButton profile={profile} />
-        <IconButton>
-          <MoreVertIcon />
-        </IconButton>
-      </Box>
-      <CardHeader className={classes.displayName} pb={0} title={profile.displayName} subheader={userCid} />
-      <Box p={2} pt={0}>
-        <Description description={description} />
-      </Box>
-
-      <Feed posts={posts} />
+      <UserBottom userCid={userCid} />
     </div>
   )
 }
 
-/**
- * @param {object} props
- * @param {object} props.profile
- * @returns {JSX.Element}
- */
-function EditProfileButton ({profile}) {
-  const t = useTranslation()
-  const [openEditProfileModal, setOpenEditProfileModal] = useState(false)
-  return (
-    <div>
-      <Button variant='outlined' size='large' color='primary' onClick={() => setOpenEditProfileModal(true)}>
-        {t['Edit profile']()}
-      </Button>
-      <EditProfileModal previousProfile={profile} open={openEditProfileModal} onClose={() => setOpenEditProfileModal(false)} />
-    </div>
-  )
-}
-
-export default Profile
+export default User

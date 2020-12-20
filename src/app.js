@@ -12,9 +12,11 @@ import TranslationSwitcher from 'src/components/translation-switcher'
 import Profile from 'src/views/profile'
 import Home from 'src/views/home'
 import Search from 'src/views/search'
+import User from 'src/views/user'
 
 const useStyles = makeStyles((theme) => ({
   leftColumn: {
+    overflow: 'hidden',
     [theme.breakpoints.down('xs')]: {
       display: 'none'
     },
@@ -29,6 +31,7 @@ const useStyles = makeStyles((theme) => ({
     }
   },
   middleColumn: {
+    overflow: 'hidden',
     [theme.breakpoints.down('xs')]: {
       width: '100%'
     },
@@ -44,6 +47,7 @@ const useStyles = makeStyles((theme) => ({
     borderColor: theme.sav3.borderColor
   },
   rightColumn: {
+    overflow: 'hidden',
     [theme.breakpoints.down('sm')]: {
       display: 'none'
     },
@@ -92,6 +96,9 @@ function App () {
             </Route>
             <Route path='/search' exact>
               <Search />
+            </Route>
+            <Route path='/user' exact>
+              <User />
             </Route>
           </Switch>
         </Grid>
