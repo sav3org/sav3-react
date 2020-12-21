@@ -32,6 +32,13 @@ const useStyles = makeStyles((theme) => ({
       paddingBottom: theme.spacing(1),
       paddingLeft: theme.spacing(0.5),
       paddingRight: theme.spacing(0.5)
+    },
+    // text fields borders are too opaque
+    '& fieldset': {
+      opacity: 0.25
+    },
+    '& .Mui-focused fieldset': {
+      opacity: 1
     }
   }
 }))

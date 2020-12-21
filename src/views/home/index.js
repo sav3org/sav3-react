@@ -21,7 +21,9 @@ function Home () {
           </Box>
         )}
         <Box pl={2}>
-          <Typography variant='h6'>Home</Typography>
+          <Typography noWrap variant='h6'>
+            Home
+          </Typography>
         </Box>
       </TopBar>
     </div>

@@ -19,6 +19,10 @@ const useStyles = makeStyles((theme) => ({
     [theme.breakpoints.down('xs')]: {
       width: `calc(100% - ${theme.sav3.borderWidth * 2}px)`
     }
+  },
+  // position fixed makes the height 0
+  appBarStickyAfter: {
+    height: theme.sav3.topBar.height + theme.sav3.borderWidth
   }
 }))
 
@@ -30,10 +34,13 @@ const useStyles = makeStyles((theme) => ({
 function TopBar ({children}) {
   const classes = useStyles()
   return (
-    <MuiAppBar position='sticky' color='transparent' elevation={0} classes={{positionSticky: classes.appBarSticky}} className={classes.appBar}>
-      <Toolbar disableGutters>{children}</Toolbar>
-      <Divider />
-    </MuiAppBar>
+    <div>
+      <MuiAppBar position='sticky' color='transparent' elevation={0} classes={{positionSticky: classes.appBarSticky}} className={classes.appBar}>
+        <Toolbar disableGutters>{children}</Toolbar>
+        <Divider />
+      </MuiAppBar>
+      <div className={classes.appBarStickyAfter}></div>
+    </div>
   )
 }
 

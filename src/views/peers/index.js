@@ -1,12 +1,10 @@
-import {useState} from 'react'
 import Box from '@material-ui/core/Box'
 import TopBar from 'src/components/top-bar'
-import {useTheme, makeStyles} from '@material-ui/core/styles'
+import {useTheme} from '@material-ui/core/styles'
 import useMediaQuery from '@material-ui/core/useMediaQuery'
 import useTranslation from 'src/translations/use-translation'
-import User from 'src/views/user/components/user'
-import isIpfs from 'is-ipfs'
 import IconButton from '@material-ui/core/IconButton'
+import Divider from '@material-ui/core/Divider'
 import {useHistory} from 'react-router-dom'
 import ArrowBack from '@material-ui/icons/ArrowBack'
 import Typography from '@material-ui/core/Typography'
@@ -15,22 +13,13 @@ import usePeersCids from 'src/hooks/use-peers-cids'
 import useUsersIpnsData from 'src/hooks/use-users-ipns-data'
 import useUsersPosts from 'src/hooks/use-users-posts'
 import useUsersProfiles from 'src/hooks/use-users-profiles'
-
-const useStyles = makeStyles((theme) => ({
-  search: {
-    height: theme.sav3.topBar.height / 1.5,
-    '& fieldset': {
-      border: 'none',
-      backgroundColor: theme.palette.divider
-    }
-  }
-}))
+import PublishPostForm from 'src/components/publish-post/form'
+import CircularProgress from '@material-ui/core/CircularProgress'
 
 /**
  * @returns {JSX.Element}
  */
 function Peers () {
-  const classes = useStyles()
   const theme = useTheme()
   const fullScreen = useMediaQuery(theme.breakpoints.down('xs'))
   const t = useTranslation()
@@ -44,7 +33,18 @@ function Peers () {
   for (const postCid in postsObject) {
     posts.push(postsObject[postCid])
   }
-  console.log({peersCids, usersIpnsData, posts, postsObject, profiles})
+  console.log('Peers', {peersCids, usersIpnsData, posts, postsObject, profiles})
+
+  let feed = <Feed posts={posts} />
+  if (!posts.length) {
+    feed = (
+      <Box width='100%' py={4} display='flex' justifyContent='center' alignItems='center'>
+        <CircularProgress size={24} />
+        <Box p={0.5} />
+        <Typography variant='body1'>{t['Connecting to peers']() + '...'}</Typography>
+      </Box>
+    )
+  }
 
   return (
     <div>
@@ -54,9 +54,17 @@ function Peers () {
             <ArrowBack />
           </IconButton>
         </Box>
-        <Typography variant='h6'>Connected peers</Typography>
+        <Typography noWrap variant='h6'>
+          {t['Connected peers posts']()}
+        </Typography>
       </TopBar>
-      <Feed posts={posts} />
+      {!fullScreen && (
+        <Box pb={1}>
+          <PublishPostForm />
+          <Divider />
+        </Box>
+      )}
+      {feed}
     </div>
   )
 }

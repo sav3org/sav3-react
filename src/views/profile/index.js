@@ -7,6 +7,7 @@ import ArrowBack from '@material-ui/icons/ArrowBack'
 import {useHistory} from 'react-router-dom'
 import useOwnUserCid from 'src/hooks/use-own-user-cid'
 import ProfileComponent from './components/profile'
+import useTranslation from 'src/translations/use-translation'
 
 /**
  * @returns {JSX.Element}
@@ -15,6 +16,7 @@ function Profile () {
   const userCid = useOwnUserCid()
   const profile = useUserProfile(userCid)
   const history = useHistory()
+  const t = useTranslation()
 
   return (
     <div>
@@ -24,7 +26,9 @@ function Profile () {
             <ArrowBack />
           </IconButton>
         </Box>
-        <Typography variant='h6'>{profile.displayName}</Typography>
+        <Typography noWrap variant='h6'>
+          {profile.displayName || t['Edit profile']()}
+        </Typography>
       </TopBar>
       <ProfileComponent userCid={userCid} />
     </div>

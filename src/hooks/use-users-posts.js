@@ -22,6 +22,11 @@ const useUsersPosts = (userCids) => {
       return
     }
     for (const [i, lastPostCid] of lastPostCids.entries()) {
+      if (!lastPostCid || typeof lastPostCid !== 'string') {
+        // user hasn't posted yet
+        continue
+      }
+
       const userCid = userCids[i]
       sav3Ipfs.getUserPostsFromLastPostCid(lastPostCid).then((userPosts) => {
         const posts = {}

@@ -19,6 +19,10 @@ const useUsersProfiles = (userCids) => {
       return
     }
     for (const [i, profileCid] of profileCids.entries()) {
+      if (!profileCid || typeof profileCid !== 'string') {
+        return
+      }
+
       const userCid = userCids[i]
       sav3Ipfs.getUserProfile(profileCid).then((userProfile) => {
         setUsersProfiles((previousUsersProfiles) => ({
@@ -27,6 +31,8 @@ const useUsersProfiles = (userCids) => {
         }))
       })
     }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [JSON.stringify(profileCids)])
 
   return usersProfiles

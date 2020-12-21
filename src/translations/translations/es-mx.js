@@ -39,6 +39,11 @@ const translation = createTranslation({
   Profile: () => 'Perfil',
   Search: () => 'Buscar',
   'Search user ID': () => 'Buscar ID de usuario',
+  Peers: () => 'Compañeros',
+  'Connected peers posts': () => 'Publicaciones de compañeros conectados',
+  Stats: () => 'Estadisticas',
+  'Connected peers stats': () => 'Estadísticas de compañeros conectados',
+  'Connecting to peers': () => 'Conectando con sus compañeros',
 
   // post
   'Uncensorable content': () => 'Contenido sin censura',

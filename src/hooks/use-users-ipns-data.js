@@ -55,6 +55,8 @@ const useUsersIpnsData = (ipnsPaths) => {
     return () => {
       sav3Ipfs.off('publish', onPublish)
     }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [JSON.stringify(ipnsPaths)])
 
   return usersIpnsData

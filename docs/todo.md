@@ -1,16 +1,12 @@
-merge profile and user page
+
+--publish another demo
 
 
-make hooks
-use users posts
-
-peers stats page
-view feed of every peer you're connected to
 follow user
 view feed of users you're following
 load more than 5 posts on scroll
+add "go to profile when clicking on username or avatar"
 
---publish another demo
 feed of bootstrapped users (from google sheet)
 like, share, reply, retweet
 

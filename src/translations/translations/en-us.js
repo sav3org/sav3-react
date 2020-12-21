@@ -15,6 +15,11 @@ const translation = createTranslation({
   Profile: () => 'Profile',
   Search: () => 'Search',
   'Search user ID': () => 'Search user ID',
+  Peers: () => 'Peers',
+  'Connected peers posts': () => 'Connected peers posts',
+  Stats: () => 'Stats',
+  'Connected peers stats': () => 'Connected peers stats',
+  'Connecting to peers': () => 'Connecting to peers',
 
   // post
   'Uncensorable content': () => 'Uncensorable content',

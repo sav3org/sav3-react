@@ -7,6 +7,10 @@ import PropTypes from 'prop-types'
 import Alert from '@material-ui/lab/Alert'
 import {makeStyles} from '@material-ui/core/styles'
 import Modal from 'src/components/modal'
+import useUserProfile from 'src/hooks/use-user-profile'
+import useOwnUserCid from 'src/hooks/use-own-user-cid'
+import Avatar from '@material-ui/core/Avatar'
+import Box from '@material-ui/core/Box'
 
 const useStyles = makeStyles((theme) => ({
   errorMessage: {
@@ -19,7 +23,18 @@ const useStyles = makeStyles((theme) => ({
     // remove text input variant borders
     '& fieldset': {
       border: 'none'
-    }
+    },
+    marginBottom: theme.spacing(1)
+  },
+  avatar: {
+    // slightly higher placement than the user name seems more pleasing
+    marginTop: theme.spacing(-0.25),
+    width: theme.spacing(6),
+    height: theme.spacing(6),
+    // borders
+    borderWidth: theme.sav3.borderWidth,
+    borderStyle: 'solid',
+    borderColor: theme.sav3.borderColor
   }
 }))
 
@@ -34,6 +49,9 @@ function PublishPostModal ({open, onClose}) {
   const classes = useStyles()
   const [content, setContent] = useState('')
   const [errorMessage, setErrorMessage] = useState()
+
+  const userCid = useOwnUserCid()
+  const profile = useUserProfile(userCid)
 
   const handleChange = (event) => {
     let content = event.target.value
@@ -59,7 +77,10 @@ function PublishPostModal ({open, onClose}) {
   }
 
   const modalContent = (
-    <div>
+    <Box display='flex'>
+      <Box pr={1} py={1.5}>
+        <Avatar src={profile.thumbnailUrl} className={classes.avatar} />
+      </Box>
       <TextField
         autoFocus
         className={classes.content}
@@ -78,7 +99,7 @@ function PublishPostModal ({open, onClose}) {
           {errorMessage}
         </Alert>
       )}
-    </div>
+    </Box>
   )
 
   const modalActions = (

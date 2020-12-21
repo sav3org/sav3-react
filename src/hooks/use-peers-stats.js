@@ -6,13 +6,15 @@ const usePeersStats = () => {
   const [peersStats, setPeersStats] = useState([])
   const [pollCount, setPollCount] = useState(0)
 
-  const pollTime = 10000 // if too fast will break the peer posts demo
+  const pollTime = 5000 // if too fast will break the peer posts demo
   useEffect(() => {
+    // eslint-disable-next-line no-unused-vars
     const interval = setInterval(() => {
       setPollCount(pollCount + 1)
     }, pollTime)
 
     // return () => clearInterval(interval)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   useEffect(() => {

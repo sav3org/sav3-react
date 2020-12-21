@@ -12,8 +12,8 @@ import TranslationSwitcher from 'src/components/translation-switcher'
 import Profile from 'src/views/profile'
 import Home from 'src/views/home'
 import Search from 'src/views/search'
-import User from 'src/views/user'
 import Peers from 'src/views/peers'
+import Stats from 'src/views/stats'
 
 const useStyles = makeStyles((theme) => ({
   leftColumn: {
@@ -98,11 +98,11 @@ function App () {
             <Route path='/search' exact>
               <Search />
             </Route>
-            <Route path='/user' exact>
-              <User />
+            <Route path='/peers' exact>
+              <Peers />
             </Route>
-            <Route>
-              <Peers path='/peers' exact />
+            <Route path='/stats' exact>
+              <Stats />
             </Route>
           </Switch>
         </Grid>
