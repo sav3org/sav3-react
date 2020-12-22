@@ -56,6 +56,9 @@ const useStyles = makeStyles((theme) => ({
     // remove added styles from link component
     color: 'inherit',
     textDecoration: 'inherit'
+  },
+  contentLink: {
+    wordBreak: 'break-all'
   }
 }))
 
@@ -169,7 +172,7 @@ function PostContent ({content} = {}) {
       contentComponents.push(contentPart1)
     }
     contentComponents.push(
-      <Link key='content link' variant='body2' href={href} target='_blank' rel='noopener'>
+      <Link className={classes.contentLink} key='content link' variant='body2' href={href} target='_blank' rel='noopener'>
         {link}
       </Link>
     )
