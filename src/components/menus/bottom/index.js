@@ -7,13 +7,10 @@ import BottomNavigationAction from '@material-ui/core/BottomNavigationAction'
 import CreateIcon from '@material-ui/icons/Create'
 import HomeIcon from '@material-ui/icons/Home'
 import SearchIcon from '@material-ui/icons/Search'
-import NotificationsIcon from '@material-ui/icons/Notifications'
-import MailIcon from '@material-ui/icons/Mail'
 import clsx from 'clsx'
 import {Link as RouterLink, useRouteMatch} from 'react-router-dom'
 import PublishPostModal from 'src/components/publish-post/modal'
 import BarChartIcon from '@material-ui/icons/BarChart'
-import GroupIcon from '@material-ui/icons/Group'
 import PeersIcon from '@material-ui/icons/Wifi'
 
 const useStyles = makeStyles((theme) => ({

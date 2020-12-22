@@ -20,6 +20,7 @@ const useIsFollowing = (userCid) => {
         deleteFollowing(userCid)
       }
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [userCid]
   )
 

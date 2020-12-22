@@ -1,4 +1,4 @@
-import {useState, useContext} from 'react'
+import {useState} from 'react'
 import {makeStyles} from '@material-ui/core/styles'
 import CardHeader from '@material-ui/core/CardHeader'
 import CardMedia from '@material-ui/core/CardMedia'
@@ -18,7 +18,6 @@ import EditProfileModal from './edit-profile-modal'
 import assert from 'assert'
 import Divider from '@material-ui/core/Divider'
 import useIsFollowing from 'src/hooks/following/use-is-following'
-import {FollowingContext} from 'src/hooks/following/following-provider'
 
 const emptyImage = 'data:image/png;base64,'
 
@@ -58,7 +57,6 @@ function Profile ({userCid} = {}) {
   const classes = useStyles()
   const posts = useUserPosts(userCid)
   const profile = useUserProfile(userCid)
-  const t = useTranslation()
 
   console.log('Profile', {userCid, posts, profile})
 

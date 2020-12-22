@@ -161,7 +161,7 @@ function PostContent ({content} = {}) {
   if (link) {
     const [contentPart1, contentPart2] = content.split(link)
     let href = link
-    if (!link.match(/$https?:\/\//)) {
+    if (!link.match(/^https?:\/\//)) {
       href = `https://${link}`
     }
     contentComponents = []
