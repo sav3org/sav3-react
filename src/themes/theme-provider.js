@@ -1,9 +1,9 @@
-import React, {useState} from 'react'
+import {useState, createContext} from 'react'
 import {ThemeProvider as MuiThemeProvider} from '@material-ui/core/styles'
 import themes from './index'
 import useMediaQuery from '@material-ui/core/useMediaQuery'
 
-export const ThemeContext = React.createContext({
+export const ThemeContext = createContext({
   theme: 'Light',
   setTheme: null
 })

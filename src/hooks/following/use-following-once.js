@@ -1,7 +1,7 @@
 import {useEffect, useState} from 'react'
 import followManager from 'src/lib/follow-manager'
 
-const useFollowingCids = () => {
+const useFollowingOnce = () => {
   const [following, setFollowing] = useState([])
 
   useEffect(() => {
@@ -14,4 +14,4 @@ const useFollowingCids = () => {
   return following
 }
 
-export default useFollowingCids
+export default useFollowingOnce

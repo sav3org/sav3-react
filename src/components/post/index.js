@@ -12,7 +12,6 @@ import Typography from '@material-ui/core/Typography'
 import FavoriteIcon from '@material-ui/icons/Favorite'
 import ShareIcon from '@material-ui/icons/Share'
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
-import MoreVertIcon from '@material-ui/icons/MoreVert'
 import Link from '@material-ui/core/Link'
 import Box from '@material-ui/core/Box'
 import {format as formatTimeAgo} from 'timeago.js'
@@ -20,6 +19,7 @@ import useLanguageCode from 'src/translations/use-language-code'
 import assert from 'assert'
 import urlRegex from 'url-regex'
 import PostMoreMenu from './more-menu'
+import {Link as RouterLink} from 'react-router-dom'
 
 const useStyles = makeStyles((theme) => ({
   root: {},
@@ -48,7 +48,14 @@ const useStyles = makeStyles((theme) => ({
     borderColor: theme.sav3.borderColor
   },
   userCid: {
-    wordBreak: 'break-all'
+    wordBreak: 'break-all',
+    // remove added styles from link component
+    textDecoration: 'inherit'
+  },
+  displayName: {
+    // remove added styles from link component
+    color: 'inherit',
+    textDecoration: 'inherit'
   }
 }))
 
@@ -73,7 +80,12 @@ function Post ({post} = {}) {
       <Box px={2} py={1.5} display='flex'>
         {/* left col avatar */}
         <Box pr={1.5}>
-          <Avatar src={post.profile.thumbnailUrl && forceHttps(post.profile.thumbnailUrl)} className={classes.avatar} />
+          <Avatar
+            component={RouterLink}
+            to={{pathname: '/profile', state: {userCid: post.userCid}}}
+            src={post.profile.thumbnailUrl && forceHttps(post.profile.thumbnailUrl)}
+            className={classes.avatar}
+          />
         </Box>
 
         {/* right col header + content + bottom actions */}
@@ -84,7 +96,9 @@ function Post ({post} = {}) {
               <Box display='flex'>
                 {post.profile.displayName && (
                   <Fragment>
-                    <Typography variant='subtitle2'>{post.profile.displayName}</Typography>
+                    <Typography className={classes.displayName} component={RouterLink} to={{pathname: '/profile', state: {userCid: post.userCid}}} variant='subtitle2'>
+                      {post.profile.displayName}
+                    </Typography>
                     &nbsp;
                     <Typography variant='subtitle2'>·</Typography>
                     &nbsp;
@@ -93,7 +107,7 @@ function Post ({post} = {}) {
                 <Typography variant='subtitle2'>{date}</Typography>
               </Box>
               <Box>
-                <Typography variant='caption' color='textSecondary' className={classes.userCid}>
+                <Typography component={RouterLink} to={{pathname: '/profile', state: {userCid: post.userCid}}} variant='caption' color='textSecondary' className={classes.userCid}>
                   {post.userCid}
                 </Typography>
               </Box>

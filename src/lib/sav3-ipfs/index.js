@@ -19,11 +19,16 @@ class Sav3Ipfs extends EventEmitter {
   }
 
   async _initIpfs () {
-    const ipfsOptions = {
-      preload: {enabled: false},
+    let repo
+    if (process.env.NODE_ENV === 'development') {
       // a random repo allows multiple tabs to have different peers
       // which is good for testing
-      repo: Math.random().toString(36).substring(7),
+      repo = Math.random().toString(36).substring(7)
+    }
+
+    const ipfsOptions = {
+      preload: {enabled: false},
+      repo,
       config: {
         Bootstrap: [],
         Addresses: {
@@ -181,7 +186,8 @@ class Sav3Ipfs extends EventEmitter {
     const file = (await this.ipfs.get(fileCid).next()).value
     let content
     if (file.content) {
-      content = (await file.content.next()).value.toString()
+      const res = await file.content.next()
+      content = res && res.value && res.value.toString()
     }
     console.log('getIpfsFile', {fileCid, file, content})
     return content

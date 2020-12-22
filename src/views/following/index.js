@@ -8,7 +8,7 @@ import ArrowBack from '@material-ui/icons/ArrowBack'
 import Typography from '@material-ui/core/Typography'
 import usePeersStats from 'src/hooks/use-peers-stats'
 import CircularProgress from '@material-ui/core/CircularProgress'
-import useFollowingCids from 'src/hooks/use-following-cids'
+import useFollowingOnce from 'src/hooks/following/use-following-once'
 import useUsersProfiles from 'src/hooks/use-users-profiles'
 import UsersFeed from 'src/components/feeds/users'
 
@@ -19,7 +19,7 @@ function Following () {
   const t = useTranslation()
   const history = useHistory()
 
-  const followingCids = useFollowingCids()
+  const followingCids = useFollowingOnce()
   const profiles = useUsersProfiles(followingCids)
   const users = []
   for (const userCid of followingCids) {

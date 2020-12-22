@@ -9,8 +9,6 @@ import PeerId from 'peer-id'
 import isIpfs from 'is-ipfs'
 import QuickLRU from 'quick-lru'
 
-import followManager from 'src/lib/follow-manager'
-
 class IpnsClient extends EventEmitter {
   constructor ({ipfs} = {}) {
     super()

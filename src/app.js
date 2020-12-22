@@ -23,7 +23,7 @@ const useStyles = makeStyles((theme) => ({
       display: 'none'
     },
     [theme.breakpoints.down('md')]: {
-      width: theme.sav3.layout.columns.left.width.sm
+      width: theme.sav3.layout.columns.left.width.xs
     },
     [theme.breakpoints.down('lg')]: {
       width: theme.sav3.layout.columns.left.width.xs

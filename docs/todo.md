@@ -1,16 +1,7 @@
 todo before next demo
 ---------------------
 remove new repo on each reload in production
-add follow to post
-add link to profile from post
-feed of users youre following
-add following page to menu
-add followings posts to menu
 
-
-fix sidebar bug (only happens in production build for some reason)
-
-view feed of users you're following
 load more than 5 posts on scroll
 add "go to profile when clicking on username or avatar"
 

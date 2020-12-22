@@ -10,12 +10,10 @@ import ArrowBack from '@material-ui/icons/ArrowBack'
 import Typography from '@material-ui/core/Typography'
 import Feed from 'src/components/feeds/posts'
 import usePeersCids from 'src/hooks/use-peers-cids'
-import useUsersIpnsData from 'src/hooks/use-users-ipns-data'
 import useUsersPosts from 'src/hooks/use-users-posts'
-import useUsersProfiles from 'src/hooks/use-users-profiles'
 import PublishPostForm from 'src/components/publish-post/form'
 import CircularProgress from '@material-ui/core/CircularProgress'
-
+import useOwnUserCid from 'src/hooks/use-own-user-cid'
 /**
  * @returns {JSX.Element}
  */
@@ -25,15 +23,14 @@ function Peers () {
   const t = useTranslation()
   const history = useHistory()
 
+  const ownCid = useOwnUserCid()
   const peersCids = usePeersCids()
-  const usersIpnsData = useUsersIpnsData(peersCids)
-  const profiles = useUsersProfiles(peersCids)
-  const postsObject = useUsersPosts(peersCids)
+  const postsObject = useUsersPosts([ownCid, ...peersCids])
   const posts = []
   for (const postCid in postsObject) {
     posts.push(postsObject[postCid])
   }
-  console.log('Peers', {peersCids, usersIpnsData, posts, postsObject, profiles})
+  console.log('Peers', {peersCids, posts, postsObject})
 
   let feed = <Feed posts={posts} />
   if (!posts.length) {
@@ -59,10 +56,13 @@ function Peers () {
         </Typography>
       </TopBar>
       {!fullScreen && (
-        <Box pb={1}>
-          <PublishPostForm />
+        <div>
+          <Box pb={1}>
+            <PublishPostForm />
+            <Divider />
+          </Box>
           <Divider />
-        </Box>
+        </div>
       )}
       {feed}
     </div>

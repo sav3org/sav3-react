@@ -1,7 +1,7 @@
-import React, {useState} from 'react'
+import {useState, createContext} from 'react'
 import translations from './index'
 
-export const LanguageCodeContext = React.createContext({
+export const LanguageCodeContext = createContext({
   languageCode: 'en-US',
   setLanguageCode: null
 })
@@ -15,10 +15,8 @@ const LanguageCodeProvider = (props) => {
     localStorageLanguageCode = defaultLanguageCode
   }
 
-  // State to hold the selected languageCode
   const [languageCode, _setLanguageCode] = useState(localStorageLanguageCode)
 
-  // Wrap _setLanguageCode to store new languageCode in localStorage
   const setLanguageCode = (languageCode) => {
     if (!translations[languageCode]) {
       console.warn(`no available translation for '${languageCode}'`)

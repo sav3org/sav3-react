@@ -9,6 +9,8 @@ import AccountCircle from '@material-ui/icons/AccountCircle'
 import SearchIcon from '@material-ui/icons/Search'
 import GroupIcon from '@material-ui/icons/Group'
 import BarChartIcon from '@material-ui/icons/BarChart'
+import PeersIcon from '@material-ui/icons/Wifi'
+import ContactsIcon from '@material-ui/icons/Contacts'
 import Button from '@material-ui/core/Button'
 import Box from '@material-ui/core/Box'
 import CreateIcon from '@material-ui/icons/Create'
@@ -73,9 +75,15 @@ function LeftMenu () {
           </ListItemIcon>
           <ListItemText primary={t.Search()} className={classes.text} />
         </ListItem>
-        <ListItem button component={RouterLink} to='/peers'>
+        <ListItem button component={RouterLink} to='/following'>
           <ListItemIcon>
             <GroupIcon fontSize='large' />
+          </ListItemIcon>
+          <ListItemText primary={t.Following()} className={classes.text} />
+        </ListItem>
+        <ListItem button component={RouterLink} to='/peers'>
+          <ListItemIcon>
+            <PeersIcon fontSize='large' />
           </ListItemIcon>
           <ListItemText primary={t.Peers()} className={classes.text} />
         </ListItem>

@@ -6,6 +6,7 @@ import ListItemText from '@material-ui/core/ListItemText'
 import AccountCircle from '@material-ui/icons/AccountCircle'
 import BarChartIcon from '@material-ui/icons/BarChart'
 import GroupIcon from '@material-ui/icons/Group'
+import PeersIcon from '@material-ui/icons/Wifi'
 import {Link as RouterLink} from 'react-router-dom'
 import useTranslation from 'src/translations/use-translation'
 import ThemeSwitcher from 'src/components/theme-switcher'
@@ -28,9 +29,16 @@ function HomeMenu () {
   return (
     <div className={classes.root}>
       <List>
-        <ListItem button component={RouterLink} to='/peers'>
+        <ListItem button component={RouterLink} to='/following'>
           <ListItemIcon>
             <GroupIcon fontSize='large' />
+          </ListItemIcon>
+          <ListItemText primary={t.Following()} className={classes.text} />
+        </ListItem>
+        {/* temporarily added to bottom menu
+        <ListItem button component={RouterLink} to='/peers'>
+          <ListItemIcon>
+            <PeersIcon fontSize='large' />
           </ListItemIcon>
           <ListItemText primary={t.Peers()} className={classes.text} />
         </ListItem>
@@ -40,6 +48,7 @@ function HomeMenu () {
           </ListItemIcon>
           <ListItemText primary={t.Stats()} className={classes.text} />
         </ListItem>
+        */}
         <ListItem button component={RouterLink} to='/profile'>
           <ListItemIcon>
             <AccountCircle fontSize='large' />

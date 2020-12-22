@@ -13,7 +13,7 @@ const baseMuiThemeOptions = {
   breakpoints: {
     values: {
       xs: 0,
-      sm: 668,
+      sm: 682,
       md: 960,
       lg: 1280,
       xl: 1920
@@ -25,6 +25,7 @@ const baseMuiThemeOptions = {
         left: {
           width: {
             md: 275,
+            // sm width is never used but might be useful someday
             sm: 88,
             xs: 68
           }
@@ -49,6 +50,10 @@ const baseMuiThemeOptions = {
     },
     drawerMenu: {
       width: 280
+    },
+    popoverMenu: {
+      // small popover menus are too rounded
+      borderRadius: 4
     }
   },
   palette: {
@@ -84,12 +89,6 @@ const baseMuiThemeOptions = {
       root: {
         // default box shadow is too intense
         boxShadow: 'rgba(101, 119, 134, 0.2) 0px 0px 8px, rgba(101, 119, 134, 0.25) 0px 1px 3px 1px'
-      }
-    },
-    MuiPaper: {
-      rounded: {
-        // popover menus are too rounded
-        borderRadius: 4
       }
     }
   }

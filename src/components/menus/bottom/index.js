@@ -12,6 +12,9 @@ import MailIcon from '@material-ui/icons/Mail'
 import clsx from 'clsx'
 import {Link as RouterLink, useRouteMatch} from 'react-router-dom'
 import PublishPostModal from 'src/components/publish-post/modal'
+import BarChartIcon from '@material-ui/icons/BarChart'
+import GroupIcon from '@material-ui/icons/Group'
+import PeersIcon from '@material-ui/icons/Wifi'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -46,8 +49,8 @@ function BottomMenu ({className} = {}) {
       <PublishPostButton />
       <BottomNavigationAction component={RouterLink} to='/' value='home' icon={<HomeIcon />} />
       <BottomNavigationAction component={RouterLink} to='/search' value='search' icon={<SearchIcon />} />
-      <BottomNavigationAction component={RouterLink} to='/notifications' value='notifications' icon={<NotificationsIcon />} />
-      <BottomNavigationAction component={RouterLink} to='/mail' value='mail' icon={<MailIcon />} />
+      <BottomNavigationAction component={RouterLink} to='/peers' value='peers' icon={<PeersIcon />} />
+      <BottomNavigationAction component={RouterLink} to='/stats' value='stats' icon={<BarChartIcon />} />
     </BottomNavigation>
   )
 }

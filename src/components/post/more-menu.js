@@ -9,13 +9,17 @@ import {makeStyles} from '@material-ui/core/styles'
 import Typography from '@material-ui/core/Typography'
 import ListItemIcon from '@material-ui/core/ListItemIcon'
 import PropTypes from 'prop-types'
-import useIsFollowing from 'src/hooks/use-is-following'
-import followManager from 'src/lib/follow-manager'
+import useIsFollowing from 'src/hooks/following/use-is-following'
 import useTranslation from 'src/translations/use-translation'
 import Box from '@material-ui/core/Box'
 import useOwnUserCid from 'src/hooks/use-own-user-cid'
 
 const useStyles = makeStyles((theme) => ({
+  menu: {
+    '& .MuiPaper-rounded': {
+      borderRadius: theme.sav3.popoverMenu.borderRadius
+    }
+  },
   menuItemIcon: {
     minWidth: 28
   }
@@ -84,33 +88,19 @@ PostMoreMenu.propTypes = {
 function FollowMenuItem ({userCid} = {}) {
   const classes = useStyles()
   const t = useTranslation()
-  const followManagerIsFollowing = useIsFollowing(userCid)
-  const [isFollowing, setIsFollowing] = useState()
+  const [isFollowing, setIsFollowing] = useIsFollowing(userCid)
 
-  const handleFollow = () => {
-    followManager.addFollowing(userCid)
-    setIsFollowing(true)
-  }
-
-  const handleUnfollow = () => {
-    followManager.deleteFollowing(userCid)
-    setIsFollowing(false)
-  }
-
-  let followButton = ''
-  if (followManagerIsFollowing === false || isFollowing === false) {
+  let followButton = (
+    <MenuItem onClick={() => setIsFollowing(true)}>
+      <ListItemIcon className={classes.menuItemIcon}>
+        <PersonAdd fontSize='small' />
+      </ListItemIcon>
+      <Typography>{t.Follow()}</Typography>
+    </MenuItem>
+  )
+  if (isFollowing) {
     followButton = (
-      <MenuItem onClick={handleFollow}>
-        <ListItemIcon className={classes.menuItemIcon}>
-          <PersonAdd fontSize='small' />
-        </ListItemIcon>
-        <Typography>{t.Follow()}</Typography>
-      </MenuItem>
-    )
-  }
-  else if (followManagerIsFollowing === true) {
-    followButton = (
-      <MenuItem onClick={handleUnfollow}>
+      <MenuItem onClick={() => setIsFollowing(false)}>
         <ListItemIcon className={classes.menuItemIcon}>
           <PersonAddDisabled fontSize='small' />
         </ListItemIcon>

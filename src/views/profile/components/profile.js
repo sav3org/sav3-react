@@ -1,4 +1,4 @@
-import {useState} from 'react'
+import {useState, useContext} from 'react'
 import {makeStyles} from '@material-ui/core/styles'
 import CardHeader from '@material-ui/core/CardHeader'
 import CardMedia from '@material-ui/core/CardMedia'
@@ -17,8 +17,8 @@ import Description from './description'
 import EditProfileModal from './edit-profile-modal'
 import assert from 'assert'
 import Divider from '@material-ui/core/Divider'
-import useIsFollowing from 'src/hooks/use-is-following'
-import followManager from 'src/lib/follow-manager'
+import useIsFollowing from 'src/hooks/following/use-is-following'
+import {FollowingContext} from 'src/hooks/following/following-provider'
 
 const emptyImage = 'data:image/png;base64,'
 
@@ -125,30 +125,16 @@ function EditProfileButton ({profile}) {
  */
 function FollowButton ({userCid} = {}) {
   const t = useTranslation()
-  const followManagerIsFollowing = useIsFollowing(userCid)
-  const [isFollowing, setIsFollowing] = useState()
+  const [isFollowing, setIsFollowing] = useIsFollowing(userCid)
 
-  const handleFollow = () => {
-    followManager.addFollowing(userCid)
-    setIsFollowing(true)
-  }
-
-  const handleUnfollow = () => {
-    followManager.deleteFollowing(userCid)
-    setIsFollowing(false)
-  }
-
-  let followButton = ''
-  if (followManagerIsFollowing === false || isFollowing === false) {
+  let followButton = (
+    <Button variant='outlined' size='large' color='primary' onClick={() => setIsFollowing(true)}>
+      {t.Follow()}
+    </Button>
+  )
+  if (isFollowing) {
     followButton = (
-      <Button variant='outlined' size='large' color='primary' onClick={handleFollow}>
-        {t.Follow()}
-      </Button>
-    )
-  }
-  else if (followManagerIsFollowing === true) {
-    followButton = (
-      <Button variant='outlined' size='large' color='primary' onClick={handleUnfollow}>
+      <Button variant='outlined' size='large' color='primary' onClick={() => setIsFollowing(false)}>
         {t.Unfollow()}
       </Button>
     )

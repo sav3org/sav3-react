@@ -6,7 +6,7 @@ import Box from '@material-ui/core/Box'
 import assert from 'assert'
 import useTranslation from 'src/translations/use-translation'
 import Button from '@material-ui/core/Button'
-import useIsFollowing from 'src/hooks/use-is-following'
+import useIsFollowing from 'src/hooks/following/use-is-following'
 import followManager from 'src/lib/follow-manager'
 
 const useStyles = makeStyles((theme) => ({
@@ -37,36 +37,20 @@ const buttonHeight = 48
 function User ({user} = {}) {
   const classes = useStyles()
   const t = useTranslation()
-  const followManagerIsFollowing = useIsFollowing(user.cid)
-  const [isFollowing, setIsFollowing] = useState()
+  const [isFollowing, setIsFollowing] = useIsFollowing(user.cid)
 
-  const handleFollow = () => {
-    followManager.addFollowing(user.cid)
-    setIsFollowing(true)
-  }
-
-  const handleUnfollow = () => {
-    followManager.deleteFollowing(user.cid)
-    setIsFollowing(false)
-  }
-
-  let followButton
-  if (followManagerIsFollowing === false || isFollowing === false) {
+  let followButton = (
+    <Button variant='outlined' size='small' color='primary' onClick={() => setIsFollowing(true)}>
+      {t.Follow()}
+    </Button>
+  )
+  if (isFollowing) {
     followButton = (
-      <Button variant='outlined' size='small' color='primary' onClick={handleFollow}>
-        {t.Follow()}
-      </Button>
-    )
-  }
-  else if (followManagerIsFollowing === true) {
-    followButton = (
-      <Button variant='outlined' size='small' color='primary' onClick={handleUnfollow}>
+      <Button variant='outlined' size='small' color='primary' onClick={() => setIsFollowing(false)}>
         {t.Unfollow()}
       </Button>
     )
   }
-
-  console.log({isFollowing, followManagerIsFollowing})
 
   return (
     <div>
