@@ -32,8 +32,7 @@ const baseMuiThemeOptions = {
         middle: {
           width: {
             md: 600
-          },
-          borderWidth: 1
+          }
         },
         right: {
           width: {
@@ -83,7 +82,14 @@ const baseMuiThemeOptions = {
     },
     MuiFab: {
       root: {
+        // default box shadow is too intense
         boxShadow: 'rgba(101, 119, 134, 0.2) 0px 0px 8px, rgba(101, 119, 134, 0.25) 0px 1px 3px 1px'
+      }
+    },
+    MuiPaper: {
+      rounded: {
+        // popover menus are too rounded
+        borderRadius: 4
       }
     }
   }

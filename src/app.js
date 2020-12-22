@@ -1,8 +1,8 @@
 import {Switch, Route} from 'react-router-dom'
 import Grid from '@material-ui/core/Grid'
 import {makeStyles, useTheme} from '@material-ui/core/styles'
-import LeftMenu from 'src/components/menus/left-menu'
-import BottomMenu from 'src/components/menus/bottom-menu'
+import LeftMenu from 'src/components/menus/left'
+import BottomMenu from 'src/components/menus/bottom'
 
 // components
 import ThemeSwitcher from 'src/components/theme-switcher'
@@ -14,6 +14,7 @@ import Home from 'src/views/home'
 import Search from 'src/views/search'
 import Peers from 'src/views/peers'
 import Stats from 'src/views/stats'
+import Following from 'src/views/following'
 
 const useStyles = makeStyles((theme) => ({
   leftColumn: {
@@ -103,6 +104,9 @@ function App () {
             </Route>
             <Route path='/stats' exact>
               <Stats />
+            </Route>
+            <Route path='/following' exact>
+              <Following />
             </Route>
           </Switch>
         </Grid>

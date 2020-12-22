@@ -3,7 +3,7 @@ import TopBar from 'src/components/top-bar'
 import Typography from '@material-ui/core/Typography'
 import {useTheme} from '@material-ui/core/styles'
 import useMediaQuery from '@material-ui/core/useMediaQuery'
-import AvatarDrawerMenuButton from 'src/components/menus/drawer-menu/avatar-button'
+import AvatarDrawerMenuButton from 'src/components/menus/drawer/avatar-button'
 
 /**
  * @returns {JSX.Element}

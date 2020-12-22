@@ -7,7 +7,7 @@ import MoreVertIcon from '@material-ui/icons/MoreVert'
 import useTranslation from 'src/translations/use-translation'
 import Button from '@material-ui/core/Button'
 import Box from '@material-ui/core/Box'
-import Feed from 'src/components/feed'
+import PostsFeed from 'src/components/feeds/posts'
 import useOwnUserCid from 'src/hooks/use-own-user-cid'
 import useUserPosts from 'src/hooks/use-user-posts'
 import useUserProfile from 'src/hooks/use-user-profile'
@@ -15,6 +15,10 @@ import IconButton from '@material-ui/core/IconButton'
 import PropTypes from 'prop-types'
 import Description from './description'
 import EditProfileModal from './edit-profile-modal'
+import assert from 'assert'
+import Divider from '@material-ui/core/Divider'
+import useIsFollowing from 'src/hooks/use-is-following'
+import followManager from 'src/lib/follow-manager'
 
 const emptyImage = 'data:image/png;base64,'
 
@@ -64,11 +68,7 @@ function Profile ({userCid} = {}) {
   }
   // dont show button if dont know own cid yet
   else if (ownCid) {
-    button = (
-      <Button variant='outlined' size='large' color='primary' onClick={() => {}}>
-        {t.Follow()}
-      </Button>
-    )
+    button = <FollowButton userCid={userCid} />
   }
 
   let description = profile.description || ''
@@ -78,8 +78,8 @@ function Profile ({userCid} = {}) {
 
   return (
     <div className={classes.root}>
-      <CardMedia className={classes.banner} image={profile.bannerUrl || emptyImage} />
-      <Avatar src={profile.thumbnailUrl} className={classes.avatar} />
+      <CardMedia className={classes.banner} image={(profile.bannerUrl && forceHttps(profile.bannerUrl)) || emptyImage} />
+      <Avatar src={profile.thumbnailUrl && forceHttps(profile.thumbnailUrl)} className={classes.avatar} />
       <Box p={2} pb={0} display='flex' flexDirection='row-reverse'>
         {button}
         <IconButton>
@@ -90,7 +90,8 @@ function Profile ({userCid} = {}) {
       <Box p={2} pt={0}>
         <Description description={description} />
       </Box>
-      <Feed posts={posts} />
+      <Divider />
+      <PostsFeed posts={posts} />
     </div>
   )
 }
@@ -115,6 +116,55 @@ function EditProfileButton ({profile}) {
       <EditProfileModal previousProfile={profile} open={openEditProfileModal} onClose={() => setOpenEditProfileModal(false)} />
     </div>
   )
+}
+
+/**
+ * @param {object} props
+ * @param {object} props.userCid
+ * @returns {JSX.Element}
+ */
+function FollowButton ({userCid} = {}) {
+  const t = useTranslation()
+  const followManagerIsFollowing = useIsFollowing(userCid)
+  const [isFollowing, setIsFollowing] = useState()
+
+  const handleFollow = () => {
+    followManager.addFollowing(userCid)
+    setIsFollowing(true)
+  }
+
+  const handleUnfollow = () => {
+    followManager.deleteFollowing(userCid)
+    setIsFollowing(false)
+  }
+
+  let followButton = ''
+  if (followManagerIsFollowing === false || isFollowing === false) {
+    followButton = (
+      <Button variant='outlined' size='large' color='primary' onClick={handleFollow}>
+        {t.Follow()}
+      </Button>
+    )
+  }
+  else if (followManagerIsFollowing === true) {
+    followButton = (
+      <Button variant='outlined' size='large' color='primary' onClick={handleUnfollow}>
+        {t.Unfollow()}
+      </Button>
+    )
+  }
+  return followButton
+}
+
+FollowButton.propTypes = {
+  userCid: PropTypes.string.isRequired
+}
+
+const forceHttps = (link) => {
+  assert(typeof link === 'string', `forceHttps link '${link}' not a string`)
+  link = link.trim()
+  link = link.replace(/^http:\/\//, 'https://')
+  return link
 }
 
 export default Profile

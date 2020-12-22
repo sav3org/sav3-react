@@ -33,7 +33,7 @@ module.exports = function override(config, env) {
     }))
 
     // add all css import inline (non-styled component css imports)
-    config.plugins.push(new StyleExtHtmlWebpackPlugin())
+    // config.plugins.push(new StyleExtHtmlWebpackPlugin())
 
     // remove sourcemaps
     config.devtool = false

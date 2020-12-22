@@ -102,18 +102,7 @@ function PublishPostForm () {
       </Box>
 
       <Box pt={1} width='100%'>
-        <TextField
-          autoFocus
-          className={classes.content}
-          onChange={handleChange}
-          margin='dense'
-          id='content'
-          placeholder={t['Uncensorable content']()}
-          fullWidth
-          multiline
-          variant='outlined'
-          value={content}
-        />
+        <TextField className={classes.content} onChange={handleChange} margin='dense' id='content' placeholder={t['Uncensorable content']()} fullWidth multiline variant='outlined' value={content} />
         {errorMessage && (
           <Box py={1}>
             <Alert classes={{message: classes.errorMessage}} severity='error'>

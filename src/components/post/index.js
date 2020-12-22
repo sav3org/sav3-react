@@ -19,6 +19,7 @@ import {format as formatTimeAgo} from 'timeago.js'
 import useLanguageCode from 'src/translations/use-language-code'
 import assert from 'assert'
 import urlRegex from 'url-regex'
+import PostMoreMenu from './more-menu'
 
 const useStyles = makeStyles((theme) => ({
   root: {},
@@ -72,7 +73,7 @@ function Post ({post} = {}) {
       <Box px={2} py={1.5} display='flex'>
         {/* left col avatar */}
         <Box pr={1.5}>
-          <Avatar src={post.profile.thumbnailUrl} className={classes.avatar} />
+          <Avatar src={post.profile.thumbnailUrl && forceHttps(post.profile.thumbnailUrl)} className={classes.avatar} />
         </Box>
 
         {/* right col header + content + bottom actions */}
@@ -98,9 +99,7 @@ function Post ({post} = {}) {
               </Box>
             </Box>
             <Box>
-              <IconButton>
-                <MoreVertIcon />
-              </IconButton>
+              <PostMoreMenu post={post} />
             </Box>
           </Box>
 
@@ -156,7 +155,7 @@ function PostContent ({content} = {}) {
       contentComponents.push(contentPart1)
     }
     contentComponents.push(
-      <Link variant='body2' href={href} target='_blank' rel='noopener'>
+      <Link key='content link' variant='body2' href={href} target='_blank' rel='noopener'>
         {link}
       </Link>
     )
@@ -208,12 +207,21 @@ const getPostContentMediaSrc = (content) => {
   if (!link) {
     return
   }
+  link = forceHttps(link)
   if (linkIsMedia(link)) {
+    // add protocol if missing
     if (!link.match(/^https?:\/\//)) {
       link = `https://${link}`
     }
     return link
   }
+}
+
+const forceHttps = (link) => {
+  assert(typeof link === 'string', `forceHttps link '${link}' not a string`)
+  link = link.trim()
+  link = link.replace(/^http:\/\//, 'https://')
+  return link
 }
 
 const linkIsVideo = (link) => {

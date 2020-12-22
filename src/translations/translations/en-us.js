@@ -3,6 +3,7 @@ import createTranslation from '../create-translation'
 const translation = createTranslation({
   // profile
   Follow: () => 'Follow',
+  Unfollow: () => 'Unfollow',
   'Edit profile': () => 'Edit profile',
   'Display name': () => 'Display name',
   Description: () => 'Description',
@@ -20,6 +21,8 @@ const translation = createTranslation({
   Stats: () => 'Stats',
   'Connected peers stats': () => 'Connected peers stats',
   'Connecting to peers': () => 'Connecting to peers',
+  Following: () => 'Following',
+  'Not following anyone': () => 'Not following anyone',
 
   // post
   'Uncensorable content': () => 'Uncensorable content',

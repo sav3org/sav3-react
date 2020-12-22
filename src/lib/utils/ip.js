@@ -4,7 +4,7 @@ import IdbLru from 'src/lib/utils/idb-lru'
 const getIsoCountryCodeFromIpAttempts = new Set()
 const ipIsoCountryCodeCache = IdbLru({
   name: 'ipIsoCountryCodeCache',
-  maxSize: 500
+  maxSize: 2000
 })
 
 /**

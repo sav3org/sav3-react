@@ -27,6 +27,7 @@ registerTimeAgo('es-MX', timeAgo)
 const translation = createTranslation({
   // profile
   Follow: () => 'Seguir',
+  Unfollow: () => 'Dejar de seguir',
   'Edit profile': () => 'Editar perfil',
   'Display name': () => 'Nombre para mostrar',
   Description: () => 'Descripción',
@@ -44,6 +45,8 @@ const translation = createTranslation({
   Stats: () => 'Estadisticas',
   'Connected peers stats': () => 'Estadísticas de compañeros conectados',
   'Connecting to peers': () => 'Conectando con sus compañeros',
+  Following: () => 'Siguiendo',
+  'Not following anyone': () => 'No seguir a nadie',
 
   // post
   'Uncensorable content': () => 'Contenido sin censura',

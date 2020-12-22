@@ -89,7 +89,7 @@ class Sav3Ipfs extends EventEmitter {
 
     let ip, port, protocol
     try {
-      const connectionInfo = webRtcUtils.getWebRtcPeerConnectionInfo(peerCid)
+      const connectionInfo = await webRtcUtils.getWebRtcPeerConnectionInfo(peerCid)
       ip = connectionInfo.ip
       port = connectionInfo.port
       protocol = connectionInfo.protocol
@@ -247,23 +247,23 @@ class Sav3Ipfs extends EventEmitter {
     await this.waitForReady()
     const profile = {}
 
-    if (displayName !== undefined) {
+    if (displayName) {
       assert(typeof displayName === 'string', 'display name not a string')
       assert(displayName.length <= 50, `display name '${displayName}' longer than 50 chars`)
       profile.diplayNameCid = (await this.ipfs.add(displayName)).cid.toString()
     }
-    if (description !== undefined) {
+    if (description) {
       assert(typeof description === 'string', 'description not a string')
       assert(description.length <= 140, `description '${description}' longer than 140 chars`)
       profile.descriptionCid = (await this.ipfs.add(description)).cid.toString()
     }
-    if (thumbnailUrl !== undefined) {
+    if (thumbnailUrl) {
       assert(typeof thumbnailUrl === 'string', 'thumbnail url not a string')
       assert(thumbnailUrl.startsWith('https://'), `thumbnail url '${thumbnailUrl}' does not start with https://`)
       assert(thumbnailUrl.length <= 140, `thumbnail url '${thumbnailUrl}' longer than 140 chars`)
       profile.thumbnailUrlCid = (await this.ipfs.add(thumbnailUrl)).cid.toString()
     }
-    if (bannerUrl !== undefined) {
+    if (bannerUrl) {
       assert(typeof bannerUrl === 'string', 'banner url not a string')
       assert(bannerUrl.startsWith('https://'), `banner url '${bannerUrl}' does not start with https://`)
       assert(bannerUrl.length <= 140, `banner url '${thumbnailUrl}' longer than 140 chars`)
@@ -364,9 +364,9 @@ class Sav3Ipfs extends EventEmitter {
   }
 }
 
-export const sav3Ipfs = new Sav3Ipfs()
+const sav3Ipfs = new Sav3Ipfs()
 
-// useful for testing
+// for testing
 window.sav3Ipfs = sav3Ipfs
 window.Ipfs = Ipfs
 createWindowSav3IpfsTestMethods(sav3Ipfs)

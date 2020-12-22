@@ -19,9 +19,13 @@ a=ice-pwd:BBIh/kIoQ58WUUj9GxikRqZN
 */
 
 import * as sdpTransform from 'sdp-transform'
-import QuickLRU from 'quick-lru'
 import assert from 'assert'
-export const sdpCache = new QuickLRU({maxSize: 1000})
+
+import IdbLru from 'src/lib/utils/idb-lru'
+export const sdpCache = IdbLru({
+  name: 'sdpCache',
+  maxSize: 2000
+})
 
 /**
  * cache webrtc sdp of each peer to get their ip addresses later
@@ -77,9 +81,9 @@ const webRtcStarUpgradeInboundWithSdpCache = (webRtcStarUpgradeInbound) => async
  * @param {string} peerId
  * @returns {{ip: string, port: number, protocol: string}}
  */
-export const getWebRtcPeerConnectionInfo = (peerId) => {
+export const getWebRtcPeerConnectionInfo = async (peerId) => {
   assert(peerId && typeof peerId === 'string', `invalid peer id ${peerId}`)
-  const sdpString = sdpCache.get(peerId)
+  const sdpString = await sdpCache.get(peerId)
   assert(sdpString, `no sdp cache for peer id '${peerId}'`)
 
   const sdp = sdpTransform.parse(sdpString)

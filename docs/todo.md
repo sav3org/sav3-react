@@ -1,8 +1,15 @@
+todo before next demo
+---------------------
+remove new repo on each reload in production
+add follow to post
+add link to profile from post
+feed of users youre following
+add following page to menu
+add followings posts to menu
 
---publish another demo
 
+fix sidebar bug (only happens in production build for some reason)
 
-follow user
 view feed of users you're following
 load more than 5 posts on scroll
 add "go to profile when clicking on username or avatar"
@@ -16,6 +23,10 @@ hooks
   - use user following
   - use feed posts
   
+/following/blocked
+
+import/export private key
+
 possibly use pubsub for likes/retweets counts, but only display the usernames of people in your follow circle so people dont have incentive to spam, possibly use cloudflare country api to get own ip and country, and include it in the like/retweet count statistics?
 
 

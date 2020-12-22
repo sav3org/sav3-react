@@ -9,7 +9,7 @@ const thumbnailUrls = [
 
 const bannerUrls = ['https://i.imgur.com/ImQWjja.jpeg', 'https://i.imgur.com/txRRZpd.jpeg', 'https://i.imgur.com/2LwSsSu.gif', 'https://i.imgur.com/gpKZaRK.jpeg']
 
-const mediaUrls = ['https://i.imgur.com/qiQHwHb.mp4', 'i.imgur.com/ImQWjja.jpeg', 'https://i.imgur.com/txRRZpd.jpeg', 'https://i.imgur.com/2LwSsSu.gif', 'i.imgur.com/gpKZaRK.jpeg']
+const mediaUrls = ['https://i.imgur.com/qiQHwHb.mp4', 'i.imgur.com/ImQWjja.jpeg', 'http://i.imgur.com/txRRZpd.jpeg', 'https://i.imgur.com/2LwSsSu.gif', 'i.imgur.com/gpKZaRK.jpeg']
 
 const displayNames = ['Jimmy Nguyen', 'Shadders', 'WallStreet5', 'Joshua Henslee', 'John M']
 
