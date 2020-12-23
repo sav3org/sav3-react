@@ -109,6 +109,32 @@ const createWindowSav3IpfsTestMethods = (sav3Ipfs) => {
     await window.sav3IpfsTest.editProfile()
     await window.sav3IpfsTest.publishPosts(amount)
   }
+
+  window.sav3IpfsTest.importExport = async (_newPrivateKey) => {
+    await sav3Ipfs.waitForReady()
+    const oldId = await sav3Ipfs.ipfs.id()
+    const oldCid = oldId.id
+    const oldPublicKey = oldId.publicKey
+    const oldPeerCid = await sav3Ipfs.getOwnPeerCid()
+    const oldPrivateKey = await sav3Ipfs.getPrivateKey()
+
+    await sav3Ipfs.setPrivateKey(_newPrivateKey || oldPrivateKey)
+    await sav3Ipfs.waitForReady()
+    const newId = await sav3Ipfs.ipfs.id()
+    const newCid = newId.id
+    const newPublicKey = newId.publicKey
+    const newPeerCid = await sav3Ipfs.getOwnPeerCid()
+    const newPrivateKey = await sav3Ipfs.getPrivateKey()
+
+    console.log('oldCid', oldCid)
+    console.log('newCid', newCid)
+    console.log('oldPeerCid', oldPeerCid)
+    console.log('newPeerCid', newPeerCid)
+    console.log('oldPublicKey', oldPublicKey)
+    console.log('newPublicKey', newPublicKey)
+    console.log('oldPrivateKey', oldPrivateKey)
+    console.log('newPrivateKey', newPrivateKey)
+  }
 }
 
 export default createWindowSav3IpfsTestMethods

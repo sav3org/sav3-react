@@ -23,6 +23,8 @@ const translation = createTranslation({
   'Connecting to peers': () => 'Connecting to peers',
   Following: () => 'Following',
   'Not following anyone': () => 'Not following anyone',
+  Export: () => 'Export',
+  Import: () => 'Import',
 
   // post
   'Uncensorable content': () => 'Uncensorable content',

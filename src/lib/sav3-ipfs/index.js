@@ -9,6 +9,7 @@ import EventEmitter from 'events'
 import ipns from 'ipns'
 import crypto from 'libp2p-crypto'
 import createWindowSav3IpfsTestMethods from './utils/create-window-sav3-ipfs-test-methods'
+import uint8ArrayToString from 'uint8arrays/to-string'
 
 class Sav3Ipfs extends EventEmitter {
   constructor () {
@@ -18,18 +19,25 @@ class Sav3Ipfs extends EventEmitter {
     this._initIpfs().catch(console.log)
   }
 
-  async _initIpfs () {
+  async _initIpfs ({privateKey} = {}) {
+    // a random repo allows multiple tabs to have different peers
+    // which is good for testing
     let repo
-    if (process.env.NODE_ENV === 'development') {
-      // a random repo allows multiple tabs to have different peers
-      // which is good for testing
+    if (!privateKey && process.env.NODE_ENV === 'development') {
       repo = Math.random().toString(36).substring(7)
+    }
+
+    // init ipfs with a specified private key
+    let Identity
+    if (privateKey) {
+      Identity = {PrivKey: privateKey}
     }
 
     const ipfsOptions = {
       preload: {enabled: false},
       repo,
       config: {
+        Identity,
         Bootstrap: [],
         Addresses: {
           Delegates: [],
@@ -44,6 +52,8 @@ class Sav3Ipfs extends EventEmitter {
       //   }
       // }
     }
+
+    console.log('_initIpfs', {ipfsOptions})
 
     const ipfs = await Ipfs.create(ipfsOptions)
     this.ipfs = webRtcUtils.withWebRtcSdpCache(ipfs)
@@ -124,6 +134,21 @@ class Sav3Ipfs extends EventEmitter {
       peerCids.push(peerCid)
     }
     return peerCids
+  }
+
+  async getPrivateKey () {
+    await this.waitForReady()
+    const encryptedPrivateKeyString = await this.ipfs.key.export('self', 'password')
+    const privateKey = await crypto.keys.import(encryptedPrivateKeyString, 'password')
+    return uint8ArrayToString(privateKey.bytes, 'base64')
+  }
+
+  async setPrivateKey (base64PrivateKey) {
+    assert(base64PrivateKey && typeof base64PrivateKey === 'string', `sav3Ipfs.setPrivateKey base64PrivateKey '${base64PrivateKey}' not a string`)
+    const ipfs = this.ipfs
+    delete this.ipfs
+    await ipfs.stop()
+    await this._initIpfs({privateKey: base64PrivateKey})
   }
 
   async getOwnPeerCid () {

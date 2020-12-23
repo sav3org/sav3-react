@@ -15,6 +15,7 @@ import Search from 'src/views/search'
 import Peers from 'src/views/peers'
 import Stats from 'src/views/stats'
 import Following from 'src/views/following'
+import Export from 'src/views/export'
 
 const useStyles = makeStyles((theme) => ({
   leftColumn: {
@@ -107,6 +108,9 @@ function App () {
             </Route>
             <Route path='/following' exact>
               <Following />
+            </Route>
+            <Route path='/export' exact>
+              <Export />
             </Route>
           </Switch>
         </Grid>

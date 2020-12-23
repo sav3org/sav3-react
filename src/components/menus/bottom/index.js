@@ -42,13 +42,17 @@ function BottomMenu ({className} = {}) {
   const rootClassName = className ? clsx(classes.root, className) : classes.root
 
   return (
-    <BottomNavigation value={activeMenu} className={rootClassName}>
-      <PublishPostButton />
-      <BottomNavigationAction component={RouterLink} to='/' value='home' icon={<HomeIcon />} />
-      <BottomNavigationAction component={RouterLink} to='/search' value='search' icon={<SearchIcon />} />
-      <BottomNavigationAction component={RouterLink} to='/peers' value='peers' icon={<PeersIcon />} />
-      <BottomNavigationAction component={RouterLink} to='/stats' value='stats' icon={<BarChartIcon />} />
-    </BottomNavigation>
+    <Box>
+      <BottomNavigation value={activeMenu} className={rootClassName}>
+        <PublishPostButton />
+        <BottomNavigationAction component={RouterLink} to='/' value='home' icon={<HomeIcon />} />
+        <BottomNavigationAction component={RouterLink} to='/search' value='search' icon={<SearchIcon />} />
+        <BottomNavigationAction component={RouterLink} to='/peers' value='peers' icon={<PeersIcon />} />
+        <BottomNavigationAction component={RouterLink} to='/stats' value='stats' icon={<BarChartIcon />} />
+      </BottomNavigation>
+      {/* give real height to fixed bottom nav */}
+      <Box width={0} className='MuiBottomNavigation-root' />
+    </Box>
   )
 }
 
