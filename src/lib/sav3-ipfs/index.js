@@ -10,6 +10,7 @@ import ipns from 'ipns'
 import crypto from 'libp2p-crypto'
 import createWindowSav3IpfsTestMethods from './utils/create-window-sav3-ipfs-test-methods'
 import uint8ArrayToString from 'uint8arrays/to-string'
+import config from 'src/config'
 
 class Sav3Ipfs extends EventEmitter {
   constructor () {
@@ -41,7 +42,7 @@ class Sav3Ipfs extends EventEmitter {
         Bootstrap: [],
         Addresses: {
           Delegates: [],
-          Swarm: ['/dns4/star.sav3.org/tcp/443/wss/p2p-webrtc-star/']
+          Swarm: config.starServers
         }
       }
       // libp2p: {

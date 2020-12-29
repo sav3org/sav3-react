@@ -8,6 +8,7 @@ import uint8ArrayToString from 'uint8arrays/to-string'
 import PeerId from 'peer-id'
 import isIpfs from 'is-ipfs'
 import QuickLRU from 'quick-lru'
+import config from 'src/config'
 
 class IpnsClient extends EventEmitter {
   constructor ({ipfs} = {}) {
@@ -17,7 +18,7 @@ class IpnsClient extends EventEmitter {
     this.privateKey = null
     this.webSocketClient = null
     this.peerCid = null
-    this.url = 'https://ipns.sav3.org'
+    this.url = config.ipnsServer
     this.subscriptionIpnsValueCache = new QuickLRU({maxSize: 10000})
 
     this.start()
@@ -56,7 +57,7 @@ class IpnsClient extends EventEmitter {
   }
 
   async subscribe (ipnsPaths) {
-    assert(Array.isArray(ipnsPaths))
+    validateIpnsPaths(ipnsPaths)
     await this.waitForReady()
 
     // cache ipns values to call ipnsClient.subscribe
@@ -91,7 +92,7 @@ class IpnsClient extends EventEmitter {
   }
 
   async getRecords (ipnsPaths) {
-    assert(Array.isArray(ipnsPaths))
+    validateIpnsPaths(ipnsPaths)
     await this.waitForReady()
     const ipnsRecords = await new Promise((resolve) => this.webSocketClient.emit('resolve', ipnsPaths, resolve))
     const unmarshalled = await getUnmarshalledIpnsRecords(ipnsPaths, ipnsRecords)
@@ -99,7 +100,7 @@ class IpnsClient extends EventEmitter {
   }
 
   async unsubscribe (ipnsPaths) {
-    assert(Array.isArray(ipnsPaths))
+    validateIpnsPaths(ipnsPaths)
     await this.waitForReady()
 
     // delete values from cache or resubscribing will
@@ -128,6 +129,13 @@ class IpnsClient extends EventEmitter {
 
     const ipnsPath = this.peerCid
     await this.webSocketClient.emit('publish', ipnsPath, marshalledRecord)
+  }
+}
+
+const validateIpnsPaths = (ipnsPaths) => {
+  assert(Array.isArray(ipnsPaths), `ipns paths '${ipnsPaths}' not an array`)
+  for (const ipnsPath of ipnsPaths) {
+    assert(typeof ipnsPath === 'string', `ipns paths '${ipnsPaths}' contains non string '${ipnsPath}'`)
   }
 }
 

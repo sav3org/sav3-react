@@ -1,9 +1,14 @@
 import puppeteer from 'puppeteer'
 import util from 'util'
+import isDocker from 'is-docker'
 
 class Browser {
   async open () {
-    this.browser = await puppeteer.launch()
+    let puppeteerOptions
+    if (isDocker()) {
+      puppeteerOptions = {executablePath: '/usr/bin/google-chrome-stable', args: ['--no-sandbox']}
+    }
+    this.browser = await puppeteer.launch(puppeteerOptions)
     this.page = await this.browser.newPage()
 
     // log browser console logs
