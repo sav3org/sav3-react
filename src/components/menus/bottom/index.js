@@ -14,7 +14,7 @@ import BarChartIcon from '@material-ui/icons/BarChart'
 import PeersIcon from '@material-ui/icons/Wifi'
 
 const useStyles = makeStyles((theme) => ({
-  root: {
+  menu: {
     // stick to bottom
     width: '100%',
     position: 'fixed',
@@ -39,11 +39,9 @@ function BottomMenu ({className} = {}) {
   const route = useRouteMatch('/:route')
   const activeMenu = route && route.params && route.params.route ? route.params.route : 'home'
 
-  const rootClassName = className ? clsx(classes.root, className) : classes.root
-
   return (
-    <Box>
-      <BottomNavigation value={activeMenu} className={rootClassName}>
+    <Box className={className}>
+      <BottomNavigation value={activeMenu} className={classes.menu}>
         <PublishPostButton />
         <BottomNavigationAction component={RouterLink} to='/' value='home' icon={<HomeIcon />} />
         <BottomNavigationAction component={RouterLink} to='/search' value='search' icon={<SearchIcon />} />

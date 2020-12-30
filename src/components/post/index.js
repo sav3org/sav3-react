@@ -1,17 +1,14 @@
-import {Fragment, useState} from 'react'
+import {Fragment} from 'react'
 import {makeStyles} from '@material-ui/core/styles'
-import clsx from 'clsx'
 import Card from '@material-ui/core/Card'
 import CardMedia from '@material-ui/core/CardMedia'
-import CardContent from '@material-ui/core/CardContent'
-import CardActions from '@material-ui/core/CardActions'
-import Collapse from '@material-ui/core/Collapse'
 import Avatar from '@material-ui/core/Avatar'
 import IconButton from '@material-ui/core/IconButton'
 import Typography from '@material-ui/core/Typography'
-import FavoriteIcon from '@material-ui/icons/Favorite'
-import ShareIcon from '@material-ui/icons/Share'
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
+import FavoriteIcon from '@material-ui/icons/FavoriteBorderOutlined'
+import ShareIcon from '@material-ui/icons/ShareOutlined'
+import RepeatIcon from '@material-ui/icons/Repeat'
+import CommentIcon from '@material-ui/icons/ModeCommentOutlined'
 import Link from '@material-ui/core/Link'
 import Box from '@material-ui/core/Box'
 import {format as formatTimeAgo} from 'timeago.js'
@@ -22,20 +19,9 @@ import PostMoreMenu from './more-menu'
 import {Link as RouterLink} from 'react-router-dom'
 
 const useStyles = makeStyles((theme) => ({
-  root: {},
   imgMedia: {
     height: 0,
     paddingTop: '56.25%' // 16:9
-  },
-  expand: {
-    transform: 'rotate(0deg)',
-    marginLeft: 'auto',
-    transition: theme.transitions.create('transform', {
-      duration: theme.transitions.duration.shortest
-    })
-  },
-  expandOpen: {
-    transform: 'rotate(180deg)'
   },
   avatar: {
     // slightly higher placement than the user name seems more pleasing
@@ -59,6 +45,18 @@ const useStyles = makeStyles((theme) => ({
   },
   contentLink: {
     wordBreak: 'break-all'
+  },
+  actions: {
+    paddingTop: theme.spacing(0.5),
+    maxWidth: theme.sav3.layout.columns.middle.width.md * 0.75,
+    marginLeft: theme.spacing(-1)
+  },
+  actionIconButton: {
+    padding: theme.spacing(1),
+    '& .MuiSvgIcon-root': {
+      fontSize: '1rem',
+      color: theme.palette.text.secondary
+    }
   }
 }))
 
@@ -70,84 +68,69 @@ const useStyles = makeStyles((theme) => ({
 function Post ({post} = {}) {
   const languageCode = useLanguageCode()
   const classes = useStyles()
-  const [expanded, setExpanded] = useState(false)
-
-  const handleExpandClick = () => {
-    setExpanded(!expanded)
-  }
-
   const date = formatDate(post.timestamp, languageCode)
 
   return (
-    <div>
-      <Box px={2} py={1.5} display='flex'>
-        {/* left col avatar */}
-        <Box pr={1.5}>
-          <Avatar
-            component={RouterLink}
-            to={{pathname: '/profile', state: {userCid: post.userCid}}}
-            src={post.profile.thumbnailUrl && forceHttps(post.profile.thumbnailUrl)}
-            className={classes.avatar}
-          />
-        </Box>
+    <Box px={2} pt={1.5} pb={0.5} display='flex'>
+      {/* left col avatar */}
+      <Box pr={1.5}>
+        <Avatar
+          component={RouterLink}
+          to={{pathname: '/profile', state: {userCid: post.userCid}}}
+          src={post.profile.thumbnailUrl && forceHttps(post.profile.thumbnailUrl)}
+          className={classes.avatar}
+        />
+      </Box>
 
-        {/* right col header + content + bottom actions */}
-        <Box width='100%'>
-          {/* header */}
-          <Box display='flex'>
-            <Box flexGrow={1}>
-              <Box display='flex'>
-                {post.profile.displayName && (
-                  <Fragment>
-                    <Typography className={classes.displayName} component={RouterLink} to={{pathname: '/profile', state: {userCid: post.userCid}}} variant='subtitle2'>
-                      {post.profile.displayName}
-                    </Typography>
-                    &nbsp;
-                    <Typography variant='subtitle2'>·</Typography>
-                    &nbsp;
-                  </Fragment>
-                )}
-                <Typography variant='subtitle2'>{date}</Typography>
-              </Box>
-              <Box>
-                <Typography component={RouterLink} to={{pathname: '/profile', state: {userCid: post.userCid}}} variant='caption' color='textSecondary' className={classes.userCid}>
-                  {post.userCid}
-                </Typography>
-              </Box>
+      {/* right col header + content + bottom actions */}
+      <Box width='100%'>
+        {/* header */}
+        <Box display='flex'>
+          <Box flexGrow={1}>
+            <Box display='flex'>
+              {post.profile.displayName && (
+                <Fragment>
+                  <Typography className={classes.displayName} component={RouterLink} to={{pathname: '/profile', state: {userCid: post.userCid}}} variant='subtitle2'>
+                    {post.profile.displayName}
+                  </Typography>
+                  &nbsp;
+                  <Typography variant='subtitle2'>·</Typography>
+                  &nbsp;
+                </Fragment>
+              )}
+              <Typography variant='subtitle2'>{date}</Typography>
             </Box>
             <Box>
-              <PostMoreMenu post={post} />
+              <Typography component={RouterLink} to={{pathname: '/profile', state: {userCid: post.userCid}}} variant='caption' color='textSecondary' className={classes.userCid}>
+                {post.userCid}
+              </Typography>
             </Box>
           </Box>
+          <Box>
+            <PostMoreMenu post={post} />
+          </Box>
+        </Box>
 
-          {/* content */}
-          <PostContent content={post.content} />
+        {/* content */}
+        <PostContent content={post.content} />
 
-          {/* actions */}
-          <CardActions disableSpacing>
-            <IconButton aria-label='add to favorites'>
-              <FavoriteIcon />
-            </IconButton>
-            <IconButton aria-label='share'>
-              <ShareIcon />
-            </IconButton>
-            <IconButton
-              className={clsx(classes.expand, {
-                [classes.expandOpen]: expanded
-              })}
-              onClick={handleExpandClick}
-              aria-expanded={expanded}
-              aria-label='show more'
-            >
-              <ExpandMoreIcon />
-            </IconButton>
-          </CardActions>
-          <Collapse in={expanded} timeout='auto' unmountOnExit>
-            <CardContent></CardContent>
-          </Collapse>
+        {/* actions */}
+        <Box display='flex' justifyContent='space-between' className={classes.actions}>
+          <IconButton className={classes.actionIconButton}>
+            <CommentIcon />
+          </IconButton>
+          <IconButton className={classes.actionIconButton}>
+            <RepeatIcon style={{transform: 'rotate(90deg)'}} />
+          </IconButton>
+          <IconButton className={classes.actionIconButton}>
+            <FavoriteIcon />
+          </IconButton>
+          <IconButton className={classes.actionIconButton}>
+            <ShareIcon />
+          </IconButton>
         </Box>
       </Box>
-    </div>
+    </Box>
   )
 }
 
