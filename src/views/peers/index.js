@@ -23,9 +23,12 @@ function Peers () {
   const t = useTranslation()
   const history = useHistory()
 
+  let peersCids = usePeersCids()
   const ownCid = useOwnUserCid()
-  const peersCids = usePeersCids()
-  const postsObject = useUsersPosts([ownCid, ...peersCids])
+  if (ownCid) {
+    peersCids = [ownCid, ...peersCids]
+  }
+  const postsObject = useUsersPosts(peersCids)
   const posts = []
   for (const postCid in postsObject) {
     posts.push(postsObject[postCid])

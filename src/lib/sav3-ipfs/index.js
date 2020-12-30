@@ -232,12 +232,14 @@ class Sav3Ipfs extends EventEmitter {
   }
 
   async subscribeToIpnsPath (ipnsPath) {
+    assert(ipnsPath && typeof ipnsPath === 'string', `sav3Ipfs.subscribeToIpnsPath ipnsPath '${ipnsPath}' not a string`)
     await this.waitForReady()
     const ipnsValues = await this.ipnsClient.subscribe([ipnsPath])
     return ipnsValues[0]
   }
 
   async subscribeToIpnsPaths (ipnsPaths) {
+    assert(Array.isArray(ipnsPaths), `sav3Ipfs.subscribeToIpnsPaths ipnsPaths '${ipnsPaths}' not an array`)
     await this.waitForReady()
     const ipnsValues = await this.ipnsClient.subscribe(ipnsPaths)
     return ipnsValues

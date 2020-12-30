@@ -20,9 +20,12 @@ function Home () {
   const theme = useTheme()
   const fullScreen = useMediaQuery(theme.breakpoints.down('xs'))
   const t = useTranslation()
-  const followingCids = useFollowingOnce()
+  let followingCids = useFollowingOnce()
   const ownCid = useOwnUserCid()
-  const postsObject = useUsersPosts([ownCid, ...followingCids])
+  if (ownCid) {
+    followingCids = [ownCid, ...followingCids]
+  }
+  const postsObject = useUsersPosts(followingCids)
   const posts = []
   for (const postCid in postsObject) {
     posts.push(postsObject[postCid])
