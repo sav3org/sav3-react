@@ -1,30 +1,23 @@
-import/export account
-reply to post
-get notification from reply
-like, get notification from like
 
-todo before next demo
----------------------
-remove new repo on each reload in production
-
-load more than 5 posts on scroll
-add "go to profile when clicking on username or avatar"
-
-feed of bootstrapped users (from google sheet)
-like, share, reply, retweet
-
-hooks
-  - use user posts
-  - user user profile
-  - use user following
-  - use feed posts
-  
-/following/blocked
-
+todo before finished prototype
+------------------------------
 import/export private key
+reply
+like
+resav3
+share
+more than 5 posts per user
+feed of moderated bootstrapped users (from a google sheet)
 
+todo after prototype
+--------------------
+reply notification
+like notification
+resav3 notification
+
+possible way to do likes
+------------------------
 possibly use pubsub for likes/retweets counts, but only display the usernames of people in your follow circle so people dont have incentive to spam, possibly use cloudflare country api to get own ip and country, and include it in the like/retweet count statistics?
-
 
 possible data in sav3
 ----
