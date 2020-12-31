@@ -28,11 +28,6 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-/**
- * @param {object} props
- * @param {string} props.className
- * @returns {JSX.Element}
- */
 function BottomMenu ({className} = {}) {
   const classes = useStyles()
   const route = useRouteMatch('/:route')
@@ -53,9 +48,6 @@ function BottomMenu ({className} = {}) {
   )
 }
 
-/**
- * @returns {JSX.Element}
- */
 function PublishPostButton () {
   const classes = useStyles()
 

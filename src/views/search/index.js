@@ -21,9 +21,6 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-/**
- * @returns {JSX.Element}
- */
 function Search () {
   const classes = useStyles()
   const theme = useTheme()

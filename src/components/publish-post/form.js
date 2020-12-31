@@ -45,9 +45,6 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-/**
- * @returns {JSX.Element}
- */
 function PublishPostForm () {
   const t = useTranslation()
   const classes = useStyles()

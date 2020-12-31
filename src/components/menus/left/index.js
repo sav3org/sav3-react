@@ -52,9 +52,6 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-/**
- * @returns {JSX.Element}
- */
 function LeftMenu () {
   const classes = useStyles()
   const t = useTranslation()
@@ -104,9 +101,6 @@ function LeftMenu () {
   )
 }
 
-/**
- * @returns {JSX.Element}
- */
 function PublishPostButton () {
   const classes = useStyles()
 

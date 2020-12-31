@@ -75,9 +75,6 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-/**
- * @returns {JSX.Element}
- */
 function App () {
   const classes = useStyles()
   const theme = useTheme()

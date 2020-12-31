@@ -38,13 +38,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-/**
- * @param {object} props
- * @param {boolean} props.open
- * @param {Function} props.onClose
- * @returns {JSX.Element}
- */
-function PublishPostModal ({open, onClose}) {
+function PublishPostModal ({open, onClose, parentPost} = {}) {
   const t = useTranslation()
   const classes = useStyles()
   const [content, setContent] = useState('')
@@ -115,7 +109,8 @@ function PublishPostModal ({open, onClose}) {
 
 PublishPostModal.propTypes = {
   open: PropTypes.bool.isRequired,
-  onClose: PropTypes.func.isRequired
+  onClose: PropTypes.func.isRequired,
+  parentPost: PropTypes.object
 }
 
 export default PublishPostModal

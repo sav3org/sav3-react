@@ -15,14 +15,6 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-/**
- * @param {object} props
- * @param {boolean} props.open
- * @param {Function} props.onClose
- * @param {JSX.Element} props.content
- * @param {JSX.Element} props.actions
- * @returns {JSX.Element}
- */
 function Modal ({open, onClose, content, actions} = {}) {
   const classes = useStyles()
   const theme = useTheme()

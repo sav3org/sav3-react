@@ -3,11 +3,6 @@ import Post from 'src/components/post'
 import Divider from '@material-ui/core/Divider'
 import PropTypes from 'prop-types'
 
-/**
- * @param {object} props
- * @param {string} props.posts
- * @returns {JSX.Element}
- */
 function PostsFeed ({posts} = {}) {
   const postComponents = []
 

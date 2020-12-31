@@ -17,9 +17,6 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-/**
- * @returns {JSX.Element}
- */
 function HomeMenu () {
   const classes = useStyles()
   const t = useTranslation()

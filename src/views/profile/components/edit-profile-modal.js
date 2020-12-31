@@ -43,13 +43,6 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-/**
- * @param {object} props
- * @param {boolean} props.open
- * @param {Function} props.onClose
- * @param {object} props.previousProfile
- * @returns {JSX.Element}
- */
 function EditProfileModal ({open, onClose, previousProfile}) {
   const t = useTranslation()
   const classes = useStyles()

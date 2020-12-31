@@ -4,9 +4,6 @@ import Select from '@material-ui/core/Select'
 import MenuItem from '@material-ui/core/MenuItem'
 import themes from 'src/themes'
 
-/**
- * @returns {JSX.Element}
- */
 function ThemeSwitcher () {
   const {theme, setTheme} = useContext(ThemeContext)
   const handleThemeChange = (event) => {

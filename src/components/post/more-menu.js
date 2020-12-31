@@ -25,11 +25,6 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-/**
- * @param {object} props
- * @param {object} props.post
- * @returns {JSX.Element}
- */
 function PostMoreMenu ({post} = {}) {
   const classes = useStyles()
   const [anchorEl, setAnchorEl] = useState(null)
@@ -80,11 +75,6 @@ PostMoreMenu.propTypes = {
   post: PropTypes.object.isRequired
 }
 
-/**
- * @param {object} props
- * @param {object} props.userCid
- * @returns {JSX.Element}
- */
 function FollowMenuItem ({userCid} = {}) {
   const classes = useStyles()
   const t = useTranslation()

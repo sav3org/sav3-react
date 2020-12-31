@@ -13,9 +13,6 @@ import useTranslation from 'src/translations/use-translation'
 import useOwnUserCid from 'src/hooks/use-own-user-cid'
 import Divider from '@material-ui/core/Divider'
 
-/**
- * @returns {JSX.Element}
- */
 function Home () {
   const theme = useTheme()
   const fullScreen = useMediaQuery(theme.breakpoints.down('xs'))

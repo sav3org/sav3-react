@@ -9,9 +9,6 @@ import useOwnUserCid from 'src/hooks/use-own-user-cid'
 import ProfileComponent from './components/profile'
 import useTranslation from 'src/translations/use-translation'
 
-/**
- * @returns {JSX.Element}
- */
 function Profile () {
   // arrived on profile page from a click on a post
   const location = useLocation()

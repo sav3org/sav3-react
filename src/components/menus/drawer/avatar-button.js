@@ -14,9 +14,6 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-/**
- * @returns {JSX.Element}
- */
 function AvatarDrawerMenuButton () {
   const userCid = useOwnPeerCid()
   const classes = useStyles()

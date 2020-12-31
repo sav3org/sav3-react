@@ -3,11 +3,6 @@ import User from './user'
 import Divider from '@material-ui/core/Divider'
 import PropTypes from 'prop-types'
 
-/**
- * @param {object} props
- * @param {string} props.users
- * @returns {JSX.Element}
- */
 function UsersFeed ({users} = {}) {
   const userComponents = []
 

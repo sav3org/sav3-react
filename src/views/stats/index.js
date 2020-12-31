@@ -10,9 +10,6 @@ import usePeersStats from 'src/hooks/use-peers-stats'
 import Peer from './components/peer'
 import CircularProgress from '@material-ui/core/CircularProgress'
 
-/**
- * @returns {JSX.Element}
- */
 function Stats () {
   const t = useTranslation()
   const history = useHistory()
@@ -37,11 +34,6 @@ function Stats () {
   )
 }
 
-/**
- * @param {object} props
- * @param {string} props.peers
- * @returns {JSX.Element}
- */
 function Feed ({peers} = {}) {
   const t = useTranslation()
   if (!peers.length) {

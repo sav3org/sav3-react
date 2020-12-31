@@ -26,11 +26,6 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-/**
- * @param {object} props
- * @param {string} props.children
- * @returns {JSX.Element}
- */
 function TopBar ({children}) {
   const classes = useStyles()
   return (

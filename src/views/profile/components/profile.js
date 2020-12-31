@@ -47,11 +47,6 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-/**
- * @param {object} props
- * @param {string} props.userCid
- * @returns {JSX.Element}
- */
 function Profile ({userCid} = {}) {
   const ownCid = useOwnUserCid()
   const classes = useStyles()
@@ -98,11 +93,6 @@ Profile.propTypes = {
   userCid: PropTypes.string.isRequired
 }
 
-/**
- * @param {object} props
- * @param {object} props.profile
- * @returns {JSX.Element}
- */
 function EditProfileButton ({profile}) {
   const t = useTranslation()
   const [openEditProfileModal, setOpenEditProfileModal] = useState(false)
@@ -116,11 +106,6 @@ function EditProfileButton ({profile}) {
   )
 }
 
-/**
- * @param {object} props
- * @param {object} props.userCid
- * @returns {JSX.Element}
- */
 function FollowButton ({userCid} = {}) {
   const t = useTranslation()
   const [isFollowing, setIsFollowing] = useIsFollowing(userCid)

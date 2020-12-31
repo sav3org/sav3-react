@@ -4,11 +4,6 @@ import assert from 'assert'
 import urlRegex from 'url-regex'
 import PropTypes from 'prop-types'
 
-/**
- * @param {object} props
- * @param {string} props.description
- * @returns {JSX.Element}
- */
 function Description ({description} = {}) {
   let descriptionComponents = [description]
 

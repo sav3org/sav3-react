@@ -33,9 +33,6 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-/**
- * @returns {JSX.Element}
- */
 function ImportForm () {
   const t = useTranslation()
   const classes = useStyles()

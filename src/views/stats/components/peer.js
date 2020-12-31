@@ -21,11 +21,6 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-/**
- * @param {object} props
- * @param {string} props.peer
- * @returns {JSX.Element}
- */
 function Peer ({peer} = {}) {
   const classes = useStyles()
 

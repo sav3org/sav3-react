@@ -35,11 +35,6 @@ const useStyles = makeStyles((theme) => ({
 // same height as the 3 dots button of the post component
 const buttonHeight = 48
 
-/**
- * @param {object} props
- * @param {string} props.user
- * @returns {JSX.Element}
- */
 function User ({user} = {}) {
   const classes = useStyles()
   const t = useTranslation()

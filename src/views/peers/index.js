@@ -14,9 +14,7 @@ import useUsersPosts from 'src/hooks/use-users-posts'
 import PublishPostForm from 'src/components/publish-post/form'
 import CircularProgress from '@material-ui/core/CircularProgress'
 import useOwnUserCid from 'src/hooks/use-own-user-cid'
-/**
- * @returns {JSX.Element}
- */
+
 function Peers () {
   const theme = useTheme()
   const fullScreen = useMediaQuery(theme.breakpoints.down('xs'))

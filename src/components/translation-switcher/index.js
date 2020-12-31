@@ -4,9 +4,6 @@ import Select from '@material-ui/core/Select'
 import MenuItem from '@material-ui/core/MenuItem'
 import translations from 'src/translations'
 
-/**
- * @returns {JSX.Element}
- */
 function TranslationSwitcher () {
   const {languageCode, setLanguageCode} = useContext(LanguageCodeContext)
   const handleTranslationChange = (event) => {

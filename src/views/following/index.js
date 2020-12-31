@@ -9,9 +9,6 @@ import useFollowingOnce from 'src/hooks/following/use-following-once'
 import useUsersProfiles from 'src/hooks/use-users-profiles'
 import UsersFeed from 'src/components/feeds/users'
 
-/**
- * @returns {JSX.Element}
- */
 function Following () {
   const t = useTranslation()
   const history = useHistory()

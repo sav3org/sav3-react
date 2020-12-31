@@ -1,4 +1,4 @@
-import {Fragment} from 'react'
+import {Fragment, useState} from 'react'
 import {makeStyles} from '@material-ui/core/styles'
 import Card from '@material-ui/core/Card'
 import CardMedia from '@material-ui/core/CardMedia'
@@ -17,6 +17,7 @@ import assert from 'assert'
 import urlRegex from 'url-regex'
 import PostMoreMenu from './more-menu'
 import {Link as RouterLink} from 'react-router-dom'
+import PublishPostModal from 'src/components/publish-post/modal'
 
 const useStyles = makeStyles((theme) => ({
   imgMedia: {
@@ -60,11 +61,6 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-/**
- * @param {object} props
- * @param {string} props.post
- * @returns {JSX.Element}
- */
 function Post ({post} = {}) {
   const languageCode = useLanguageCode()
   const classes = useStyles()
@@ -116,9 +112,7 @@ function Post ({post} = {}) {
 
         {/* actions */}
         <Box display='flex' justifyContent='space-between' className={classes.actions}>
-          <IconButton className={classes.actionIconButton}>
-            <CommentIcon />
-          </IconButton>
+          <ReplyIconButton parentPost={post} />
           <IconButton className={classes.actionIconButton}>
             <RepeatIcon style={{transform: 'rotate(90deg)'}} />
           </IconButton>
@@ -134,11 +128,20 @@ function Post ({post} = {}) {
   )
 }
 
-/**
- * @param {object} props
- * @param {string} props.content
- * @returns {JSX.Element}
- */
+function ReplyIconButton ({parentPost} = {}) {
+  const classes = useStyles()
+
+  const [openPublishPostModal, setOpenPublishPostModal] = useState(false)
+  return (
+    <Fragment>
+      <IconButton className={classes.actionIconButton} onClick={() => setOpenPublishPostModal(true)}>
+        <CommentIcon />
+      </IconButton>
+      <PublishPostModal parentPost={parentPost} open={openPublishPostModal} onClose={() => setOpenPublishPostModal(false)} />
+    </Fragment>
+  )
+}
+
 function PostContent ({content} = {}) {
   const classes = useStyles()
   let contentComponents = [content]
