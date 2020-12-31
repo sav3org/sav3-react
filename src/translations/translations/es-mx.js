@@ -2,9 +2,7 @@ import createTranslation from '../create-translation'
 import {register as registerTimeAgo} from 'timeago.js'
 
 const timeAgo = (number, index, totalSec) => {
-  // number: the timeago / timein number;
-  // index: the index of array below;
-  // totalSec: total seconds between date to be formatted and today's date;
+  // copy paste timeAgo locale from https://github.com/hustcc/timeago.js/tree/master/src/lang
   return [
     ['justo ahora', 'en un rato'],
     ['hace %s segundos', 'en %s segundos'],
@@ -33,7 +31,6 @@ const translation = createTranslation({
   Description: () => 'Descripción',
   'Thumbnail URL': () => 'URL de miniatura',
   'Banner URL': () => 'URL del banner',
-  editProfileWarning: () => 'El historial de edición del perfil no se puede eliminar y su dirección IP es pública.',
 
   // menu
   Home: () => 'Casa',
@@ -51,8 +48,7 @@ const translation = createTranslation({
   Import: () => 'Importar',
 
   // post
-  'Uncensorable content': () => 'Contenido sin censura',
-  publishPostWarning: () => 'Las publicaciones no se pueden eliminar y su dirección IP es pública.'
+  'Uncensorable content': () => 'Contenido sin censura'
 })
 
 export default translation

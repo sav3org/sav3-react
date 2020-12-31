@@ -22,6 +22,12 @@ const useStyles = makeStyles((theme) => ({
   },
   menuItemIcon: {
     minWidth: 28
+  },
+  moreIconButton: {
+    padding: theme.spacing(0.5),
+    '& .MuiSvgIcon-root': {
+      fontSize: '1.2rem'
+    }
   }
 }))
 
@@ -46,7 +52,7 @@ function PostMoreMenu ({post} = {}) {
 
   return (
     <div>
-      <IconButton onClick={handleClick}>
+      <IconButton className={classes.moreIconButton} onClick={handleClick}>
         <MoreVertIcon />
       </IconButton>
       <Menu

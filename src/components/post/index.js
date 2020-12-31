@@ -18,6 +18,7 @@ import urlRegex from 'url-regex'
 import PostMoreMenu from './more-menu'
 import {Link as RouterLink} from 'react-router-dom'
 import PublishPostModal from 'src/components/publish-post/modal'
+import PropTypes from 'prop-types'
 
 const useStyles = makeStyles((theme) => ({
   imgMedia: {
@@ -141,6 +142,7 @@ function ReplyIconButton ({parentPost} = {}) {
     </Fragment>
   )
 }
+ReplyIconButton.propTypes = {parentPost: PropTypes.object.isRequired}
 
 function PostContent ({content} = {}) {
   const classes = useStyles()
@@ -189,6 +191,7 @@ function PostContent ({content} = {}) {
     </Box>
   )
 }
+PostContent.propTypes = {content: PropTypes.string.isRequired}
 
 // only use the first link in a post
 const getPostContentLink = (content) => {

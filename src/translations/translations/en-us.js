@@ -9,7 +9,6 @@ const translation = createTranslation({
   Description: () => 'Description',
   'Thumbnail URL': () => 'Thumbnail URL',
   'Banner URL': () => 'Banner URL',
-  editProfileWarning: () => 'Edit profile history cannot be deleted and your IP address is public.',
 
   // menu
   Home: () => 'Home',
@@ -27,8 +26,7 @@ const translation = createTranslation({
   Import: () => 'Import',
 
   // post
-  'Uncensorable content': () => 'Uncensorable content',
-  publishPostWarning: () => 'Posts cannot be deleted and your IP address is public.'
+  'Uncensorable content': () => 'Uncensorable content'
 })
 
 export default translation

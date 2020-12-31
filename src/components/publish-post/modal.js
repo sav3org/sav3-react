@@ -1,4 +1,4 @@
-import {useState} from 'react'
+import {useState, Fragment} from 'react'
 import Button from '@material-ui/core/Button'
 import TextField from '@material-ui/core/TextField'
 import useTranslation from 'src/translations/use-translation'
@@ -11,6 +11,7 @@ import useUserProfile from 'src/hooks/use-user-profile'
 import useOwnUserCid from 'src/hooks/use-own-user-cid'
 import Avatar from '@material-ui/core/Avatar'
 import Box from '@material-ui/core/Box'
+import Typography from '@material-ui/core/Typography'
 
 const useStyles = makeStyles((theme) => ({
   errorMessage: {
@@ -35,6 +36,9 @@ const useStyles = makeStyles((theme) => ({
     borderWidth: theme.sav3.borderWidth,
     borderStyle: 'solid',
     borderColor: theme.sav3.borderColor
+  },
+  userCid: {
+    wordBreak: 'break-all'
   }
 }))
 
@@ -59,8 +63,9 @@ function PublishPostModal ({open, onClose, parentPost} = {}) {
   }
 
   const handlePublish = async () => {
+    const parentPostCid = parentPost && parentPost.cid
     try {
-      await sav3Ipfs.publishPost({content})
+      await sav3Ipfs.publishPost({content, parentPostCid})
       setErrorMessage(null)
       setContent(null)
       onClose()
@@ -71,29 +76,32 @@ function PublishPostModal ({open, onClose, parentPost} = {}) {
   }
 
   const modalContent = (
-    <Box display='flex'>
-      <Box pr={1} py={1.5}>
-        <Avatar src={profile.thumbnailUrl} className={classes.avatar} />
+    <Fragment>
+      {parentPost && <ParentPost parentPost={parentPost} />}
+      <Box display='flex'>
+        <Box pr={1} py={1.5}>
+          <Avatar src={profile.thumbnailUrl} className={classes.avatar} />
+        </Box>
+        <TextField
+          autoFocus
+          className={classes.content}
+          onChange={handleChange}
+          margin='dense'
+          id='content'
+          placeholder={t['Uncensorable content']()}
+          fullWidth
+          multiline
+          rows={4}
+          variant='outlined'
+          value={content}
+        />
+        {errorMessage && (
+          <Alert classes={{message: classes.errorMessage}} severity='error'>
+            {errorMessage}
+          </Alert>
+        )}
       </Box>
-      <TextField
-        autoFocus
-        className={classes.content}
-        onChange={handleChange}
-        margin='dense'
-        id='content'
-        placeholder={t['Uncensorable content']()}
-        fullWidth
-        multiline
-        rows={4}
-        variant='outlined'
-        value={content}
-      />
-      {errorMessage && (
-        <Alert classes={{message: classes.errorMessage}} severity='error'>
-          {errorMessage}
-        </Alert>
-      )}
-    </Box>
+    </Fragment>
   )
 
   const modalActions = (
@@ -111,6 +119,24 @@ PublishPostModal.propTypes = {
   open: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
   parentPost: PropTypes.object
+}
+
+function ParentPost ({parentPost} = {}) {
+  const classes = useStyles()
+  return (
+    <Box display='flex'>
+      <Box pr={1} py={1.5}>
+        <Avatar src={parentPost.profile.thumbnailUrl} className={classes.avatar} />
+      </Box>
+      <Box pt={1.5} pl={0.5} flexGrow={1}>
+        {parentPost.profile.displayName && <Typography variant='subtitle2'>{parentPost.profile.displayName}</Typography>}
+        <Typography variant='caption' color='textSecondary' className={classes.userCid}>
+          {parentPost.userCid}
+        </Typography>
+        <Typography variant='body2'>{parentPost.content}</Typography>
+      </Box>
+    </Box>
+  )
 }
 
 export default PublishPostModal

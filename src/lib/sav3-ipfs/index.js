@@ -78,6 +78,9 @@ class Sav3Ipfs extends EventEmitter {
       console.log('connected', peer)
       this.ipfs.swarm.peers().then((peers) => console.log('current peers connected: ', peers))
     })
+
+    // silence listener memory leak warning
+    this.setMaxListeners(100)
   }
 
   /**

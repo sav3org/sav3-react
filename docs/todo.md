@@ -1,3 +1,6 @@
+todo next
+---------
+make /post page to be able to see parent posts, and reply posts
 
 todo before finished prototype
 ------------------------------
