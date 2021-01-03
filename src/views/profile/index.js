@@ -4,16 +4,21 @@ import TopBar from 'src/components/top-bar'
 import IconButton from '@material-ui/core/IconButton'
 import Typography from '@material-ui/core/Typography'
 import ArrowBack from '@material-ui/icons/ArrowBack'
-import {useHistory, useLocation} from 'react-router-dom'
+import {useHistory, useParams} from 'react-router-dom'
 import useOwnUserCid from 'src/hooks/use-own-user-cid'
 import ProfileComponent from './components/profile'
 import useTranslation from 'src/translations/use-translation'
+import urlUtils from 'src/lib/utils/url'
 
 function Profile () {
-  // arrived on profile page from a click on a post
-  const location = useLocation()
-  const locationStateUserCid = location.state && location.state.userCid
-  const isOwnProfile = !locationStateUserCid
+  const {encodedCid} = useParams()
+  const urlIsExpired = encodedCid && urlUtils.encodedCidIsExpired(encodedCid)
+  let urlUserCid
+  if (!urlIsExpired && encodedCid) {
+    urlUserCid = urlUtils.decodeCid(encodedCid)
+  }
+
+  const isOwnProfile = !encodedCid
   const ownCid = useOwnUserCid()
 
   let userCid
@@ -21,12 +26,14 @@ function Profile () {
     userCid = ownCid
   }
   else {
-    userCid = locationStateUserCid
+    userCid = urlUserCid
   }
 
   const profile = useUserProfile(userCid)
   const history = useHistory()
   const t = useTranslation()
+
+  console.log('Profile', {userCid, urlUserCid, urlIsExpired, isOwnProfile})
 
   return (
     <div>
@@ -40,7 +47,12 @@ function Profile () {
           {profile.displayName || (isOwnProfile && t['Edit profile']())}
         </Typography>
       </TopBar>
-      <ProfileComponent userCid={userCid} />
+      {urlIsExpired && (
+        <Box width='100%' py={4} display='flex' justifyContent='center' alignItems='center'>
+          <Typography variant='body1'>{t['URL expired']() + '.'}</Typography>
+        </Box>
+      )}
+      {!urlIsExpired && <ProfileComponent userCid={userCid} />}
     </div>
   )
 }

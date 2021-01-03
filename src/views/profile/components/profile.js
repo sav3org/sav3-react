@@ -53,7 +53,7 @@ function Profile ({userCid} = {}) {
   const posts = useUserPosts(userCid)
   const profile = useUserProfile(userCid)
 
-  console.log('Profile', {userCid, posts, profile})
+  console.log('Profile', {ownCid, userCid, posts, profile})
 
   let button
   if (userCid === ownCid) {

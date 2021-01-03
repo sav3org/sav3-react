@@ -28,6 +28,7 @@ const useUserIpnsData = (ipnsPath) => {
       const ipnsValue = await sav3Ipfs.subscribeToIpnsPath(ipnsPath)
       if (!ipnsValue) {
         // user has not published anything yet
+        setUserIpnsData()
         return
       }
       const ipnsData = await sav3Ipfs.getIpfsFile(ipnsValue)

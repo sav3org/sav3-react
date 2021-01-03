@@ -8,22 +8,19 @@ const useUsersProfiles = (userCids) => {
   const defaultUserProfiles = {}
   const [usersProfiles, setUsersProfiles] = useState(defaultUserProfiles)
   const usersIpnsData = useUsersIpnsData(userCids)
-  const profileCids = []
+  const profileCids = {}
   for (const userCid in usersIpnsData) {
-    profileCids.push(usersIpnsData[userCid].profileCid)
+    profileCids[userCid] = usersIpnsData[userCid].profileCid
   }
   console.log('useUsersProfiles', {usersIpnsData, userCids, profileCids, usersProfiles})
 
   useEffect(() => {
-    if (!profileCids.length) {
-      return
-    }
-    for (const [i, profileCid] of profileCids.entries()) {
+    for (const userCid in profileCids) {
+      const profileCid = profileCids[userCid]
       if (!profileCid || typeof profileCid !== 'string') {
-        return
+        continue
       }
 
-      const userCid = userCids[i]
       sav3Ipfs.getUserProfile(profileCid).then((userProfile) => {
         setUsersProfiles((previousUsersProfiles) => ({
           ...previousUsersProfiles,

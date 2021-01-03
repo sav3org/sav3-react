@@ -16,6 +16,7 @@ import Peers from 'src/views/peers'
 import Stats from 'src/views/stats'
 import Following from 'src/views/following'
 import Export from 'src/views/export'
+import Post from 'src/views/post'
 
 const useStyles = makeStyles((theme) => ({
   leftColumn: {
@@ -91,7 +92,7 @@ function App () {
             <Route path='/' exact>
               <Home />
             </Route>
-            <Route path='/profile' exact>
+            <Route path='/profile/:encodedCid?' exact>
               <Profile />
             </Route>
             <Route path='/search' exact>
@@ -108,6 +109,9 @@ function App () {
             </Route>
             <Route path='/export' exact>
               <Export />
+            </Route>
+            <Route path='/post/:encodedCid' exact>
+              <Post />
             </Route>
           </Switch>
         </Grid>

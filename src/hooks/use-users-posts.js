@@ -15,23 +15,22 @@ const useUsersPosts = (userCids) => {
     lastPostCids.push(usersIpnsData[userCid].lastPostCid)
   }
 
-  console.log('useUsersPosts', {usersIpnsData, userCids, lastPostCids, usersPosts})
+  console.log('useUsersPosts', {usersIpnsData, userCids, lastPostCids, usersPosts, profiles})
 
   useEffect(() => {
     if (!lastPostCids.length) {
       return
     }
-    for (const [i, lastPostCid] of lastPostCids.entries()) {
+    for (const lastPostCid of lastPostCids) {
       if (!lastPostCid || typeof lastPostCid !== 'string') {
         // user hasn't posted yet
         continue
       }
 
-      const userCid = userCids[i]
       sav3Ipfs.getUserPostsFromLastPostCid(lastPostCid).then((userPosts) => {
         const posts = {}
         for (const userPost of userPosts) {
-          userPost.profile = profiles[userCid] || {}
+          userPost.profile = profiles[userPost.userCid] || {}
           posts[userPost.cid] = userPost
         }
 

@@ -48,7 +48,8 @@ const translation = createTranslation({
   Import: () => 'Importar',
 
   // post
-  'Uncensorable content': () => 'Contenido sin censura'
+  'Uncensorable content': () => 'Contenido sin censura',
+  Post: () => 'Publicación'
 })
 
 export default translation

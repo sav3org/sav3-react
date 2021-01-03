@@ -7,6 +7,7 @@ import useTranslation from 'src/translations/use-translation'
 import Button from '@material-ui/core/Button'
 import useIsFollowing from 'src/hooks/following/use-is-following'
 import {Link as RouterLink} from 'react-router-dom'
+import urlUtils from 'src/lib/utils/url'
 
 const useStyles = makeStyles((theme) => ({
   avatar: {
@@ -53,12 +54,15 @@ function User ({user} = {}) {
     )
   }
 
+  const encodedCid = urlUtils.encodeCid(user.cid)
+  const userProfileUrl = `/profile/${encodedCid}`
+
   return (
     <div>
       <Box px={2} py={1.5} display='flex'>
         {/* left col avatar */}
         <Box pr={1.5}>
-          <Avatar component={RouterLink} to={{pathname: '/profile', state: {userCid: user.cid}}} src={user.thumbnailUrl && forceHttps(user.thumbnailUrl)} className={classes.avatar} />
+          <Avatar component={RouterLink} to={userProfileUrl} src={user.thumbnailUrl && forceHttps(user.thumbnailUrl)} className={classes.avatar} />
         </Box>
 
         {/* right col header + content + bottom actions */}
@@ -67,12 +71,12 @@ function User ({user} = {}) {
           <Box display='flex'>
             <Box flexGrow={1}>
               <Box display='flex'>
-                <Typography className={classes.displayName} component={RouterLink} to={{pathname: '/profile', state: {userCid: user.cid}}} variant='subtitle2'>
+                <Typography className={classes.displayName} component={RouterLink} to={userProfileUrl} variant='subtitle2'>
                   {user.displayName}
                 </Typography>
               </Box>
               <Box>
-                <Typography component={RouterLink} to={{pathname: '/profile', state: {userCid: user.cid}}} variant='caption' color='textSecondary' className={classes.userCid}>
+                <Typography component={RouterLink} to={userProfileUrl} variant='caption' color='textSecondary' className={classes.userCid}>
                   {user.cid}
                 </Typography>
               </Box>

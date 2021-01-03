@@ -25,7 +25,7 @@ function Search () {
   const classes = useStyles()
   const theme = useTheme()
   const fullScreen = useMediaQuery(theme.breakpoints.down('xs'))
-  const [userCid, setUserCid] = useState()
+  const [userCid, setUserCid] = useState('')
   const t = useTranslation()
 
   const handleChange = (event) => {
@@ -64,7 +64,7 @@ function Search () {
             variant='outlined'
             fullWidth
             placeholder={t['Search user ID']()}
-            values={userCid}
+            value={userCid}
           />
         </Box>
       </TopBar>

@@ -11,6 +11,7 @@ import crypto from 'libp2p-crypto'
 import createWindowSav3IpfsTestMethods from './utils/create-window-sav3-ipfs-test-methods'
 import uint8ArrayToString from 'uint8arrays/to-string'
 import config from 'src/config'
+import postRepliesUtils from './utils/post-replies'
 
 class Sav3Ipfs extends EventEmitter {
   constructor () {
@@ -21,24 +22,9 @@ class Sav3Ipfs extends EventEmitter {
   }
 
   async _initIpfs ({privateKey} = {}) {
-    // a random repo allows multiple tabs to have different peers
-    // which is good for testing
-    let repo
-    if (!privateKey && process.env.NODE_ENV === 'development') {
-      repo = Math.random().toString(36).substring(7)
-    }
-
-    // init ipfs with a specified private key
-    let Identity
-    if (privateKey) {
-      Identity = {PrivKey: privateKey}
-    }
-
     const ipfsOptions = {
       preload: {enabled: false},
-      repo,
       config: {
-        Identity,
         Bootstrap: [],
         Addresses: {
           Delegates: [],
@@ -52,6 +38,17 @@ class Sav3Ipfs extends EventEmitter {
       //     }
       //   }
       // }
+    }
+
+    // a random repo allows multiple tabs to have different peers
+    // which is good for testing
+    if (!privateKey && process.env.NODE_ENV === 'development') {
+      ipfsOptions.repo = Math.random().toString(36).substring(7)
+    }
+
+    // init ipfs with a specified private key
+    if (privateKey) {
+      ipfsOptions.config.Identity = {PrivKey: privateKey}
     }
 
     console.log('_initIpfs', {ipfsOptions})
@@ -260,13 +257,19 @@ class Sav3Ipfs extends EventEmitter {
     newPost.timestamp = Math.round(Date.now() / 1000)
     newPost.userCid = (await this.ipfs.id()).id
     newPost.contentCid = (await this.ipfs.add(content)).cid.toString()
+    newPost.parentPostCid = parentPostCid
 
     const newPostCid = (await this.ipfs.add(JSON.stringify(newPost))).cid.toString()
     const newIpnsData = {...ipnsData, lastPostCid: newPostCid}
     const newIpnsDataCid = (await this.ipfs.add(JSON.stringify(newIpnsData))).cid.toString()
 
     await this.publishIpnsRecord(newIpnsDataCid)
-    console.log('publishPost', {newIpnsDataCid, newPost, newIpnsData, ipnsData, newPostCid})
+    console.log('publishPost', {newIpnsDataCid, newPost, newIpnsData, ipnsData, newPostCid, parentPostCid})
+
+    if (parentPostCid) {
+      await postRepliesUtils.cachePostReplyCid({cid: newPostCid, parentPostCid})
+    }
+
     return newPostCid
   }
 
@@ -371,16 +374,68 @@ class Sav3Ipfs extends EventEmitter {
         break
       }
 
-      const post = JSON.parse(await this.getIpfsFile(lastPostCid))
-      post.cid = lastPostCid
+      const post = await this.getPost(lastPostCid)
       lastPostCid = post.previousPostCid
-
-      post.content = await this.getIpfsFile(post.contentCid)
       posts.push(post)
     }
 
     console.log('getUserPostsFromLastPostCid', {lastPostCid, posts})
     return posts
+  }
+
+  async getPost (postCid) {
+    await this.waitForReady()
+    assert(postCid && typeof postCid === 'string', `sav3Ipfs.getPost postCid '${postCid}' not a string`)
+    console.log('getPost', {postCid})
+
+    const post = JSON.parse(await this.getIpfsFile(postCid))
+    post.cid = postCid
+
+    if (post.parentPostCid) {
+      await postRepliesUtils.cachePostReplyCid({cid: post.cid, parentPostCid: post.parentPostCid})
+    }
+
+    post.content = await this.getIpfsFile(post.contentCid)
+    console.log('getPost returns', {postCid, post})
+    return post
+  }
+
+  async getPostWithReplies (postCid) {
+    await this.waitForReady()
+    assert(postCid && typeof postCid === 'string', `sav3Ipfs.getPostWithReplies postCid '${postCid}' not a string`)
+    const post = await this.getPost(postCid)
+    let parentPost = post
+    if (post.parentPostCid) {
+      parentPost = await this.getPost(post.parentPostCid)
+    }
+    let repliesCids = await this.getPostRepliesCids(post.cid)
+    // remove post cid already gotten
+    repliesCids = repliesCids.filter((cid) => cid !== postCid)
+
+    const promises = []
+    for (const replyCid of repliesCids) {
+      promises.push(this.getPost(replyCid))
+    }
+    const replies = await Promise.all(promises)
+    // add requested post to replies if was a reply
+    if (post.parentPostCid) {
+      replies.shift(post)
+    }
+    return {...parentPost, replies}
+  }
+
+  async getPostRepliesCids (postCid) {
+    await this.waitForReady()
+    assert(postCid && typeof postCid === 'string', `sav3Ipfs.getPostRepliesCids postCid '${postCid}' not a string`)
+    const repliesCids = await postRepliesUtils.getPostRepliesCids(postCid)
+    return repliesCids
+  }
+
+  async getPostReplyCount (postCid) {
+    await this.waitForReady()
+    assert(postCid && typeof postCid === 'string', `sav3Ipfs.getPostReplyCount postCid '${postCid}' not a string`)
+    const repliesCids = await postRepliesUtils.getPostRepliesCids(postCid)
+    return repliesCids.length
   }
 
   /**

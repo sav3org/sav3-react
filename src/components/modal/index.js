@@ -11,7 +11,8 @@ import useMediaQuery from '@material-ui/core/useMediaQuery'
 const useStyles = makeStyles((theme) => ({
   content: {
     paddingTop: 0,
-    paddingBottom: 0
+    paddingBottom: 0,
+    overflow: 'hidden'
   }
 }))
 

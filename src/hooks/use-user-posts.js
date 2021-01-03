@@ -15,6 +15,7 @@ const useUserPosts = (userCid) => {
 
   useEffect(() => {
     if (!lastPostCid || typeof lastPostCid !== 'string') {
+      setUserPosts(defaultUserPosts)
       return
     }
     ;(async () => {

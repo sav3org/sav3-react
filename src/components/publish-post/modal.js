@@ -64,10 +64,11 @@ function PublishPostModal ({open, onClose, parentPost} = {}) {
 
   const handlePublish = async () => {
     const parentPostCid = parentPost && parentPost.cid
+
     try {
       await sav3Ipfs.publishPost({content, parentPostCid})
       setErrorMessage(null)
-      setContent(null)
+      setContent('')
       onClose()
     }
     catch (e) {

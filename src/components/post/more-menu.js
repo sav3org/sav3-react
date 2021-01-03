@@ -51,7 +51,7 @@ function PostMoreMenu ({post} = {}) {
   }
 
   return (
-    <div>
+    <div onClick={(event) => event.stopPropagation()}>
       <IconButton className={classes.moreIconButton} onClick={handleClick}>
         <MoreVertIcon />
       </IconButton>

@@ -1,6 +1,7 @@
 const config = {
   starServers: ['/dns4/star.sav3.org/tcp/443/wss/p2p-webrtc-star/'],
-  ipnsServer: 'https://ipns.sav3.org'
+  ipnsServer: 'https://ipns.sav3.org',
+  urlTimeToLive: 1000 * 60 * 60 * 24
 }
 
 if (process.env.NODE_ENV === 'development' && process.env.REACT_APP_IS_DOCKER) {

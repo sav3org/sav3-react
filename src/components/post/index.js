@@ -1,4 +1,4 @@
-import {Fragment, useState} from 'react'
+import {Fragment, useEffect, useState} from 'react'
 import {makeStyles} from '@material-ui/core/styles'
 import Card from '@material-ui/core/Card'
 import CardMedia from '@material-ui/core/CardMedia'
@@ -16,9 +16,11 @@ import useLanguageCode from 'src/translations/use-language-code'
 import assert from 'assert'
 import urlRegex from 'url-regex'
 import PostMoreMenu from './more-menu'
-import {Link as RouterLink} from 'react-router-dom'
+import {Link as RouterLink, useHistory, useLocation} from 'react-router-dom'
 import PublishPostModal from 'src/components/publish-post/modal'
 import PropTypes from 'prop-types'
+import urlUtils from 'src/lib/utils/url'
+import usePostRepliesCids from 'src/hooks/use-post-replies-cids'
 
 const useStyles = makeStyles((theme) => ({
   imgMedia: {
@@ -59,24 +61,58 @@ const useStyles = makeStyles((theme) => ({
       fontSize: '1rem',
       color: theme.palette.text.secondary
     }
+  },
+  post: {
+    cursor: 'pointer',
+    '&:hover': {
+      backgroundColor: rgbaOpacity(theme.palette.action.hover, 0.4)
+    }
   }
 }))
 
+const rgbaOpacity = (rgbaString, factor) => {
+  const [r, g, b, a] = rgbaString.match(/[\d.]+/g)
+  return `rgba(${r}, ${g}, ${b}, ${(a * factor).toFixed(3)})`
+}
+
 function Post ({post} = {}) {
+  const location = useLocation()
+  const history = useHistory()
   const languageCode = useLanguageCode()
   const classes = useStyles()
-  const date = formatDate(post.timestamp, languageCode)
+  const date = useDate(post.timestamp, languageCode)
+
+  const encodedUserCid = urlUtils.encodeCid(post.userCid)
+  const userProfileUrl = `/profile/${encodedUserCid}`
+
+  const encodedPostCid = urlUtils.encodeCid(post.cid)
+  const postUrl = `/post/${encodedPostCid}`
+  const navigateToPostUrl = (event) => {
+    // don't handle buttons and links
+    if (!event.target.tagName.match(/DIV|P/)) {
+      return
+    }
+
+    // dont click if already on the same post cid
+    const [, route, encodedCid] = location.pathname.split('/')
+    if (route === 'post') {
+      try {
+        const currentUrlPostCid = urlUtils.decodeCid(encodedCid)
+        if (currentUrlPostCid === post.cid) {
+          return
+        }
+      }
+      catch (e) {}
+    }
+
+    history.push(postUrl)
+  }
 
   return (
-    <Box px={2} pt={1.5} pb={0.5} display='flex'>
+    <Box px={2} pt={1.5} pb={0.5} display='flex' className={classes.post} onClick={navigateToPostUrl}>
       {/* left col avatar */}
       <Box pr={1.5}>
-        <Avatar
-          component={RouterLink}
-          to={{pathname: '/profile', state: {userCid: post.userCid}}}
-          src={post.profile.thumbnailUrl && forceHttps(post.profile.thumbnailUrl)}
-          className={classes.avatar}
-        />
+        <Avatar component={RouterLink} to={userProfileUrl} src={post.profile.thumbnailUrl && forceHttps(post.profile.thumbnailUrl)} className={classes.avatar} />
       </Box>
 
       {/* right col header + content + bottom actions */}
@@ -87,7 +123,7 @@ function Post ({post} = {}) {
             <Box display='flex'>
               {post.profile.displayName && (
                 <Fragment>
-                  <Typography className={classes.displayName} component={RouterLink} to={{pathname: '/profile', state: {userCid: post.userCid}}} variant='subtitle2'>
+                  <Typography className={classes.displayName} component={RouterLink} to={userProfileUrl} variant='subtitle2'>
                     {post.profile.displayName}
                   </Typography>
                   &nbsp;
@@ -98,7 +134,7 @@ function Post ({post} = {}) {
               <Typography variant='subtitle2'>{date}</Typography>
             </Box>
             <Box>
-              <Typography component={RouterLink} to={{pathname: '/profile', state: {userCid: post.userCid}}} variant='caption' color='textSecondary' className={classes.userCid}>
+              <Typography component={RouterLink} to={userProfileUrl} variant='caption' color='textSecondary' className={classes.userCid}>
                 {post.userCid}
               </Typography>
             </Box>
@@ -131,15 +167,17 @@ function Post ({post} = {}) {
 
 function ReplyIconButton ({parentPost} = {}) {
   const classes = useStyles()
+  const postRepliesCids = usePostRepliesCids(parentPost.cid)
 
   const [openPublishPostModal, setOpenPublishPostModal] = useState(false)
   return (
-    <Fragment>
+    <Box display='flex' alignItems='center' onClick={(event) => event.stopPropagation()}>
       <IconButton className={classes.actionIconButton} onClick={() => setOpenPublishPostModal(true)}>
         <CommentIcon />
       </IconButton>
+      {postRepliesCids.length !== 0 && <Typography variant='caption'>{postRepliesCids.length}</Typography>}
       <PublishPostModal parentPost={parentPost} open={openPublishPostModal} onClose={() => setOpenPublishPostModal(false)} />
-    </Fragment>
+    </Box>
   )
 }
 ReplyIconButton.propTypes = {parentPost: PropTypes.object.isRequired}
@@ -238,6 +276,16 @@ const linkIsVideo = (link) => {
 const linkIsMedia = (link) => {
   // remove query string and match extension
   return link.replace(/[#?].*/).match(/\.(jpeg|jpg|png|gif|mp4|webm)$/)
+}
+
+const useDate = (timestamp, languageCode) => {
+  const [date, setDate] = useState()
+  useEffect(() => {
+    const date = formatDate(timestamp, languageCode)
+    setDate(date)
+  }, [timestamp, languageCode])
+
+  return date
 }
 
 const formatDate = (postTimestamp, languageCode) => {

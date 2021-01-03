@@ -13,6 +13,7 @@ const useUserProfile = (userCid) => {
 
   useEffect(() => {
     if (!profileCid || typeof profileCid !== 'string') {
+      setUserProfile(defaultUserProfile)
       return
     }
     ;(async () => {

@@ -1,11 +1,9 @@
 todo next
 ---------
-make /post page to be able to see parent posts, and reply posts
 
 todo before finished prototype
 ------------------------------
 import/export private key
-reply
 like
 resav3
 share

@@ -26,7 +26,11 @@ const translation = createTranslation({
   Import: () => 'Import',
 
   // post
-  'Uncensorable content': () => 'Uncensorable content'
+  'Uncensorable content': () => 'Uncensorable content',
+  Post: () => 'Post',
+
+  // global
+  'URL expired': () => 'URL expired'
 })
 
 export default translation
