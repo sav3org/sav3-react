@@ -6,6 +6,7 @@ import useMediaQuery from '@material-ui/core/useMediaQuery'
 import AvatarDrawerMenuButton from 'src/components/menus/drawer/avatar-button'
 import Feed from 'src/components/feeds/posts'
 import useFollowingOnce from 'src/hooks/following/use-following-once'
+import useBootstrapUsersCids from 'src/hooks/following/use-bootstrap-users-cids'
 import useUsersPosts from 'src/hooks/use-users-posts'
 import PublishPostForm from 'src/components/publish-post/form'
 import CircularProgress from '@material-ui/core/CircularProgress'
@@ -17,10 +18,11 @@ function Home () {
   const theme = useTheme()
   const fullScreen = useMediaQuery(theme.breakpoints.down('xs'))
   const t = useTranslation()
+  const bootstrapUsersCids = useBootstrapUsersCids()
   let followingCids = useFollowingOnce()
   const ownCid = useOwnUserCid()
   if (ownCid) {
-    followingCids = [ownCid, ...followingCids]
+    followingCids = [ownCid, ...followingCids, ...bootstrapUsersCids]
   }
   const postsObject = useUsersPosts(followingCids)
   const posts = []

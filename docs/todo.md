@@ -3,7 +3,7 @@ todo next
 
 todo before finished prototype
 ------------------------------
-feed of moderated bootstrapped users (from a google sheet)
+implement following of following
 like
 resav3
 more than 5 posts per user
@@ -14,6 +14,7 @@ todo after prototype
 reply notification
 like notification
 resav3 notification
+report button with IP origin
 
 possible way to do likes
 ------------------------
