@@ -28,6 +28,8 @@ const translation = createTranslation({
   // post
   'Uncensorable content': () => 'Uncensorable content',
   Post: () => 'Post',
+  'Copied to clipboard': () => 'Copied to clipboard',
+  Share: () => 'Share',
 
   // global
   'URL expired': () => 'URL expired'

@@ -10,6 +10,7 @@ import ShareIcon from '@material-ui/icons/ShareOutlined'
 import RepeatIcon from '@material-ui/icons/Repeat'
 import CommentIcon from '@material-ui/icons/ModeCommentOutlined'
 import Link from '@material-ui/core/Link'
+import Tooltip from '@material-ui/core/Tooltip'
 import Box from '@material-ui/core/Box'
 import {format as formatTimeAgo} from 'timeago.js'
 import useLanguageCode from 'src/translations/use-language-code'
@@ -21,6 +22,8 @@ import PublishPostModal from 'src/components/publish-post/modal'
 import PropTypes from 'prop-types'
 import urlUtils from 'src/lib/utils/url'
 import usePostRepliesCids from 'src/hooks/use-post-replies-cids'
+import useCopyClipboard from 'src/hooks/utils/use-copy-clipboard'
+import useTranslation from 'src/translations/use-translation'
 
 const useStyles = makeStyles((theme) => ({
   imgMedia: {
@@ -66,7 +69,10 @@ const useStyles = makeStyles((theme) => ({
     cursor: 'pointer',
     '&:hover': {
       backgroundColor: rgbaOpacity(theme.palette.action.hover, 0.4)
-    }
+    },
+    // prevent mobile highlight entire post when clicking inner elements
+    tapHighlightColor: 'rgba(0, 0, 0, 0)',
+    userSelect: 'none'
   }
 }))
 
@@ -156,9 +162,7 @@ function Post ({post} = {}) {
           <IconButton className={classes.actionIconButton}>
             <FavoriteIcon />
           </IconButton>
-          <IconButton className={classes.actionIconButton}>
-            <ShareIcon />
-          </IconButton>
+          <ShareButton postCid={post.cid} />
         </Box>
       </Box>
     </Box>
@@ -181,6 +185,24 @@ function ReplyIconButton ({parentPost} = {}) {
   )
 }
 ReplyIconButton.propTypes = {parentPost: PropTypes.object.isRequired}
+
+function ShareButton ({postCid} = {}) {
+  const classes = useStyles()
+  const t = useTranslation()
+  const [isCopied, setCopied] = useCopyClipboard(1100)
+  const getUrl = () => {
+    const encodedPostCid = urlUtils.encodeCid(postCid)
+    return `${window.location.origin}/#/post/${encodedPostCid}`
+  }
+  return (
+    <Tooltip title={t['Copied to clipboard']()} open={isCopied} enterDelay={500} leaveDelay={200}>
+      <IconButton onClick={() => setCopied(getUrl())} className={classes.actionIconButton}>
+        <ShareIcon />
+      </IconButton>
+    </Tooltip>
+  )
+}
+ShareButton.propTypes = {postCid: PropTypes.string.isRequired}
 
 function PostContent ({content} = {}) {
   const classes = useStyles()

@@ -18,6 +18,7 @@ import EditProfileModal from './edit-profile-modal'
 import assert from 'assert'
 import Divider from '@material-ui/core/Divider'
 import useIsFollowing from 'src/hooks/following/use-is-following'
+import MoreMenuButton from './more-menu'
 
 const emptyImage = 'data:image/png;base64,'
 
@@ -75,9 +76,7 @@ function Profile ({userCid} = {}) {
       <Avatar src={profile.thumbnailUrl && forceHttps(profile.thumbnailUrl)} className={classes.avatar} />
       <Box p={2} pb={0} display='flex' flexDirection='row-reverse'>
         {button}
-        <IconButton>
-          <MoreVertIcon />
-        </IconButton>
+        <MoreMenuButton userCid={userCid} />
       </Box>
       <CardHeader className={classes.displayName} pb={0} title={profile.displayName} subheader={userCid} />
       <Box p={2} pt={0}>

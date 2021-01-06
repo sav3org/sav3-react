@@ -3,12 +3,11 @@ todo next
 
 todo before finished prototype
 ------------------------------
-import/export private key
+feed of moderated bootstrapped users (from a google sheet)
 like
 resav3
-share
 more than 5 posts per user
-feed of moderated bootstrapped users (from a google sheet)
+import/export private key
 
 todo after prototype
 --------------------
