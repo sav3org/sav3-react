@@ -60,7 +60,7 @@ function ProfileMoreMenu ({userCid} = {}) {
         open={Boolean(anchorEl)}
         onClose={handleClose}
       >
-        <ShareMenuItem userCid={userCid} />
+        <ShareMenuItem userCid={userCid} onClose={handleClose} />
       </Menu>
     </div>
   )
@@ -70,7 +70,7 @@ ProfileMoreMenu.propTypes = {
   userCid: PropTypes.string.isRequired
 }
 
-function ShareMenuItem ({userCid} = {}) {
+function ShareMenuItem ({userCid, onClose} = {}) {
   const classes = useStyles()
   const t = useTranslation()
 
@@ -80,9 +80,16 @@ function ShareMenuItem ({userCid} = {}) {
     return `${window.location.origin}/#/profile/${encodedPostCid}`
   }
 
+  const handleClick = () => {
+    setCopied(getUrl())
+    if (onClose) {
+      onClose()
+    }
+  }
+
   return (
     <Tooltip title={t['Copied to clipboard']()} open={isCopied} enterDelay={500} leaveDelay={200}>
-      <MenuItem onClick={() => setCopied(getUrl())}>
+      <MenuItem onClick={handleClick}>
         <ListItemIcon className={classes.menuItemIcon}>
           <ShareIcon fontSize='small' />
         </ListItemIcon>
@@ -93,7 +100,8 @@ function ShareMenuItem ({userCid} = {}) {
 }
 
 ShareMenuItem.propTypes = {
-  userCid: PropTypes.string.isRequired
+  userCid: PropTypes.string.isRequired,
+  onClose: PropTypes.func
 }
 
 export default ProfileMoreMenu

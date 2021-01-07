@@ -13,6 +13,7 @@ import CircularProgress from '@material-ui/core/CircularProgress'
 import useTranslation from 'src/translations/use-translation'
 import useOwnUserCid from 'src/hooks/use-own-user-cid'
 import Divider from '@material-ui/core/Divider'
+import useUsersFollowing from 'src/hooks/use-users-following'
 
 function Home () {
   const theme = useTheme()
@@ -20,16 +21,17 @@ function Home () {
   const t = useTranslation()
   const bootstrapUsersCids = useBootstrapUsersCids()
   let followingCids = useFollowingOnce()
+  const followingOfFollowing = useUsersFollowing([...followingCids, ...bootstrapUsersCids])
   const ownCid = useOwnUserCid()
   if (ownCid) {
-    followingCids = [ownCid, ...followingCids, ...bootstrapUsersCids]
+    followingCids = [ownCid, ...followingCids, ...bootstrapUsersCids, ...followingOfFollowing]
   }
   const postsObject = useUsersPosts(followingCids)
   const posts = []
   for (const postCid in postsObject) {
     posts.push(postsObject[postCid])
   }
-  console.log('Home', {followingCids, posts, postsObject})
+  console.log('Home', {followingCids, followingOfFollowing, bootstrapUsersCids, ownCid, posts, postsObject})
 
   let feed = <Feed posts={posts} />
   if (!posts.length) {

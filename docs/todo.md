@@ -3,10 +3,9 @@ todo next
 
 todo before finished prototype
 ------------------------------
-implement following of following
+more than 5 posts per user
 like
 resav3
-more than 5 posts per user
 import/export private key
 
 todo after prototype
@@ -15,6 +14,7 @@ reply notification
 like notification
 resav3 notification
 report button with IP origin
+view other users following
 
 possible way to do likes
 ------------------------
@@ -41,6 +41,7 @@ array of user and post cids saved
 ipnsData
 profileCid
 lastPostCid
+followingCid
 saves
 isTerminated (possibly use ethereum for this so that it never gets unterminated)
 

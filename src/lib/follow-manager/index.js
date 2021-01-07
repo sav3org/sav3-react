@@ -1,5 +1,6 @@
 import * as localForage from 'localforage'
 import assert from 'assert'
+import sav3Ipfs from 'src/lib/sav3-ipfs'
 
 class FollowManager {
   constructor () {
@@ -15,6 +16,7 @@ class FollowManager {
     assert(typeof userCid === 'string', `FollowManager.addFollowing invalid userCid '${userCid}'`)
     await this.deleteBlocked(userCid)
     await this.followingCache.setItem(userCid, true)
+    sav3Ipfs.setFollowing(await this.getAllFollowing())
   }
 
   async isFollowing (userCid) {
@@ -26,6 +28,7 @@ class FollowManager {
   async deleteFollowing (userCid) {
     assert(typeof userCid === 'string', `FollowManager.deleteFollowing invalid userCid '${userCid}'`)
     await this.followingCache.removeItem(userCid)
+    sav3Ipfs.setFollowing(await this.getAllFollowing())
   }
 
   getAllFollowing () {
@@ -38,6 +41,7 @@ class FollowManager {
     for (const userCid of userCids) {
       await this.addFollowing(userCid)
     }
+    sav3Ipfs.setFollowing(await this.getAllFollowing())
   }
 
   async addBlocked (userCid) {

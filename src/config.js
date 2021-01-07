@@ -1,5 +1,5 @@
 const config = {
-  bootstrapUsersGoogleSheetId: '',
+  bootstrapUsersGoogleSheetId: '1234',
   starServers: ['/dns4/star.sav3.org/tcp/443/wss/p2p-webrtc-star/'],
   ipnsServer: 'https://ipns.sav3.org',
   urlTimeToLive: 1000 * 60 * 60 * 24

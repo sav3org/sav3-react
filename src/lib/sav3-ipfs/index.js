@@ -164,14 +164,6 @@ class Sav3Ipfs extends EventEmitter {
     return (await sav3Ipfs.ipfs.id()).id
   }
 
-  async getIpnsFile (ipnsCid) {
-    await this.waitForReady()
-    assert(ipnsCid && typeof ipnsCid === 'string', `sav3Ipfs.getIpnsFile ipnsCid '${ipnsCid}' not a string`)
-    const fileCid = (await this.ipfs.name.resolve(ipnsCid).next()).value
-    const file = await this.getIpfsFile(fileCid)
-    return file
-  }
-
   async getOwnIpnsRecord () {
     await this.waitForReady()
     const ownCid = await sav3Ipfs.getOwnPeerCid()
@@ -257,7 +249,6 @@ class Sav3Ipfs extends EventEmitter {
     newPost.timestamp = Math.round(Date.now() / 1000)
     newPost.userCid = (await this.ipfs.id()).id
     newPost.contentCid = (await this.ipfs.add(content)).cid.toString()
-    newPost.parentPostCid = parentPostCid
 
     const newPostCid = (await this.ipfs.add(JSON.stringify(newPost))).cid.toString()
     const newIpnsData = {...ipnsData, lastPostCid: newPostCid}
@@ -271,6 +262,45 @@ class Sav3Ipfs extends EventEmitter {
     }
 
     return newPostCid
+  }
+
+  async setFollowing (userCids) {
+    await this.waitForReady()
+    assert(Array.isArray(userCids), `sav3Ipfs.setFollowing userCids '${userCids}' not an array`)
+
+    // sort to avoid creating cids if unnecessary
+    userCids = [...userCids].sort()
+
+    const ipnsData = await this.getOwnIpnsData()
+    const followingCid = (await this.ipfs.add(JSON.stringify(userCids))).cid.toString()
+    if (ipnsData.followingCid === followingCid) {
+      console.log('setFollowing duplicate following cid', {userCids})
+      return
+    }
+    const newIpnsData = {...ipnsData, followingCid}
+    const newIpnsDataCid = (await this.ipfs.add(JSON.stringify(newIpnsData))).cid.toString()
+
+    await this.publishIpnsRecord(newIpnsDataCid)
+    console.log('setFollowing', {newIpnsDataCid, userCids, followingCid, newIpnsData, ipnsData})
+
+    return followingCid
+  }
+
+  async getUserFollowing (userCid) {
+    await this.waitForReady()
+    assert(userCid && typeof userCid === 'string', `sav3Ipfs.getUserFollowing userCid '${userCid}' not a string`)
+    let following = []
+
+    const [ipnsValue] = await this.ipnsClient.subscribe([userCid])
+    if (ipnsValue) {
+      const ipnsData = JSON.parse(await this.getIpfsFile(ipnsValue))
+      if (ipnsData.followingCid) {
+        following = JSON.parse(await this.getIpfsFile(ipnsData.followingCid))
+      }
+    }
+
+    console.log('getUserFollowing', {userCid, following, ipnsValue})
+    return following
   }
 
   async publishIpnsRecord (newIpnsDataCid) {
@@ -339,7 +369,7 @@ class Sav3Ipfs extends EventEmitter {
       profile.bannerUrl = await this.getIpfsFile(profileCids.bannerUrlCid)
     }
 
-    console.log('getProfile', {profileCid, profileCids, profile})
+    console.log('getUserProfile', {profileCid, profileCids, profile})
     return profile
   }
 
@@ -398,30 +428,6 @@ class Sav3Ipfs extends EventEmitter {
     post.content = await this.getIpfsFile(post.contentCid)
     console.log('getPost returns', {postCid, post})
     return post
-  }
-
-  async getPostWithReplies (postCid) {
-    await this.waitForReady()
-    assert(postCid && typeof postCid === 'string', `sav3Ipfs.getPostWithReplies postCid '${postCid}' not a string`)
-    const post = await this.getPost(postCid)
-    let parentPost = post
-    if (post.parentPostCid) {
-      parentPost = await this.getPost(post.parentPostCid)
-    }
-    let repliesCids = await this.getPostRepliesCids(post.cid)
-    // remove post cid already gotten
-    repliesCids = repliesCids.filter((cid) => cid !== postCid)
-
-    const promises = []
-    for (const replyCid of repliesCids) {
-      promises.push(this.getPost(replyCid))
-    }
-    const replies = await Promise.all(promises)
-    // add requested post to replies if was a reply
-    if (post.parentPostCid) {
-      replies.shift(post)
-    }
-    return {...parentPost, replies}
   }
 
   async getPostRepliesCids (postCid) {

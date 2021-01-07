@@ -19,8 +19,8 @@ export const decodeCid = (encodedCid) => {
   if (expireTimestamp * 1000 < Date.now()) {
     throw Error(`encoded cid '${cid}' expired ${new Date(expireTimestamp * 1000)}`)
   }
-  if (expireTimestamp * 1000 - timeToLive > Date.now()) {
-    throw Error(`encoded cid '${cid}' too early ${new Date(expireTimestamp * 1000)}`)
+  if (expireTimestamp * 1000 - timeToLive >= Date.now()) {
+    throw Error(`encoded cid '${cid}' too early '${new Date(expireTimestamp * 1000)}' '${new Date()}'`)
   }
   return cid
 }
