@@ -30,7 +30,7 @@ const util = require('util')
   setInterval(() => page.reload().catch(console.log), 1000 * 60)
 
   // docker auto restart every 5min to refresh posts and make sure it's still alive
-  setTimeout(() => {
+  setTimeout(async () => {
     try {
       await browser.close()
     }
