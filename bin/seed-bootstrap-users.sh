@@ -9,7 +9,7 @@ docker run \
   --volume "$(pwd):/app" \
   --workdir "/app" \
   --entrypoint "" \
-  --tty \
+  --detach \
   --restart "always" \
   buildkite/puppeteer:5.2.1 \
   node scripts/seed-bootstrap-users
