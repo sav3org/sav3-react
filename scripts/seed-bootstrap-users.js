@@ -27,7 +27,7 @@ const util = require('util')
   page.goto('https://testnet.sav3.org')
 
   // reload the page every 60 seconds
-  setInterval(() => page.reload(), 1000 * 60)
+  setInterval(() => page.reload().catch(console.log), 1000 * 60)
 
   // docker auto restart every 5min to refresh posts and make sure it's still alive
   setTimeout(() => {
