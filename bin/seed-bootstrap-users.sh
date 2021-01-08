@@ -11,6 +11,7 @@ docker run \
   --entrypoint "" \
   --detach \
   --restart "always" \
+  --network "host" \
   --log-driver "json-file" \
   --log-opt "max-size=5m" \
   --log-opt "max-file=1" \

@@ -3,7 +3,7 @@ todo next
 
 todo before finished prototype
 ------------------------------
-make browser docker image that hosts bootstrap users content
+make page for following only, and remove "following no one" warning from home
 more than 5 posts per user
 like
 resav3
