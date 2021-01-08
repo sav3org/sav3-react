@@ -8,7 +8,6 @@ docker run \
   --name "sav3-seed-bootstrap-users" \
   --volume "$(pwd):/app" \
   --workdir "/app" \
-  --rm \
   --entrypoint "" \
   --tty \
   --restart "always" \
