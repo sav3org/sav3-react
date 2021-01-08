@@ -11,5 +11,10 @@ docker run \
   --entrypoint "" \
   --detach \
   --restart "always" \
+  --log-driver "json-file" \
+  --log-opt "max-size=5m" \
+  --log-opt "max-file=1" \
   buildkite/puppeteer:5.2.1 \
   node scripts/seed-bootstrap-users
+
+docker logs --tail 10 --follow "sav3-seed-bootstrap-users"
