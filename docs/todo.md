@@ -3,6 +3,7 @@ todo next
 
 todo before finished prototype
 ------------------------------
+make browser docker image that hosts bootstrap users content
 more than 5 posts per user
 like
 resav3
