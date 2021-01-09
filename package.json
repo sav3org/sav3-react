@@ -27,7 +27,7 @@
     "peer-id": "0.14.2",
     "prettier": "2.2.0",
     "pretty-bytes": "5.4.1",
-    "puppeteer": "5.5.0",
+    "puppeteer": "5.4.0",
     "quick-lru": "5.1.1",
     "react": "17.0.1",
     "react-app-rewired": "2.1.6",
@@ -124,8 +124,5 @@
     "jsxSingleQuote": true,
     "printWidth": 200,
     "bracketSpacing": false
-  },
-  "config": {
-    "puppeteer_download_path": "./node_modules/puppeteer/.local-chromium"
   }
 }
