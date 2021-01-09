@@ -11,6 +11,7 @@ import TranslationSwitcher from 'src/components/translation-switcher'
 // routes
 import Profile from 'src/views/profile'
 import Home from 'src/views/home'
+import Feed from 'src/views/feed'
 import Search from 'src/views/search'
 import Peers from 'src/views/peers'
 import Stats from 'src/views/stats'
@@ -91,6 +92,9 @@ function App () {
           <Switch>
             <Route path='/' exact>
               <Home />
+            </Route>
+            <Route path='/feed' exact>
+              <Feed />
             </Route>
             <Route path='/profile/:encodedCid?' exact>
               <Profile />

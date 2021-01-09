@@ -24,6 +24,7 @@ const translation = createTranslation({
   'Not following anyone': () => 'Not following anyone',
   Export: () => 'Export',
   Import: () => 'Import',
+  Feed: () => 'Feed',
 
   // post
   'Uncensorable content': () => 'Uncensorable content',

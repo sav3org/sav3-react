@@ -10,6 +10,7 @@ import SearchIcon from '@material-ui/icons/Search'
 import GroupIcon from '@material-ui/icons/Group'
 import BarChartIcon from '@material-ui/icons/BarChart'
 import PeersIcon from '@material-ui/icons/Wifi'
+import FeedIcon from '@material-ui/icons/Forum'
 import Button from '@material-ui/core/Button'
 import Box from '@material-ui/core/Box'
 import CreateIcon from '@material-ui/icons/Create'
@@ -64,6 +65,12 @@ function LeftMenu () {
             <HomeIcon fontSize='large' />
           </ListItemIcon>
           <ListItemText primary={t.Home()} className={classes.text} />
+        </ListItem>
+        <ListItem button component={RouterLink} to='/feed'>
+          <ListItemIcon>
+            <FeedIcon fontSize='large' />
+          </ListItemIcon>
+          <ListItemText primary={t.Feed()} className={classes.text} />
         </ListItem>
         <ListItem button component={RouterLink} to='/search'>
           <ListItemIcon>

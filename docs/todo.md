@@ -3,8 +3,10 @@ todo next
 
 todo before finished prototype
 ------------------------------
+figure out why docker node doesnt connect
 make page for following only, and remove "following no one" warning from home
 more than 5 posts per user
+show "replying to" when post is a reply on feed, (need to implement better design for replies like the line on twitter)
 like
 resav3
 import/export private key

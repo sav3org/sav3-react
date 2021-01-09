@@ -3,6 +3,7 @@ import List from '@material-ui/core/List'
 import ListItem from '@material-ui/core/ListItem'
 import ListItemIcon from '@material-ui/core/ListItemIcon'
 import ListItemText from '@material-ui/core/ListItemText'
+import BarChartIcon from '@material-ui/icons/BarChart'
 import AccountCircle from '@material-ui/icons/AccountCircle'
 import GroupIcon from '@material-ui/icons/Group'
 import {Link as RouterLink} from 'react-router-dom'
@@ -29,6 +30,12 @@ function HomeMenu () {
             <GroupIcon fontSize='large' />
           </ListItemIcon>
           <ListItemText primary={t.Following()} className={classes.text} />
+        </ListItem>
+        <ListItem button component={RouterLink} to='/stats'>
+          <ListItemIcon>
+            <BarChartIcon fontSize='large' />
+          </ListItemIcon>
+          <ListItemText primary={t.Stats()} className={classes.text} />
         </ListItem>
         {/* temporarily added to bottom menu
         <ListItem button component={RouterLink} to='/peers'>

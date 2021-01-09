@@ -14,6 +14,8 @@ ENV REACT_APP_IS_DOCKER=1
 
 echo "$dockerfile" | docker build --tag "sav3-react" -
 
+docker rm -f "sav3-react" 2> /dev/null
+
 docker run \
   --name "sav3-react" \
   --publish "3000:3000" \

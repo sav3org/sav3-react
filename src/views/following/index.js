@@ -22,6 +22,15 @@ function Following () {
     users.push(user)
   }
 
+  let feed = <UsersFeed users={users} />
+  if (!users.length) {
+    feed = (
+      <Box width='100%' py={4} display='flex' justifyContent='center' alignItems='center'>
+        <Typography variant='body1'>{t['Not following anyone']() + '...'}</Typography>
+      </Box>
+    )
+  }
+
   console.log('Following', {followingCids, profiles, users})
 
   return (
@@ -36,7 +45,7 @@ function Following () {
           {t.Following()}
         </Typography>
       </TopBar>
-      <UsersFeed users={users} />
+      {feed}
     </div>
   )
 }

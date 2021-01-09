@@ -9,8 +9,8 @@ import HomeIcon from '@material-ui/icons/Home'
 import SearchIcon from '@material-ui/icons/Search'
 import {Link as RouterLink, useRouteMatch} from 'react-router-dom'
 import PublishPostModal from 'src/components/publish-post/modal'
-import BarChartIcon from '@material-ui/icons/BarChart'
 import PeersIcon from '@material-ui/icons/Wifi'
+import FeedIcon from '@material-ui/icons/Forum'
 
 const useStyles = makeStyles((theme) => ({
   menu: {
@@ -39,8 +39,8 @@ function BottomMenu ({className} = {}) {
         <PublishPostButton />
         <BottomNavigationAction component={RouterLink} to='/' value='home' icon={<HomeIcon />} />
         <BottomNavigationAction component={RouterLink} to='/search' value='search' icon={<SearchIcon />} />
+        <BottomNavigationAction component={RouterLink} to='/feed' value='feed' icon={<FeedIcon />} />
         <BottomNavigationAction component={RouterLink} to='/peers' value='peers' icon={<PeersIcon />} />
-        <BottomNavigationAction component={RouterLink} to='/stats' value='stats' icon={<BarChartIcon />} />
       </BottomNavigation>
       {/* give real height to fixed bottom nav */}
       <Box width={0} className='MuiBottomNavigation-root' />
