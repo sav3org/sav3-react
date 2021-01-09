@@ -124,5 +124,8 @@
     "jsxSingleQuote": true,
     "printWidth": 200,
     "bracketSpacing": false
+  },
+  "config": {
+    "puppeteer_download_path": "./node_modules/puppeteer/.local-chromium"
   }
 }
