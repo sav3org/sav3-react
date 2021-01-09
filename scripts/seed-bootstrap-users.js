@@ -1,8 +1,12 @@
 const puppeteer = require('puppeteer')
 const util = require('util')
+const isDocker = require('is-docker')
 
 ;(async () => {
-  const puppeteerOptions = {executablePath: '/usr/bin/google-chrome-stable', args: ['--no-sandbox']}
+  let puppeteerOptions
+  if (isDocker()) {
+    puppeteerOptions = {executablePath: '/usr/bin/google-chrome-stable', args: ['--no-sandbox']}
+  }
   const browser = await puppeteer.launch(puppeteerOptions)
   const page = await browser.newPage()
 
