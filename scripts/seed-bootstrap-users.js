@@ -7,7 +7,7 @@ const isDocker = require('is-docker')
   if (isDocker()) {
     puppeteerOptions = {executablePath: '/usr/bin/google-chrome-stable', args: ['--no-sandbox']}
   }
-  const browser = await puppeteer.launch(puppeteerOptions)
+  const browser = await puppeteer.launch({...puppeteerOptions, product: 'chrome'})
   const page = await browser.newPage()
 
   // log browser console logs
