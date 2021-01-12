@@ -115,13 +115,13 @@ function PublishPostButton () {
   return (
     <div>
       <Box my={2} mx={1} alignItems='center' display='flex' className={classes.createTextButtonBox} onClick={() => setOpenPublishPostModal(true)}>
-        <Button fullWidth variant='contained' size='large' disableElevation>
+        <Button color='primary' fullWidth variant='contained' size='large' disableElevation>
           SAV3
         </Button>
       </Box>
 
       <Box my={2} pl={1} alignItems='center' display='flex' className={classes.createIconButtonBox} onClick={() => setOpenPublishPostModal(true)}>
-        <Fab className={classes.createIconButton} size='medium'>
+        <Fab color='primary' className={classes.createIconButton} size='medium'>
           <CreateIcon />
         </Fab>
       </Box>

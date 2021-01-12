@@ -1,21 +1,21 @@
 import {useEffect, useState} from 'react'
 import sav3Ipfs from 'src/lib/sav3-ipfs'
 import assert from 'assert'
-import useUsersIpnsData from 'src/hooks/use-users-ipns-data'
+import useUsersIpnsContent from 'src/hooks/use-users-ipns-content'
 import useUsersProfiles from 'src/hooks/use-users-profiles'
 
 const useUsersPosts = (userCids) => {
   assert(Array.isArray(userCids), `invalid userCids '${JSON.stringify(userCids)}'`)
   const defaultUsersPosts = []
   const [usersPosts, setUsersPosts] = useState(defaultUsersPosts)
-  const usersIpnsData = useUsersIpnsData(userCids)
+  const usersIpnsContent = useUsersIpnsContent(userCids)
   const profiles = useUsersProfiles(userCids)
   const lastPostCids = []
-  for (const userCid in usersIpnsData) {
-    lastPostCids.push(usersIpnsData[userCid].lastPostCid)
+  for (const userCid in usersIpnsContent) {
+    lastPostCids.push(usersIpnsContent[userCid].lastPostCid)
   }
 
-  console.log('useUsersPosts', {usersIpnsData, userCids, lastPostCids, usersPosts, profiles})
+  console.log('useUsersPosts', {usersIpnsContent, userCids, lastPostCids, usersPosts, profiles})
 
   useEffect(() => {
     if (!lastPostCids.length) {

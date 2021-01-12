@@ -2,10 +2,10 @@ import {useEffect, useState} from 'react'
 import sav3Ipfs from 'src/lib/sav3-ipfs'
 import assert from 'assert'
 
-const useUserIpnsData = (ipnsPath) => {
+const useUserIpnsContent = (ipnsPath) => {
   assert(!ipnsPath || typeof ipnsPath === 'string', `invalid ipnsPath '${JSON.stringify(ipnsPath)}'`)
-  const [userIpnsData, setUserIpnsData] = useState()
-  console.log('useUserIpnsData', {ipnsPath, userIpnsData})
+  const [userIpnsContent, setUserIpnsContent] = useState()
+  console.log('useUserIpnsContent', {ipnsPath, userIpnsContent})
 
   useEffect(() => {
     if (!ipnsPath) {
@@ -18,8 +18,8 @@ const useUserIpnsData = (ipnsPath) => {
         // publish event is a different user
         return
       }
-      const ipnsData = await sav3Ipfs.getIpfsFile(ipnsValue)
-      setUserIpnsData(JSON.parse(ipnsData))
+      const ipnsContent = await sav3Ipfs.getIpfsContent(ipnsValue)
+      setUserIpnsContent(JSON.parse(ipnsContent))
     }
     sav3Ipfs.on('publish', onPublish)
 
@@ -28,11 +28,11 @@ const useUserIpnsData = (ipnsPath) => {
       const ipnsValue = await sav3Ipfs.subscribeToIpnsPath(ipnsPath)
       if (!ipnsValue) {
         // user has not published anything yet
-        setUserIpnsData()
+        setUserIpnsContent()
         return
       }
-      const ipnsData = await sav3Ipfs.getIpfsFile(ipnsValue)
-      setUserIpnsData(JSON.parse(ipnsData))
+      const ipnsContent = await sav3Ipfs.getIpfsContent(ipnsValue)
+      setUserIpnsContent(JSON.parse(ipnsContent))
     })()
 
     // unsubscribe after component unmounts
@@ -41,7 +41,7 @@ const useUserIpnsData = (ipnsPath) => {
     }
   }, [ipnsPath])
 
-  return userIpnsData
+  return userIpnsContent
 }
 
-export default useUserIpnsData
+export default useUserIpnsContent

@@ -2,11 +2,11 @@ import {useEffect, useState} from 'react'
 import sav3Ipfs from 'src/lib/sav3-ipfs'
 import assert from 'assert'
 
-const useUsersIpnsData = (ipnsPaths) => {
+const useUsersIpnsContent = (ipnsPaths) => {
   assert(Array.isArray(ipnsPaths), `invalid ipnsPaths '${JSON.stringify(ipnsPaths)}'`)
-  const defaultUsersIpnsData = {}
-  const [usersIpnsData, setUsersIpnsData] = useState(defaultUsersIpnsData)
-  console.log('useUsersIpnsData', {ipnsPaths, usersIpnsData})
+  const defaultUsersIpnsContent = {}
+  const [usersIpnsContent, setUsersIpnsContent] = useState(defaultUsersIpnsContent)
+  console.log('useUsersIpnsContent', {ipnsPaths, usersIpnsContent})
 
   useEffect(() => {
     if (!ipnsPaths.length) {
@@ -22,11 +22,11 @@ const useUsersIpnsData = (ipnsPaths) => {
         return
       }
 
-      // update usersIpnsData state asynchronously as new ipfs files arrive
-      const ipnsData = await sav3Ipfs.getIpfsFile(ipnsValue)
-      setUsersIpnsData((previousUsersIpnsData) => ({
-        ...previousUsersIpnsData,
-        [newIpnsPath]: JSON.parse(ipnsData)
+      // update usersIpnsContent state asynchronously as new ipfs files arrive
+      const ipnsContent = await sav3Ipfs.getIpfsContent(ipnsValue)
+      setUsersIpnsContent((previousUsersIpnsContent) => ({
+        ...previousUsersIpnsContent,
+        [newIpnsPath]: JSON.parse(ipnsContent)
       }))
     }
     sav3Ipfs.on('publish', onPublish)
@@ -40,12 +40,12 @@ const useUsersIpnsData = (ipnsPaths) => {
           continue
         }
 
-        // update usersIpnsData state asynchronously as new ipfs files arrive
+        // update usersIpnsContent state asynchronously as new ipfs files arrive
         const ipnsPath = ipnsPaths[i]
-        sav3Ipfs.getIpfsFile(ipnsValue).then((ipnsData) => {
-          setUsersIpnsData((previousUsersIpnsData) => ({
-            ...previousUsersIpnsData,
-            [ipnsPath]: JSON.parse(ipnsData)
+        sav3Ipfs.getIpfsContent(ipnsValue).then((ipnsContent) => {
+          setUsersIpnsContent((previousUsersIpnsContent) => ({
+            ...previousUsersIpnsContent,
+            [ipnsPath]: JSON.parse(ipnsContent)
           }))
         })
       }
@@ -59,7 +59,7 @@ const useUsersIpnsData = (ipnsPaths) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [JSON.stringify(ipnsPaths)])
 
-  return usersIpnsData
+  return usersIpnsContent
 }
 
-export default useUsersIpnsData
+export default useUsersIpnsContent

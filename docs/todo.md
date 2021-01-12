@@ -3,10 +3,10 @@ todo next
 
 todo before finished prototype
 ------------------------------
-figure out why docker node doesnt connect
-make page for following only, and remove "following no one" warning from home
-more than 5 posts per user
+more than 5 posts per user, sort them by time, and cap the amount of posts per user
+refactor data names (ts instead of timestamp, etc), hook names (plurals need consistency), sav3 function names
 show "replying to" when post is a reply on feed, (need to implement better design for replies like the line on twitter)
+add debug module instead of console.log
 like
 resav3
 import/export private key
@@ -41,12 +41,11 @@ profile.thumbnailUrlCid
 saves
 array of user and post cids saved
 
-ipnsData
-profileCid
-lastPostCid
-followingCid
-saves
-isTerminated (possibly use ethereum for this so that it never gets unterminated)
+userIpnsContent
+userIpnsContent.profileCid
+userIpnsContent.lastPostCid
+userIpnsContent.followingCid
+userIpnsContent.isTerminated (possibly use ethereum for this so that it never gets unterminated)
 
 possible fancy names: 
 "player" instead of "user"

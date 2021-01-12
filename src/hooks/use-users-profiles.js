@@ -1,18 +1,18 @@
 import {useEffect, useState} from 'react'
 import sav3Ipfs from 'src/lib/sav3-ipfs'
 import assert from 'assert'
-import useUsersIpnsData from 'src/hooks/use-users-ipns-data'
+import useUsersIpnsContent from 'src/hooks/use-users-ipns-content'
 
 const useUsersProfiles = (userCids) => {
   assert(Array.isArray(userCids), `invalid userCids '${JSON.stringify(userCids)}'`)
   const defaultUserProfiles = {}
   const [usersProfiles, setUsersProfiles] = useState(defaultUserProfiles)
-  const usersIpnsData = useUsersIpnsData(userCids)
+  const usersIpnsContent = useUsersIpnsContent(userCids)
   const profileCids = {}
-  for (const userCid in usersIpnsData) {
-    profileCids[userCid] = usersIpnsData[userCid].profileCid
+  for (const userCid in usersIpnsContent) {
+    profileCids[userCid] = usersIpnsContent[userCid].profileCid
   }
-  console.log('useUsersProfiles', {usersIpnsData, userCids, profileCids, usersProfiles})
+  console.log('useUsersProfiles', {usersIpnsContent, userCids, profileCids, usersProfiles})
 
   useEffect(() => {
     for (const userCid in profileCids) {

@@ -55,7 +55,7 @@ function PublishPostButton () {
   return (
     <Box position='absolute' className={classes.createIconButtonBox}>
       <Box my={2} pl={1} alignItems='center' display='flex' className={classes.createIconButton} onClick={() => setOpenPublishPostModal(true)}>
-        <Fab className={classes.createIconButton} size='large'>
+        <Fab color='primary' className={classes.createIconButton} size='large'>
           <CreateIcon />
         </Fab>
       </Box>

@@ -173,10 +173,10 @@ class Sav3Ipfs extends EventEmitter {
     return ipnsRecord
   }
 
-  async putOwnIpnsRecord ({value, sequence} = {}) {
+  async setOwnIpnsRecord ({value, sequence} = {}) {
     await this.waitForReady()
-    assert(value && typeof value === 'string', `sav3Ipfs.putOwnIpnsRecord value '${value}' not a string`)
-    assert(typeof sequence === 'number', `sav3Ipfs.putOwnIpnsRecord sequence '${sequence}' not a number`)
+    assert(value && typeof value === 'string', `sav3Ipfs.setOwnIpnsRecord value '${value}' not a string`)
+    assert(typeof sequence === 'number', `sav3Ipfs.setOwnIpnsRecord sequence '${sequence}' not a number`)
 
     // needs /ipfs/ prefix to ipfs.name.resolve correctly
     if (!value.startsWith('/ipfs/')) {
@@ -198,29 +198,29 @@ class Sav3Ipfs extends EventEmitter {
     return ipnsRecord
   }
 
-  async getIpfsFile (fileCid) {
+  async getIpfsContent (cid) {
     await this.waitForReady()
-    assert(fileCid && typeof fileCid === 'string', `sav3Ipfs.getIpfsFile fileCid '${fileCid}' not a string`)
-    const file = (await this.ipfs.get(fileCid).next()).value
+    assert(cid && typeof cid === 'string', `sav3Ipfs.getIpfsContent cid '${cid}' not a string`)
+    const file = (await this.ipfs.get(cid).next()).value
     let content
     if (file.content) {
       const res = await file.content.next()
       content = res && res.value && res.value.toString()
     }
-    console.log('getIpfsFile', {fileCid, file, content})
+    console.log('getIpfsContent', {cid, file, content})
     return content
   }
 
-  async getOwnIpnsData () {
+  async getOwnIpnsContent () {
     await this.waitForReady()
     const record = await this.getOwnIpnsRecord()
     const ownIpfsValue = record.value.toString()
-    const lastIpnsData = await this.getIpfsFile(ownIpfsValue)
-    console.log('getOwnIpnsData', {ownIpfsValue, lastIpnsData})
-    if (!lastIpnsData) {
+    const lastIpnsContent = await this.getIpfsContent(ownIpfsValue)
+    console.log('getOwnIpnsContent', {ownIpfsValue, lastIpnsContent})
+    if (!lastIpnsContent) {
       return {}
     }
-    return JSON.parse(lastIpnsData)
+    return JSON.parse(lastIpnsContent)
   }
 
   async subscribeToIpnsPath (ipnsPath) {
@@ -243,19 +243,19 @@ class Sav3Ipfs extends EventEmitter {
     assert(content.length <= 140, `sav3Ipfs.publishPost content '${content}' longer than 140 chars`)
     assert(!parentPostCid || typeof parentPostCid === 'string', `sav3Ipfs.publishPost parentPostCid '${parentPostCid}' not a string`)
 
-    const ipnsData = await this.getOwnIpnsData()
+    const ipnsContent = await this.getOwnIpnsContent()
     const newPost = {}
-    newPost.previousPostCid = ipnsData.lastPostCid
+    newPost.previousPostCid = ipnsContent.lastPostCid
     newPost.timestamp = Math.round(Date.now() / 1000)
     newPost.userCid = (await this.ipfs.id()).id
     newPost.contentCid = (await this.ipfs.add(content)).cid.toString()
 
     const newPostCid = (await this.ipfs.add(JSON.stringify(newPost))).cid.toString()
-    const newIpnsData = {...ipnsData, lastPostCid: newPostCid}
-    const newIpnsDataCid = (await this.ipfs.add(JSON.stringify(newIpnsData))).cid.toString()
+    const newIpnsContent = {...ipnsContent, lastPostCid: newPostCid}
+    const newIpnsContentCid = (await this.ipfs.add(JSON.stringify(newIpnsContent))).cid.toString()
 
-    await this.publishIpnsRecord(newIpnsDataCid)
-    console.log('publishPost', {newIpnsDataCid, newPost, newIpnsData, ipnsData, newPostCid, parentPostCid})
+    await this.publishIpnsRecord(newIpnsContentCid)
+    console.log('publishPost', {newIpnsContentCid, newPost, newIpnsContent, ipnsContent, newPostCid, parentPostCid})
 
     if (parentPostCid) {
       await postRepliesUtils.cachePostReplyCid({cid: newPostCid, parentPostCid})
@@ -271,17 +271,17 @@ class Sav3Ipfs extends EventEmitter {
     // sort to avoid creating cids if unnecessary
     userCids = [...userCids].sort()
 
-    const ipnsData = await this.getOwnIpnsData()
+    const ipnsContent = await this.getOwnIpnsContent()
     const followingCid = (await this.ipfs.add(JSON.stringify(userCids))).cid.toString()
-    if (ipnsData.followingCid === followingCid) {
+    if (ipnsContent.followingCid === followingCid) {
       console.log('setFollowing duplicate following cid', {userCids})
       return
     }
-    const newIpnsData = {...ipnsData, followingCid}
-    const newIpnsDataCid = (await this.ipfs.add(JSON.stringify(newIpnsData))).cid.toString()
+    const newIpnsContent = {...ipnsContent, followingCid}
+    const newIpnsContentCid = (await this.ipfs.add(JSON.stringify(newIpnsContent))).cid.toString()
 
-    await this.publishIpnsRecord(newIpnsDataCid)
-    console.log('setFollowing', {newIpnsDataCid, userCids, followingCid, newIpnsData, ipnsData})
+    await this.publishIpnsRecord(newIpnsContentCid)
+    console.log('setFollowing', {newIpnsContentCid, userCids, followingCid, newIpnsContent, ipnsContent})
 
     return followingCid
   }
@@ -293,9 +293,9 @@ class Sav3Ipfs extends EventEmitter {
 
     const [ipnsValue] = await this.ipnsClient.subscribe([userCid])
     if (ipnsValue) {
-      const ipnsData = JSON.parse(await this.getIpfsFile(ipnsValue))
-      if (ipnsData.followingCid) {
-        following = JSON.parse(await this.getIpfsFile(ipnsData.followingCid))
+      const ipnsContent = JSON.parse(await this.getIpfsContent(ipnsValue))
+      if (ipnsContent.followingCid) {
+        following = JSON.parse(await this.getIpfsContent(ipnsContent.followingCid))
       }
     }
 
@@ -303,14 +303,14 @@ class Sav3Ipfs extends EventEmitter {
     return following
   }
 
-  async publishIpnsRecord (newIpnsDataCid) {
+  async publishIpnsRecord (newIpnsContentCid) {
     await this.waitForReady()
-    assert(typeof newIpnsDataCid === 'string', `sav3Ipfs.publishIpnsRecord '${newIpnsDataCid}' not a string`)
-    // use the ipns server until ipfs.name.publish is implemented in browser
+    assert(typeof newIpnsContentCid === 'string', `sav3Ipfs.publishIpnsRecord '${newIpnsContentCid}' not a string`)
+    // use the ipns server and this.setOwnIpnsRecord until ipfs.name.publish is implemented in browser
     const sequence = (await this.getOwnIpnsRecordSequence()) + 1
-    await this.ipnsClient.publish({value: newIpnsDataCid, sequence})
-    await this.putOwnIpnsRecord({value: newIpnsDataCid, sequence})
-    console.log('publishIpnsRecord', {newIpnsDataCid, sequence})
+    await this.ipnsClient.publish({value: newIpnsContentCid, sequence})
+    await this.setOwnIpnsRecord({value: newIpnsContentCid, sequence})
+    console.log('publishIpnsRecord', {newIpnsContentCid, sequence})
   }
 
   async editUserProfile ({displayName, description, thumbnailUrl, bannerUrl} = {}) {
@@ -342,11 +342,11 @@ class Sav3Ipfs extends EventEmitter {
 
     const profileCid = (await this.ipfs.add(JSON.stringify(profile))).cid.toString()
 
-    const ipnsData = await this.getOwnIpnsData()
-    ipnsData.profileCid = profileCid
-    const newIpnsDataCid = (await this.ipfs.add(JSON.stringify(ipnsData))).cid.toString()
-    await this.publishIpnsRecord(newIpnsDataCid)
-    console.log('editProfile', {displayName, description, thumbnailUrl, bannerUrl, ipnsData, profile, profileCid, newIpnsDataCid})
+    const ipnsContent = await this.getOwnIpnsContent()
+    ipnsContent.profileCid = profileCid
+    const newIpnsContentCid = (await this.ipfs.add(JSON.stringify(ipnsContent))).cid.toString()
+    await this.publishIpnsRecord(newIpnsContentCid)
+    console.log('editProfile', {displayName, description, thumbnailUrl, bannerUrl, ipnsContent, profile, profileCid, newIpnsContentCid})
 
     return profileCid
   }
@@ -354,19 +354,19 @@ class Sav3Ipfs extends EventEmitter {
   async getUserProfile (profileCid) {
     await this.waitForReady()
     assert(typeof profileCid === 'string', `sav3Ipfs.getUserProfile profileCid '${profileCid}' not a string`)
-    const profileCids = JSON.parse(await this.getIpfsFile(profileCid))
+    const profileCids = JSON.parse(await this.getIpfsContent(profileCid))
     const profile = {}
     if (profileCids.diplayNameCid) {
-      profile.displayName = await this.getIpfsFile(profileCids.diplayNameCid)
+      profile.displayName = await this.getIpfsContent(profileCids.diplayNameCid)
     }
     if (profileCids.descriptionCid) {
-      profile.description = await this.getIpfsFile(profileCids.descriptionCid)
+      profile.description = await this.getIpfsContent(profileCids.descriptionCid)
     }
     if (profileCids.thumbnailUrlCid) {
-      profile.thumbnailUrl = await this.getIpfsFile(profileCids.thumbnailUrlCid)
+      profile.thumbnailUrl = await this.getIpfsContent(profileCids.thumbnailUrlCid)
     }
     if (profileCids.bannerUrlCid) {
-      profile.bannerUrl = await this.getIpfsFile(profileCids.bannerUrlCid)
+      profile.bannerUrl = await this.getIpfsContent(profileCids.bannerUrlCid)
     }
 
     console.log('getUserProfile', {profileCid, profileCids, profile})
@@ -413,19 +413,36 @@ class Sav3Ipfs extends EventEmitter {
     return posts
   }
 
+  async * getPreviousPostCids (lastPostCid) {
+    await this.waitForReady()
+    assert(lastPostCid && typeof lastPostCid === 'string', `sav3Ipfs.getPostCidsFromLastPostCid lastPostCid '${lastPostCid}' not a string`)
+
+    let previousPostCid = lastPostCid
+
+    // loop over every post and yield
+    while (true) {
+      yield previousPostCid
+      const post = JSON.parse(await this.getIpfsContent(previousPostCid))
+      if (!post.previousPostCid) {
+        return
+      }
+      previousPostCid = post.previousPostCid
+    }
+  }
+
   async getPost (postCid) {
     await this.waitForReady()
     assert(postCid && typeof postCid === 'string', `sav3Ipfs.getPost postCid '${postCid}' not a string`)
     console.log('getPost', {postCid})
 
-    const post = JSON.parse(await this.getIpfsFile(postCid))
+    const post = JSON.parse(await this.getIpfsContent(postCid))
     post.cid = postCid
 
     if (post.parentPostCid) {
       await postRepliesUtils.cachePostReplyCid({cid: post.cid, parentPostCid: post.parentPostCid})
     }
 
-    post.content = await this.getIpfsFile(post.contentCid)
+    post.content = await this.getIpfsContent(post.contentCid)
     console.log('getPost returns', {postCid, post})
     return post
   }
