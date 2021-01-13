@@ -19,6 +19,9 @@ const useUsersPosts = (userCids) => {
 
   useEffect(() => {
     if (!lastPostCids.length) {
+      if (usersPosts.length) {
+        setUsersPosts([])
+      }
       return
     }
     for (const lastPostCid of lastPostCids) {
@@ -40,8 +43,6 @@ const useUsersPosts = (userCids) => {
         }))
       })
     }
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [JSON.stringify(lastPostCids), JSON.stringify(profiles)])
 
   return usersPosts

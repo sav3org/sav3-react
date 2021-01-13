@@ -27,7 +27,7 @@ export const getPostRepliesCids = async (postCid) => {
     postRepliesCids = Object.keys(JSON.parse(res))
   }
 
-  console.log('postRepliesUtils.getPostRepliesCids', {postCid, postRepliesCids, res})
+  // console.log('postRepliesUtils.getPostRepliesCids', {postCid, postRepliesCids, res})
   return postRepliesCids
 }
 

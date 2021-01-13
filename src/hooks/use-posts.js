@@ -10,6 +10,9 @@ const usePosts = (postCids) => {
 
   useEffect(() => {
     if (!postCids.length) {
+      if (JSON.stringify(posts) !== JSON.stringify(defaultPosts)) {
+        setPosts(defaultPosts)
+      }
       return
     }
     for (const postCid of postCids) {
@@ -24,8 +27,6 @@ const usePosts = (postCids) => {
         }))
       })
     }
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [JSON.stringify(postCids)])
 
   return posts

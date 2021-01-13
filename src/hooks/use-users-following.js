@@ -26,8 +26,6 @@ const useUsersFollowing = (userCids) => {
         })
       }
     }
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userCidsString])
 
   return usersFollowing

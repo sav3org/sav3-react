@@ -8,7 +8,6 @@ import Button from '@material-ui/core/Button'
 import Box from '@material-ui/core/Box'
 import PostsFeed from 'src/components/feeds/posts'
 import useOwnUserCid from 'src/hooks/use-own-user-cid'
-import useUserPosts from 'src/hooks/use-user-posts'
 import useUserProfile from 'src/hooks/use-user-profile'
 import PropTypes from 'prop-types'
 import Description from './description'
@@ -17,6 +16,8 @@ import assert from 'assert'
 import Divider from '@material-ui/core/Divider'
 import useIsFollowing from 'src/hooks/following/use-is-following'
 import MoreMenuButton from './more-menu'
+import useUserPostCids from 'src/hooks/use-user-post-cids'
+import usePosts from 'src/hooks/use-posts'
 
 const emptyImage = 'data:image/png;base64,'
 
@@ -49,8 +50,22 @@ const useStyles = makeStyles((theme) => ({
 function Profile ({userCid} = {}) {
   const ownCid = useOwnUserCid()
   const classes = useStyles()
-  const posts = useUserPosts(userCid)
   const profile = useUserProfile(userCid)
+  const userPostCids = useUserPostCids(userCid)
+  const [loadedPostCount, setLoadedPostCount] = useState(10)
+  const next = () => setLoadedPostCount((loadedPostCount) => loadedPostCount + 10)
+
+  // ordered posts with profile
+  const postsObject = usePosts(userPostCids)
+  const posts = Object.values(postsObject).sort((a, b) => b.timestamp - a.timestamp)
+  for (const post of posts) {
+    post.profile = profile
+  }
+  const loadedPosts = [...posts]
+  if (loadedPosts.length > loadedPostCount) {
+    loadedPosts.length = loadedPostCount
+  }
+  const hasMore = posts.length > loadedPosts.length
 
   console.log('Profile', {ownCid, userCid, posts, profile})
 
@@ -59,7 +74,7 @@ function Profile ({userCid} = {}) {
     button = <EditProfileButton profile={profile} />
   }
   // dont show button if dont know own cid yet
-  else if (ownCid) {
+  else if (ownCid && userCid) {
     button = <FollowButton userCid={userCid} />
   }
 
@@ -81,7 +96,7 @@ function Profile ({userCid} = {}) {
         <Description description={description} />
       </Box>
       <Divider />
-      <PostsFeed posts={posts} />
+      <PostsFeed posts={loadedPosts} next={next} hasMore={hasMore} />
     </div>
   )
 }

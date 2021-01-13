@@ -7,7 +7,7 @@ import useUsersProfiles from 'src/hooks/use-users-profiles'
 const useUserPostCids = (userCid) => {
   assert(!userCid || typeof userCid === 'string', `invalid userCid '${JSON.stringify(userCid)}'`)
   const userIpnsContent = useUserIpnsContent(userCid)
-  const lastPostCid = userIpnsContent.lastPostCid
+  const lastPostCid = userIpnsContent && userIpnsContent.lastPostCid
 
   const [userPostCids, setUserPostCids] = useState([])
 
@@ -15,7 +15,9 @@ const useUserPostCids = (userCid) => {
 
   useEffect(() => {
     if (!lastPostCid) {
-      // user hasn't posted yet
+      if (userPostCids.length) {
+        setUserPostCids([])
+      }
       return
     }
 
@@ -25,6 +27,11 @@ const useUserPostCids = (userCid) => {
       for await (const postCid of sav3Ipfs.getPreviousPostCids(lastPostCid)) {
         if (!isMounted) {
           return
+        }
+
+        // if lastPostCid changes and triggers refresh
+        if (userPostCids.includes(postCid)) {
+          continue
         }
 
         setUserPostCids((previousUserPostCids) => [...previousUserPostCids, postCid])

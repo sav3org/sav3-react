@@ -13,6 +13,9 @@ import/export private key
 
 todo after prototype
 --------------------
+loading publish/edit profile indicators
+better loading indicators for profile posts
+load more than 100 previous posts if scroll to end
 reply notification
 like notification
 resav3 notification

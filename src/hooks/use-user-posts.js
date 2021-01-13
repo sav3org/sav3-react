@@ -15,7 +15,9 @@ const useUserPosts = (userCid) => {
 
   useEffect(() => {
     if (!lastPostCid || typeof lastPostCid !== 'string') {
-      setUserPosts(defaultUserPosts)
+      if (userPosts.length) {
+        setUserPosts(defaultUserPosts)
+      }
       return
     }
     ;(async () => {
@@ -25,7 +27,6 @@ const useUserPosts = (userCid) => {
       }
       setUserPosts(posts)
     })()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [lastPostCid, JSON.stringify(profile)])
 
   return userPosts

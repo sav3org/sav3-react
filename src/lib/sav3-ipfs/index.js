@@ -423,6 +423,7 @@ class Sav3Ipfs extends EventEmitter {
     while (true) {
       yield previousPostCid
       const post = JSON.parse(await this.getIpfsContent(previousPostCid))
+      console.log('sav3Ipfs.getPreviousPostCids', {lastPostCid, previousPostCid, post})
       if (!post.previousPostCid) {
         return
       }

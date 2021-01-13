@@ -9,6 +9,9 @@ const useUserIpnsContent = (ipnsPath) => {
 
   useEffect(() => {
     if (!ipnsPath) {
+      if (userIpnsContent) {
+        setUserIpnsContent()
+      }
       return
     }
 

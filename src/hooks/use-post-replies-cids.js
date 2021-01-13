@@ -9,12 +9,19 @@ const usePostRepliesCids = (postCid) => {
 
   useInterval(() => {
     if (!postCid) {
-      setRepliesCids([])
+      // don't trigger rerender if already empty
+      if (repliesCids.length !== 0) {
+        setRepliesCids([])
+      }
       return
     }
     ;(async () => {
-      const repliesCids = await sav3Ipfs.getPostRepliesCids(postCid)
-      setRepliesCids(repliesCids)
+      const res = await sav3Ipfs.getPostRepliesCids(postCid)
+      // don't trigger rerender if is same array
+      if (JSON.stringify(res) === JSON.stringify(repliesCids)) {
+        return
+      }
+      setRepliesCids(res)
     })()
   }, 1000)
 

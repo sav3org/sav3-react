@@ -13,7 +13,9 @@ const usePostWithReplies = (postCid) => {
   // set parent post once
   useEffect(() => {
     if (!postCid || typeof postCid !== 'string') {
-      setParentPost()
+      if (parentPost) {
+        setParentPost()
+      }
       return
     }
     ;(async () => {
