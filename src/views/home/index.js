@@ -35,11 +35,11 @@ function Home () {
   //   posts.push(postsObject[postCid])
   // }
 
-  const posts = useHomePosts()
+  const {posts, next, hasMore} = useHomePosts()
 
   debug({posts})
 
-  let feed = <Feed posts={posts} />
+  let feed = <Feed posts={posts} next={next} hasMore={hasMore} />
   if (!posts.length) {
     feed = (
       <Box width='100%' py={4} display='flex' justifyContent='center' alignItems='center'>

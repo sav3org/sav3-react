@@ -10,14 +10,22 @@ const usePostWithReplies = (postCid) => {
   assert(!postCid || typeof postCid === 'string', `invalid postCid '${JSON.stringify(postCid)}'`)
   const [parentPost, setParentPost] = useState()
   const repliesCids = usePostRepliesCids(parentPost && parentPost.cid)
-  const replies = usePosts(repliesCids)
+  const posts = usePosts(repliesCids)
+
+  // usePosts doesn't delete removed replies on repliesCids change
+  // but usePostRepliesCids does so must assign like below
+  const replies = {}
+  for (const replyCid of repliesCids) {
+    replies[replyCid] = posts[replyCid]
+  }
 
   // set parent post once
   useEffect(() => {
+    // reset on post cid change
+    if (parentPost) {
+      setParentPost()
+    }
     if (!postCid || typeof postCid !== 'string') {
-      if (parentPost) {
-        setParentPost()
-      }
       return
     }
     ;(async () => {

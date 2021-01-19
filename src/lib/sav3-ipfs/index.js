@@ -418,6 +418,29 @@ class Sav3Ipfs extends EventEmitter {
     return posts
   }
 
+  // getPreviousPostCids (lastPostCid) {
+  //   assert(lastPostCid && typeof lastPostCid === 'string', `sav3Ipfs.getPostCidsFromLastPostCid lastPostCid '${lastPostCid}' not a string`)
+
+  //   const waitForReady = this.waitForReady.bind(this)
+  //   const getIpfsContent = this.getIpfsContent.bind(this)
+  //   async function * getPreviousPostCids() {
+  //     await waitForReady()
+  //     let previousPostCid = lastPostCid
+  //     // loop over every post and yield
+  //     while (true) {
+  //       yield previousPostCid
+  //       const post = JSON.parse(await getIpfsContent(previousPostCid))
+  //       debug('getPreviousPostCids', {lastPostCid, previousPostCid, post})
+  //       if (!post.previousPostCid) {
+  //         return
+  //       }
+  //       previousPostCid = post.previousPostCid
+  //     }
+  //   }
+
+  //   return getPreviousPostCids()
+  // }
+
   async * getPreviousPostCids (lastPostCid) {
     await this.waitForReady()
     assert(lastPostCid && typeof lastPostCid === 'string', `sav3Ipfs.getPostCidsFromLastPostCid lastPostCid '${lastPostCid}' not a string`)

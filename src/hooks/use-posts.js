@@ -11,6 +11,10 @@ const usePosts = (postCids) => {
   debug({postCids, posts})
 
   useEffect(() => {
+    // dont reset to default on profile cids change because
+    // even if extra profiles are kept it doesn't affect
+    // any functionalities yet
+
     if (!postCids.length) {
       if (JSON.stringify(posts) !== JSON.stringify(defaultPosts)) {
         setPosts(defaultPosts)

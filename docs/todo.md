@@ -1,8 +1,10 @@
 todo next
 ---------
 
-use feed post cache/interval, only mount once and refresh in the background, has to be context or something
-use home post cache/interval
+todo feed
+---------
+sorting and loading new posts algo
+refresh new user cids in the background (or possibly as it happens?)
 
 todo before finished prototype
 ------------------------------

@@ -14,10 +14,11 @@ const useUserProfile = (userCid) => {
   debug({userIpnsContent, userCid, profileCid, userProfile})
 
   useEffect(() => {
+    // set profile to default on profile change
+    if (JSON.stringify(userProfile) !== JSON.stringify(defaultUserProfile)) {
+      setUserProfile(defaultUserProfile)
+    }
     if (!profileCid || typeof profileCid !== 'string') {
-      if (JSON.stringify(userProfile) !== JSON.stringify(defaultUserProfile)) {
-        setUserProfile(defaultUserProfile)
-      }
       return
     }
     ;(async () => {

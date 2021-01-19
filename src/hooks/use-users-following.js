@@ -16,6 +16,9 @@ const useUsersFollowing = (userCids) => {
   debug({userCids, usersFollowing})
 
   useEffect(() => {
+    // note: dont reset back to empty array on user cids change
+    // because it doesn't really affect user experience
+
     for (const userCid of uniqueUserCids) {
       const userFollowing = usersFollowingCache[userCid]
       if (userFollowing) {

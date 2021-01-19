@@ -136,6 +136,17 @@ const createWindowSav3IpfsTestMethods = (sav3Ipfs) => {
     console.log('oldPrivateKey', oldPrivateKey)
     console.log('newPrivateKey', newPrivateKey)
   }
+
+  window.sav3IpfsTest.getPreviousPostCids = (...lastPostCids) => {
+    for (const lastPostCid of lastPostCids) {
+      ;(async () => {
+        let index = 1
+        for await (const postCid of sav3Ipfs.getPreviousPostCids(lastPostCid)) {
+          console.log('getPreviousPostCids', lastPostCid, index++, postCid)
+        }
+      })()
+    }
+  }
 }
 
 export default createWindowSav3IpfsTestMethods

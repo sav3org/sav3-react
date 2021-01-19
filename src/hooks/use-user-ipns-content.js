@@ -10,10 +10,11 @@ const useUserIpnsContent = (ipnsPath) => {
   debug({ipnsPath, userIpnsContent})
 
   useEffect(() => {
+    // reset content on ipns path change
+    if (userIpnsContent) {
+      setUserIpnsContent()
+    }
     if (!ipnsPath) {
-      if (userIpnsContent) {
-        setUserIpnsContent()
-      }
       return
     }
 

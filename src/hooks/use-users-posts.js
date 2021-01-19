@@ -6,6 +6,8 @@ import useUsersProfiles from 'src/hooks/use-users-profiles'
 import Debug from 'debug'
 const debug = Debug('sav3:hooks:use-users-posts')
 
+// TODO: delete this file, no longer needed
+
 const useUsersPosts = (userCids) => {
   assert(Array.isArray(userCids), `invalid userCids '${JSON.stringify(userCids)}'`)
   const defaultUsersPosts = []

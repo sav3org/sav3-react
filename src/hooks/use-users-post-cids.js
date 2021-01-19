@@ -55,8 +55,6 @@ const useUsersPostCids = (userCids) => {
   useEffect(() => {
     updatePostCids()
 
-    let isMounted = true
-
     for (const userCid in usersIpnsContents) {
       const lastPostCid = usersIpnsContents[userCid] && usersIpnsContents[userCid].lastPostCid
       const previousLastPostCid = previousUsersIpnsContents && previousUsersIpnsContents[userCid] && previousUsersIpnsContents[userCid].lastPostCid
@@ -64,16 +62,13 @@ const useUsersPostCids = (userCids) => {
         continue
       }
 
-      let limit = 5
+      let limit = 20
 
       ;(async () => {
         for await (const postCid of sav3Ipfs.getPreviousPostCids(lastPostCid)) {
-          // eslint-disable-next-line no-loop-func
-          if (!isMounted) {
-            return
-          }
+          // note: don't stop on unmount or it will cut off new post cids from
 
-          // if lastPostCid changes and triggers refresh
+          // if lastPostCid changes and triggers refresh somehow (should not happen)
           if (usersPostCids[userCid].includes(postCid)) {
             continue
           }
@@ -89,10 +84,6 @@ const useUsersPostCids = (userCids) => {
           }
         }
       })()
-    }
-
-    return () => {
-      isMounted = false
     }
   }, [JSON.stringify(usersIpnsContents)])
 

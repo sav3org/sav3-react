@@ -1,6 +1,8 @@
 import {useEffect, useState} from 'react'
 import sav3Ipfs from 'src/lib/sav3-ipfs'
 
+// TODO: convert to useInterval
+
 const usePeersCids = () => {
   const [peerCids, setPeersCids] = useState([])
   const [pollCount, setPollCount] = useState(0)

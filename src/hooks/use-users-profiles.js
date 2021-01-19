@@ -29,6 +29,10 @@ const useUsersProfiles = (userCids) => {
   }
 
   useEffect(() => {
+    // dont reset to default on profile cids change because
+    // even if extra profiles are kept it doesn't affect
+    // any functionalities yet
+
     for (const userCid in profileCids) {
       const profileCid = profileCids[userCid]
       if (!profileCid || typeof profileCid !== 'string') {
@@ -39,7 +43,6 @@ const useUsersProfiles = (userCids) => {
       }
 
       sav3Ipfs.getUserProfile(profileCid).then((userProfile) => {
-        console.log('getUserProfile', {profileCid})
         setUsersProfiles((previousUsersProfiles) => ({
           ...previousUsersProfiles,
           [userCid]: userProfile
