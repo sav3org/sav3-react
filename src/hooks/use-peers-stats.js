@@ -28,7 +28,7 @@ const usePeersStats = () => {
           isoCountryCode = await ipUtils.getIsoCountryCodeFromIpCached(peersStat.ip)
         }
         catch (e) {
-          console.log(e)
+          console.error(e)
           continue
         }
         const countryFlagEmoji = ipUtils.isoCountryCodeToCountryFlagEmoji(isoCountryCode)

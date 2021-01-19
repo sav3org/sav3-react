@@ -1,18 +1,32 @@
 import {useEffect, useState} from 'react'
 import sav3Ipfs from 'src/lib/sav3-ipfs'
 import assert from 'assert'
-import useUsersIpnsContent from 'src/hooks/use-users-ipns-content'
+import useUsersIpnsContents from 'src/hooks/use-users-ipns-contents'
+import usePrevious from 'src/hooks/utils/use-previous'
+import Debug from 'debug'
+const debug = Debug('sav3:hooks:use-users-profiles')
 
 const useUsersProfiles = (userCids) => {
   assert(Array.isArray(userCids), `invalid userCids '${JSON.stringify(userCids)}'`)
   const defaultUserProfiles = {}
   const [usersProfiles, setUsersProfiles] = useState(defaultUserProfiles)
-  const usersIpnsContent = useUsersIpnsContent(userCids)
+  const usersIpnsContents = useUsersIpnsContents(userCids)
   const profileCids = {}
-  for (const userCid in usersIpnsContent) {
-    profileCids[userCid] = usersIpnsContent[userCid].profileCid
+  for (const userCid in usersIpnsContents) {
+    profileCids[userCid] = usersIpnsContents[userCid].profileCid
   }
-  console.log('useUsersProfiles', {usersIpnsContent, userCids, profileCids, usersProfiles})
+  const previousProfileCids = usePrevious(profileCids)
+  debug({usersIpnsContents, userCids, profileCids, previousProfileCids, usersProfiles})
+
+  const getUserProfileIsPending = (userCid) => {
+    return (
+      previousProfileCids &&
+      previousProfileCids[userCid] &&
+      previousProfileCids[userCid].profileCid &&
+      profileCids[userCid] &&
+      profileCids[userCid].profileCid === previousProfileCids[userCid].profileCid
+    )
+  }
 
   useEffect(() => {
     for (const userCid in profileCids) {
@@ -20,8 +34,12 @@ const useUsersProfiles = (userCids) => {
       if (!profileCid || typeof profileCid !== 'string') {
         continue
       }
+      if (getUserProfileIsPending(userCid)) {
+        continue
+      }
 
       sav3Ipfs.getUserProfile(profileCid).then((userProfile) => {
+        console.log('getUserProfile', {profileCid})
         setUsersProfiles((previousUsersProfiles) => ({
           ...previousUsersProfiles,
           [userCid]: userProfile

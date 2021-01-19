@@ -3,6 +3,8 @@ import sav3Ipfs from 'src/lib/sav3-ipfs'
 import assert from 'assert'
 import useUserIpnsContent from 'src/hooks/use-user-ipns-content'
 import useUsersProfiles from 'src/hooks/use-users-profiles'
+import Debug from 'debug'
+const debug = Debug('sav3:hooks:use-user-post-cids')
 
 const useUserPostCids = (userCid) => {
   assert(!userCid || typeof userCid === 'string', `invalid userCid '${JSON.stringify(userCid)}'`)
@@ -11,7 +13,7 @@ const useUserPostCids = (userCid) => {
 
   const [userPostCids, setUserPostCids] = useState([])
 
-  console.log('useUserPostCids', {userIpnsContent, lastPostCid, userPostCids})
+  debug({userIpnsContent, lastPostCid, userPostCids})
 
   useEffect(() => {
     if (!lastPostCid) {

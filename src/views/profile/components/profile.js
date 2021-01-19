@@ -18,6 +18,8 @@ import useIsFollowing from 'src/hooks/following/use-is-following'
 import MoreMenuButton from './more-menu'
 import useUserPostCids from 'src/hooks/use-user-post-cids'
 import usePosts from 'src/hooks/use-posts'
+import Debug from 'debug'
+const debug = Debug('sav3:views:profile')
 
 const emptyImage = 'data:image/png;base64,'
 
@@ -67,14 +69,14 @@ function Profile ({userCid} = {}) {
   }
   const hasMore = posts.length > loadedPosts.length
 
-  console.log('Profile', {ownCid, userCid, posts, profile})
+  debug({ownCid, userCid, posts, profile})
 
   let button
   if (userCid === ownCid) {
     button = <EditProfileButton profile={profile} />
   }
   // dont show button if dont know own cid yet
-  else if (ownCid && userCid) {
+  else if (ownCid) {
     button = <FollowButton userCid={userCid} />
   }
 
@@ -122,14 +124,22 @@ function FollowButton ({userCid} = {}) {
   const t = useTranslation()
   const [isFollowing, setIsFollowing] = useIsFollowing(userCid)
 
+  const follow = (value) => {
+    // still show button even if cid hasn't loaded yet but don't follow
+    if (!userCid) {
+      return
+    }
+    setIsFollowing(value)
+  }
+
   let followButton = (
-    <Button variant='outlined' size='large' color='primary' onClick={() => setIsFollowing(true)}>
+    <Button variant='outlined' size='large' color='primary' onClick={() => follow(true)}>
       {t.Follow()}
     </Button>
   )
   if (isFollowing) {
     followButton = (
-      <Button variant='outlined' size='large' color='primary' onClick={() => setIsFollowing(false)}>
+      <Button variant='outlined' size='large' color='primary' onClick={() => follow(false)}>
         {t.Unfollow()}
       </Button>
     )
@@ -138,7 +148,7 @@ function FollowButton ({userCid} = {}) {
 }
 
 FollowButton.propTypes = {
-  userCid: PropTypes.string.isRequired
+  userCid: PropTypes.string
 }
 
 const forceHttps = (link) => {

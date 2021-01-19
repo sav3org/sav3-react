@@ -3,6 +3,8 @@ import sav3Ipfs from 'src/lib/sav3-ipfs'
 import assert from 'assert'
 import usePosts from 'src/hooks/use-posts'
 import usePostRepliesCids from 'src/hooks/use-post-replies-cids'
+import Debug from 'debug'
+const debug = Debug('sav3:hooks:use-post-with-replies')
 
 const usePostWithReplies = (postCid) => {
   assert(!postCid || typeof postCid === 'string', `invalid postCid '${JSON.stringify(postCid)}'`)
@@ -28,7 +30,7 @@ const usePostWithReplies = (postCid) => {
     })()
   }, [postCid])
 
-  console.log('usePostWithReplies', {parentPost, repliesCids, replies})
+  debug({parentPost, repliesCids, replies})
 
   if (!parentPost) {
     return

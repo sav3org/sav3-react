@@ -9,13 +9,15 @@ import Typography from '@material-ui/core/Typography'
 import usePeersStats from 'src/hooks/use-peers-stats'
 import Peer from './components/peer'
 import CircularProgress from '@material-ui/core/CircularProgress'
+import Debug from 'debug'
+const debug = Debug('sav3:views:stats')
 
 function Stats () {
   const t = useTranslation()
   const history = useHistory()
 
   const peers = usePeersStats()
-  console.log('Stats', {peers})
+  debug({peers})
 
   return (
     <div>

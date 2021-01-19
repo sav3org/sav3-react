@@ -23,7 +23,7 @@ export const getIsoCountryCodeFromIpCached = async (ip) => {
     getIsoCountryCodeFromIpAttempts.add(ip)
     getIsoCountryCodeFromIp(ip)
       .then((isoCountryCode) => ipIsoCountryCodeCache.set(ip, isoCountryCode))
-      .catch((e) => console.log(e))
+      .catch((e) => console.error(e))
   }
 
   throw Error(`iso country code for ip '${ip}' not cached yet`)

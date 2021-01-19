@@ -12,13 +12,15 @@ import createWindowSav3IpfsTestMethods from './utils/create-window-sav3-ipfs-tes
 import uint8ArrayToString from 'uint8arrays/to-string'
 import config from 'src/config'
 import postRepliesUtils from './utils/post-replies'
+import Debug from 'debug'
+const debug = Debug('sav3:sav3-ipfs:index')
 
 class Sav3Ipfs extends EventEmitter {
   constructor () {
     super()
     this.ipfs = null
     this.ipnsClient = null
-    this._initIpfs().catch(console.log)
+    this._initIpfs().catch(console.error)
   }
 
   async _initIpfs ({privateKey} = {}) {
@@ -51,7 +53,7 @@ class Sav3Ipfs extends EventEmitter {
       ipfsOptions.config.Identity = {PrivKey: privateKey}
     }
 
-    console.log('_initIpfs', {ipfsOptions})
+    debug('_initIpfs', {ipfsOptions})
 
     const ipfs = await Ipfs.create(ipfsOptions)
     this.ipfs = webRtcUtils.withWebRtcSdpCache(ipfs)
@@ -68,12 +70,12 @@ class Sav3Ipfs extends EventEmitter {
     window.ipfs = this.ipfs
 
     this.ipfs.libp2p.on('peer:discovery', (peer) => {
-      console.log('discovered', peer)
+      debug('discovered', peer)
     })
 
     this.ipfs.libp2p.on('peer:connect', (peer) => {
-      console.log('connected', peer)
-      this.ipfs.swarm.peers().then((peers) => console.log('current peers connected: ', peers))
+      debug('connected', peer)
+      this.ipfs.swarm.peers().then((peers) => debug('current peers connected: ', peers))
     })
 
     // silence listener memory leak warning
@@ -93,7 +95,7 @@ class Sav3Ipfs extends EventEmitter {
     for (const peerCid of peerCids) {
       peersStats.push(await this.getPeerStats(peerCid))
     }
-    console.log('getPeersStats', {peersStats})
+    debug('getPeersStats', {peersStats})
     return peersStats
   }
 
@@ -207,7 +209,7 @@ class Sav3Ipfs extends EventEmitter {
       const res = await file.content.next()
       content = res && res.value && res.value.toString()
     }
-    console.log('getIpfsContent', {cid, file, content})
+    debug('getIpfsContent', {cid, file, content})
     return content
   }
 
@@ -216,7 +218,7 @@ class Sav3Ipfs extends EventEmitter {
     const record = await this.getOwnIpnsRecord()
     const ownIpfsValue = record.value.toString()
     const lastIpnsContent = await this.getIpfsContent(ownIpfsValue)
-    console.log('getOwnIpnsContent', {ownIpfsValue, lastIpnsContent})
+    debug('getOwnIpnsContent', {ownIpfsValue, lastIpnsContent})
     if (!lastIpnsContent) {
       return {}
     }
@@ -232,6 +234,9 @@ class Sav3Ipfs extends EventEmitter {
 
   async subscribeToIpnsPaths (ipnsPaths) {
     assert(Array.isArray(ipnsPaths), `sav3Ipfs.subscribeToIpnsPaths ipnsPaths '${ipnsPaths}' not an array`)
+    for (const ipnsPath of ipnsPaths) {
+      assert(ipnsPath && typeof ipnsPath === 'string', `sav3Ipfs.subscribeToIpnsPaths ipnsPaths '${JSON.stringify(ipnsPaths)}' contains non string`)
+    }
     await this.waitForReady()
     const ipnsValues = await this.ipnsClient.subscribe(ipnsPaths)
     return ipnsValues
@@ -255,7 +260,7 @@ class Sav3Ipfs extends EventEmitter {
     const newIpnsContentCid = (await this.ipfs.add(JSON.stringify(newIpnsContent))).cid.toString()
 
     await this.publishIpnsRecord(newIpnsContentCid)
-    console.log('publishPost', {newIpnsContentCid, newPost, newIpnsContent, ipnsContent, newPostCid, parentPostCid})
+    debug('publishPost', {newIpnsContentCid, newPost, newIpnsContent, ipnsContent, newPostCid, parentPostCid})
 
     if (parentPostCid) {
       await postRepliesUtils.cachePostReplyCid({cid: newPostCid, parentPostCid})
@@ -274,14 +279,14 @@ class Sav3Ipfs extends EventEmitter {
     const ipnsContent = await this.getOwnIpnsContent()
     const followingCid = (await this.ipfs.add(JSON.stringify(userCids))).cid.toString()
     if (ipnsContent.followingCid === followingCid) {
-      console.log('setFollowing duplicate following cid', {userCids})
+      debug('setFollowing duplicate following cid', {userCids})
       return
     }
     const newIpnsContent = {...ipnsContent, followingCid}
     const newIpnsContentCid = (await this.ipfs.add(JSON.stringify(newIpnsContent))).cid.toString()
 
     await this.publishIpnsRecord(newIpnsContentCid)
-    console.log('setFollowing', {newIpnsContentCid, userCids, followingCid, newIpnsContent, ipnsContent})
+    debug('setFollowing', {newIpnsContentCid, userCids, followingCid, newIpnsContent, ipnsContent})
 
     return followingCid
   }
@@ -299,7 +304,7 @@ class Sav3Ipfs extends EventEmitter {
       }
     }
 
-    console.log('getUserFollowing', {userCid, following, ipnsValue})
+    debug('getUserFollowing', {userCid, following, ipnsValue})
     return following
   }
 
@@ -310,7 +315,7 @@ class Sav3Ipfs extends EventEmitter {
     const sequence = (await this.getOwnIpnsRecordSequence()) + 1
     await this.ipnsClient.publish({value: newIpnsContentCid, sequence})
     await this.setOwnIpnsRecord({value: newIpnsContentCid, sequence})
-    console.log('publishIpnsRecord', {newIpnsContentCid, sequence})
+    debug('publishIpnsRecord', {newIpnsContentCid, sequence})
   }
 
   async editUserProfile ({displayName, description, thumbnailUrl, bannerUrl} = {}) {
@@ -346,7 +351,7 @@ class Sav3Ipfs extends EventEmitter {
     ipnsContent.profileCid = profileCid
     const newIpnsContentCid = (await this.ipfs.add(JSON.stringify(ipnsContent))).cid.toString()
     await this.publishIpnsRecord(newIpnsContentCid)
-    console.log('editProfile', {displayName, description, thumbnailUrl, bannerUrl, ipnsContent, profile, profileCid, newIpnsContentCid})
+    debug('editProfile', {displayName, description, thumbnailUrl, bannerUrl, ipnsContent, profile, profileCid, newIpnsContentCid})
 
     return profileCid
   }
@@ -369,7 +374,7 @@ class Sav3Ipfs extends EventEmitter {
       profile.bannerUrl = await this.getIpfsContent(profileCids.bannerUrlCid)
     }
 
-    console.log('getUserProfile', {profileCid, profileCids, profile})
+    debug('getUserProfile', {profileCid, profileCids, profile})
     return profile
   }
 
@@ -409,7 +414,7 @@ class Sav3Ipfs extends EventEmitter {
       posts.push(post)
     }
 
-    console.log('getUserPostsFromLastPostCid', {lastPostCid, posts})
+    debug('getUserPostsFromLastPostCid', {lastPostCid, posts})
     return posts
   }
 
@@ -423,7 +428,7 @@ class Sav3Ipfs extends EventEmitter {
     while (true) {
       yield previousPostCid
       const post = JSON.parse(await this.getIpfsContent(previousPostCid))
-      console.log('sav3Ipfs.getPreviousPostCids', {lastPostCid, previousPostCid, post})
+      debug('getPreviousPostCids', {lastPostCid, previousPostCid, post})
       if (!post.previousPostCid) {
         return
       }
@@ -434,7 +439,7 @@ class Sav3Ipfs extends EventEmitter {
   async getPost (postCid) {
     await this.waitForReady()
     assert(postCid && typeof postCid === 'string', `sav3Ipfs.getPost postCid '${postCid}' not a string`)
-    console.log('getPost', {postCid})
+    debug('getPost', {postCid})
 
     const post = JSON.parse(await this.getIpfsContent(postCid))
     post.cid = postCid
@@ -444,7 +449,7 @@ class Sav3Ipfs extends EventEmitter {
     }
 
     post.content = await this.getIpfsContent(post.contentCid)
-    console.log('getPost returns', {postCid, post})
+    debug('getPost returns', {postCid, post})
     return post
   }
 

@@ -1,6 +1,9 @@
 todo next
 ---------
 
+use feed post cache/interval, only mount once and refresh in the background, has to be context or something
+use home post cache/interval
+
 todo before finished prototype
 ------------------------------
 more than 5 posts per user, sort them by time, and cap the amount of posts per user

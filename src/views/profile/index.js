@@ -9,6 +9,8 @@ import useOwnUserCid from 'src/hooks/use-own-user-cid'
 import ProfileComponent from './components/profile'
 import useTranslation from 'src/translations/use-translation'
 import urlUtils from 'src/lib/utils/url'
+import Debug from 'debug'
+const debug = Debug('sav3:views:profile')
 
 function Profile () {
   const {encodedCid} = useParams()
@@ -33,7 +35,7 @@ function Profile () {
   const history = useHistory()
   const t = useTranslation()
 
-  console.log('Profile', {userCid, urlUserCid, urlIsExpired, isOwnProfile})
+  debug({userCid, urlUserCid, urlIsExpired, isOwnProfile})
 
   return (
     <div>

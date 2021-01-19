@@ -24,6 +24,7 @@ import urlUtils from 'src/lib/utils/url'
 import usePostRepliesCids from 'src/hooks/use-post-replies-cids'
 import useCopyClipboard from 'src/hooks/utils/use-copy-clipboard'
 import useTranslation from 'src/translations/use-translation'
+import themesUtils from 'src/themes/utils'
 
 const useStyles = makeStyles((theme) => ({
   imgMedia: {
@@ -68,18 +69,13 @@ const useStyles = makeStyles((theme) => ({
   post: {
     cursor: 'pointer',
     '&:hover': {
-      backgroundColor: rgbaOpacity(theme.palette.action.hover, 0.4)
+      backgroundColor: themesUtils.scaleRgbaAlpha(theme.palette.action.hover, 0.4)
     },
     // prevent mobile highlight entire post when clicking inner elements
     tapHighlightColor: 'rgba(0, 0, 0, 0)',
     userSelect: 'none'
   }
 }))
-
-const rgbaOpacity = (rgbaString, factor) => {
-  const [r, g, b, a] = rgbaString.match(/[\d.]+/g)
-  return `rgba(${r}, ${g}, ${b}, ${(a * factor).toFixed(3)})`
-}
 
 function Post ({post} = {}) {
   const location = useLocation()

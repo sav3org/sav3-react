@@ -12,6 +12,10 @@ import CircularProgress from '@material-ui/core/CircularProgress'
 import useTranslation from 'src/translations/use-translation'
 import useOwnUserCid from 'src/hooks/use-own-user-cid'
 import Divider from '@material-ui/core/Divider'
+import useUserPostCids from 'src/hooks/use-user-post-cids'
+import usePosts from 'src/hooks/use-posts'
+import Debug from 'debug'
+const debug = Debug('sav3:views:feed')
 
 function Feed () {
   const theme = useTheme()
@@ -27,7 +31,7 @@ function Feed () {
   for (const postCid in postsObject) {
     posts.push(postsObject[postCid])
   }
-  console.log('Feed page', {followingCids, ownCid, posts, postsObject})
+  debug({followingCids, ownCid, posts, postsObject})
 
   let feed = <PostsFeed posts={posts} />
   if (!posts.length) {

@@ -18,8 +18,7 @@ const useStyles = makeStyles((theme) => ({
     // borders
     borderWidth: theme.sav3.borderWidth,
     borderStyle: 'solid',
-    borderColor: theme.sav3.borderColor,
-    backgroundColor: theme.palette.background.default
+    borderColor: theme.sav3.borderColor
   },
   userCid: {
     wordBreak: 'break-all',

@@ -1,0 +1,96 @@
+import {createContext, useState, useEffect} from 'react'
+import usePrevious from 'src/hooks/utils/use-previous'
+import useFollowingOnce from 'src/hooks/following/use-following-once'
+import useBootstrapUsersCids from 'src/hooks/following/use-bootstrap-users-cids'
+import useOwnUserCid from 'src/hooks/use-own-user-cid'
+import useUsersFollowing from 'src/hooks/use-users-following'
+import useUsersPostCids from 'src/hooks/use-users-post-cids'
+import useUsersProfiles from 'src/hooks/use-users-profiles'
+import sav3Ipfs from 'src/lib/sav3-ipfs'
+import bootstrapUsersUtils from 'src/lib/sav3-ipfs/utils/bootstrap-users'
+import Debug from 'debug'
+const debug = Debug('sav3:hooks:feed:feed-provider')
+
+export const FeedContext = createContext()
+
+const FeedProvider = (props) => {
+  // set posts once on load, and refresh every 5min
+  const [posts, setPosts] = useState({})
+
+  const ownCid = useOwnUserCid()
+  const followingCids = useFollowingOnce()
+  const bootstrapUsersCids = useBootstrapUsersCids()
+  const followingOfFollowingCids = useUsersFollowing([...followingCids, ...bootstrapUsersCids])
+
+  const uniqueUserCids = new Set([...followingCids, ...bootstrapUsersCids, ...followingOfFollowingCids])
+  if (ownCid) {
+    uniqueUserCids.add(ownCid)
+  }
+  const userCids = [...uniqueUserCids]
+  const uniqueUserCidsString = JSON.stringify(userCids)
+  const previousUniqueUserCids = usePrevious(uniqueUserCids)
+  const usersPostCids = useUsersPostCids(userCids)
+  const uniquePostCids = usersPostCidsToUniquePostCids(usersPostCids)
+  const previousUniquePostCids = usePrevious(uniquePostCids)
+  const usersPostCidsString = JSON.stringify(usersPostCids)
+  const profiles = useUsersProfiles(userCids)
+
+  const feedPostCids = getFeedCids(usersPostCids, followingCids)
+  const homePostCids = getFeedCids(usersPostCids, userCids)
+
+  const getAndSetPost = async (postCid) => {
+    const post = await sav3Ipfs.getPost(postCid)
+    setPosts((previousPosts) => ({
+      ...previousPosts,
+      [postCid]: post
+    }))
+  }
+
+  debug({ownCid, followingCids, bootstrapUsersCids, followingOfFollowingCids, usersPostCids, posts, profiles, feedPostCids, homePostCids})
+
+  // get users posts
+  useEffect(() => {
+    for (const userCid in usersPostCids) {
+      for (const postCid of usersPostCids[userCid]) {
+        if (!previousUniquePostCids || !previousUniquePostCids.has(postCid)) {
+          getAndSetPost(postCid)
+        }
+      }
+    }
+  }, [usersPostCidsString])
+
+  const contextValue = {
+    posts,
+    profiles,
+    feedPostCids,
+    homePostCids
+  }
+
+  const {children} = props
+  return <FeedContext.Provider value={contextValue}>{children}</FeedContext.Provider>
+}
+
+const getFeedCids = (usersPostCids, userCids) => {
+  const feedCids = []
+  for (const userCid of userCids) {
+    if (!usersPostCids[userCid]) {
+      continue
+    }
+    for (const postCid of usersPostCids[userCid]) {
+      feedCids.push(postCid)
+    }
+  }
+  return feedCids
+}
+
+const usersPostCidsToUniquePostCids = (usersPostCids) => {
+  const uniquePostCids = new Set()
+  for (const userCid in usersPostCids) {
+    for (const postCid of usersPostCids[userCid]) {
+      uniquePostCids.add(postCid)
+    }
+  }
+  return uniquePostCids
+}
+
+export default FeedProvider

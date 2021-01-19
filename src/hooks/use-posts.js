@@ -1,12 +1,14 @@
 import {useEffect, useState} from 'react'
 import sav3Ipfs from 'src/lib/sav3-ipfs'
 import assert from 'assert'
+import Debug from 'debug'
+const debug = Debug('sav3:hooks:use-posts')
 
 const usePosts = (postCids) => {
   assert(Array.isArray(postCids), `invalid postCids '${JSON.stringify(postCids)}'`)
   const defaultPosts = {}
   const [posts, setPosts] = useState(defaultPosts)
-  console.log('usePosts', {postCids, posts})
+  debug({postCids, posts})
 
   useEffect(() => {
     if (!postCids.length) {

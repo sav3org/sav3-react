@@ -37,7 +37,6 @@ export const encodedCidIsExpired = (encodedCid) => {
     return false
   }
   catch (e) {
-    console.log(e)
     return true
   }
 }

@@ -63,7 +63,6 @@ function ImportForm () {
     try {
       const following = await followManager.getAllFollowing()
       const privateKey = await sav3Ipfs.getPrivateKey()
-      console.log({privateKey})
       const data = JSON.stringify({privateKey, following})
       setErrorMessage(null)
       setData(data)

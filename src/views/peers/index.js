@@ -14,6 +14,8 @@ import useUsersPosts from 'src/hooks/use-users-posts'
 import PublishPostForm from 'src/components/publish-post/form'
 import CircularProgress from '@material-ui/core/CircularProgress'
 import useOwnUserCid from 'src/hooks/use-own-user-cid'
+import Debug from 'debug'
+const debug = Debug('sav3:views:peers')
 
 function Peers () {
   const theme = useTheme()
@@ -31,7 +33,7 @@ function Peers () {
   for (const postCid in postsObject) {
     posts.push(postsObject[postCid])
   }
-  console.log('Peers', {peersCids, posts, postsObject})
+  debug({peersCids, posts, postsObject})
 
   let feed = <Feed posts={posts} />
   if (!posts.length) {

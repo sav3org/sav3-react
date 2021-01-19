@@ -22,10 +22,13 @@ import * as sdpTransform from 'sdp-transform'
 import assert from 'assert'
 
 import IdbLru from 'src/lib/utils/idb-lru'
+
+import Debug from 'debug'
 export const sdpCache = IdbLru({
   name: 'sdpCache',
   maxSize: 2000
 })
+const debug = Debug('sav3:sav3-ipfs:utils:webrtc')
 
 /**
  * cache webrtc sdp of each peer to get their ip addresses later
@@ -57,7 +60,7 @@ const webRtcStarConnectWithSdpCache = (webRtcStarConnect) => async (multiaddress
   const simplePeer = await webRtcStarConnect(multiaddress, options)
   const cid = multiaddress.getPeerId()
   sdpCache.set(cid, simplePeer._pc.remoteDescription.sdp)
-  // console.log('outbound webrtc connection', cid, simplePeer._pc.remoteDescription.sdp)
+  debug('outbound webrtc connection', cid, simplePeer._pc.remoteDescription.sdp)
   return simplePeer
 }
 
@@ -71,7 +74,7 @@ const webRtcStarUpgradeInboundWithSdpCache = (webRtcStarUpgradeInbound) => async
   const connection = await webRtcStarUpgradeInbound(maConn)
   const cid = connection.remotePeer.toB58String()
   sdpCache.set(cid, maConn.conn._pc.remoteDescription.sdp)
-  // console.log('inbound webrtc connection', cid, maConn.conn._pc.remoteDescription.sdp)
+  debug('inbound webrtc connection', cid, maConn.conn._pc.remoteDescription.sdp)
   return connection
 }
 

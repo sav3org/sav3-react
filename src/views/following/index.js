@@ -8,6 +8,8 @@ import Typography from '@material-ui/core/Typography'
 import useFollowingOnce from 'src/hooks/following/use-following-once'
 import useUsersProfiles from 'src/hooks/use-users-profiles'
 import UsersFeed from 'src/components/feeds/users'
+import Debug from 'debug'
+const debug = Debug('sav3:views:following')
 
 function Following () {
   const t = useTranslation()
@@ -31,7 +33,7 @@ function Following () {
     )
   }
 
-  console.log('Following', {followingCids, profiles, users})
+  debug({followingCids, profiles, users})
 
   return (
     <div>

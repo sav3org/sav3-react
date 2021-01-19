@@ -10,6 +10,7 @@
     "@testing-library/react": "11.2.2",
     "@testing-library/user-event": "12.2.2",
     "copy-to-clipboard": "3.3.1",
+    "debug": "3.1.0",
     "del-webpack-plugin": "2.0.0",
     "delay": "4.4.0",
     "eslint-config-standard": "16.0.2",

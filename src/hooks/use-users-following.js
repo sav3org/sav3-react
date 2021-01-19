@@ -1,6 +1,8 @@
 import {useState, useEffect} from 'react'
 import sav3Ipfs from 'src/lib/sav3-ipfs'
 import assert from 'assert'
+import Debug from 'debug'
+const debug = Debug('sav3:hooks:use-users-following')
 
 const usersFollowingCache = {}
 
@@ -11,7 +13,7 @@ const useUsersFollowing = (userCids) => {
   const userCidsString = JSON.stringify([...uniqueUserCids])
   const [usersFollowing, setUsersFollowing] = useState([])
 
-  console.log('useUsersFollowing', {userCids, usersFollowing})
+  debug({userCids, usersFollowing})
 
   useEffect(() => {
     for (const userCid of uniqueUserCids) {

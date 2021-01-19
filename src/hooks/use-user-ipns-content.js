@@ -1,11 +1,13 @@
 import {useEffect, useState} from 'react'
 import sav3Ipfs from 'src/lib/sav3-ipfs'
 import assert from 'assert'
+import Debug from 'debug'
+const debug = Debug('sav3:hooks:use-user-ipns-content')
 
 const useUserIpnsContent = (ipnsPath) => {
   assert(!ipnsPath || typeof ipnsPath === 'string', `invalid ipnsPath '${JSON.stringify(ipnsPath)}'`)
   const [userIpnsContent, setUserIpnsContent] = useState()
-  console.log('useUserIpnsContent', {ipnsPath, userIpnsContent})
+  debug({ipnsPath, userIpnsContent})
 
   useEffect(() => {
     if (!ipnsPath) {

@@ -1,6 +1,8 @@
 import assert from 'assert'
+import Debug from 'debug'
 
 import IdbLru from 'src/lib/utils/idb-lru'
+const debug = Debug('sav3:sav3-ipfs:utils:post-replies')
 export const postRepliesCache = IdbLru({
   name: 'postRepliesCache',
   maxSize: 2000
@@ -15,7 +17,7 @@ export const cachePostReplyCid = async ({cid, parentPostCid} = {}) => {
     postRepliesCids = JSON.parse(res)
   }
   postRepliesCids[cid] = true
-  console.log('postRepliesUtils.cachePostReplyCid', {cid, parentPostCid, postRepliesCids, res})
+  debug('cachePostReplyCid', {cid, parentPostCid, postRepliesCids, res})
   await postRepliesCache.set(parentPostCid, JSON.stringify(postRepliesCids))
 }
 
@@ -27,7 +29,7 @@ export const getPostRepliesCids = async (postCid) => {
     postRepliesCids = Object.keys(JSON.parse(res))
   }
 
-  // console.log('postRepliesUtils.getPostRepliesCids', {postCid, postRepliesCids, res})
+  debug('getPostRepliesCids', {postCid, postRepliesCids, res})
   return postRepliesCids
 }
 

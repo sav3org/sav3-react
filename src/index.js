@@ -4,6 +4,7 @@ import App from './app'
 import reportWebVitals from './report-web-vitals'
 import {HashRouter} from 'react-router-dom'
 import FollowingProvider from 'src/hooks/following/following-provider'
+import FeedProvider from 'src/hooks/feed/feed-provider'
 import LanguageCodeProvider from 'src/translations/language-code-provider'
 import ThemeProvider from 'src/themes/theme-provider'
 import CssBaseline from '@material-ui/core/CssBaseline'
@@ -13,8 +14,10 @@ ReactDOM.render(
     <ThemeProvider>
       <LanguageCodeProvider>
         <FollowingProvider>
-          <CssBaseline />
-          <App />
+          <FeedProvider>
+            <CssBaseline />
+            <App />
+          </FeedProvider>
         </FollowingProvider>
       </LanguageCodeProvider>
     </ThemeProvider>

@@ -9,6 +9,8 @@ import PeerId from 'peer-id'
 import isIpfs from 'is-ipfs'
 import QuickLRU from 'quick-lru'
 import config from 'src/config'
+import Debug from 'debug'
+const debug = Debug('sav3:sav3-ipfs:ipns-client')
 
 class IpnsClient extends EventEmitter {
   constructor ({ipfs} = {}) {
@@ -74,7 +76,7 @@ class IpnsClient extends EventEmitter {
     // if all values are cached, it must necessarily mean
     // all ipns paths are already subscribed to
     if (allResultsAreCached) {
-      console.log('ipns.subscribe', {allResultsAreCached, ipnsPaths, cachedIpnsValues})
+      debug('subscribe', {allResultsAreCached, ipnsPaths, cachedIpnsValues})
       return cachedIpnsValues
     }
 
@@ -87,7 +89,7 @@ class IpnsClient extends EventEmitter {
       this.subscriptionIpnsValueCache.set(ipnsPaths[i], ipnsValues[i])
     }
 
-    console.log('ipns.subscribe', {allResultsAreCached, ipnsPaths, ipnsValues})
+    debug('subscribe', {allResultsAreCached, ipnsPaths, ipnsValues})
     return ipnsValues
   }
 
@@ -133,9 +135,9 @@ class IpnsClient extends EventEmitter {
 }
 
 const validateIpnsPaths = (ipnsPaths) => {
-  assert(Array.isArray(ipnsPaths), `ipns paths '${ipnsPaths}' not an array`)
+  assert(Array.isArray(ipnsPaths), `ipns paths '${JSON.stringify(ipnsPaths)}' not an array`)
   for (const ipnsPath of ipnsPaths) {
-    assert(typeof ipnsPath === 'string', `ipns paths '${ipnsPaths}' contains non string '${ipnsPath}'`)
+    assert(typeof ipnsPath === 'string', `ipns paths '${JSON.stringify(ipnsPaths)}' contains non string '${ipnsPath}'`)
   }
 }
 

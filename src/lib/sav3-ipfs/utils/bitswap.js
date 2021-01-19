@@ -1,5 +1,7 @@
 import QuickLRU from 'quick-lru'
+import Debug from 'debug'
 export const blockReceivedPeerCidCache = new QuickLRU({maxSize: 1000})
+const debug = Debug('sav3:sav3-ipfs:utils:bitswap')
 
 /**
  * cache the peer cids of senders of blocks/files received
@@ -27,7 +29,7 @@ const bitswapUpdateReceiveCountersWithBlockReceivedPeerCidCache = (bitswapUpdate
     const peerCid = peerId
     const blockCid = block.cid.toString()
     blockReceivedPeerCidCache.set(peerCid, blockCid)
-    // console.log('bitswapUpdateReceiveCounters', {peerCid, blockCid})
+    debug('bitswapUpdateReceiveCounters', {peerCid, blockCid})
   }
   return bitswapUpdateReceiveCounters(peerId, block, exists)
 }

@@ -10,6 +10,8 @@ import useTranslation from 'src/translations/use-translation'
 import Feed from 'src/components/feeds/posts'
 import urlUtils from 'src/lib/utils/url'
 import CircularProgress from '@material-ui/core/CircularProgress'
+import Debug from 'debug'
+const debug = Debug('sav3:views:post')
 
 function Post () {
   const {encodedCid} = useParams()
@@ -63,7 +65,7 @@ function Post () {
     )
   }
 
-  console.log('Post', {postCid, postWithReplies, posts})
+  debug({postCid, postWithReplies, posts})
 
   return (
     <div>
