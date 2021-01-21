@@ -8,24 +8,26 @@ refresh new user cids in the background (or possibly as it happens?)
 
 todo before finished prototype
 ------------------------------
-more than 5 posts per user, sort them by time, and cap the amount of posts per user
-refactor data names (ts instead of timestamp, etc), hook names (plurals need consistency), sav3 function names
+refactor data names (ts instead of timestamp, etc), sav3 function names
+import/export private key
+left sidebar should be sticked on long feed
 show "replying to" when post is a reply on feed, (need to implement better design for replies like the line on twitter)
-add debug module instead of console.log
 like
 resav3
-import/export private key
 
 todo after prototype
 --------------------
+if click on post from feed, scroll to that same post when clicking back
 loading publish/edit profile indicators
 better loading indicators for profile posts
-load more than 100 previous posts if scroll to end
+load more than 100 previous posts if scroll to end of profile
+load more than 20 previous posts if scroll to end of feed
 reply notification
 like notification
 resav3 notification
 report button with IP origin
 view other users following
+more details about loading on "connecting to peers" component
 
 possible way to do likes
 ------------------------

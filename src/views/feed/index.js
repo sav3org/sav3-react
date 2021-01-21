@@ -6,14 +6,11 @@ import useMediaQuery from '@material-ui/core/useMediaQuery'
 import AvatarDrawerMenuButton from 'src/components/menus/drawer/avatar-button'
 import PostsFeed from 'src/components/feeds/posts'
 import useFollowingOnce from 'src/hooks/following/use-following-once'
-import useUsersPosts from 'src/hooks/use-users-posts'
 import PublishPostForm from 'src/components/publish-post/form'
 import CircularProgress from '@material-ui/core/CircularProgress'
 import useTranslation from 'src/translations/use-translation'
-import useOwnUserCid from 'src/hooks/use-own-user-cid'
+import useFeedPosts from 'src/hooks/feed/use-feed-posts'
 import Divider from '@material-ui/core/Divider'
-import useUserPostCids from 'src/hooks/use-user-post-cids'
-import usePosts from 'src/hooks/use-posts'
 import Debug from 'debug'
 const debug = Debug('sav3:views:feed')
 
@@ -21,19 +18,11 @@ function Feed () {
   const theme = useTheme()
   const fullScreen = useMediaQuery(theme.breakpoints.down('xs'))
   const t = useTranslation()
-  let followingCids = useFollowingOnce()
-  const ownCid = useOwnUserCid()
-  if (ownCid) {
-    followingCids = [ownCid, ...followingCids]
-  }
-  const postsObject = useUsersPosts(followingCids)
-  const posts = []
-  for (const postCid in postsObject) {
-    posts.push(postsObject[postCid])
-  }
-  debug({followingCids, ownCid, posts, postsObject})
+  const followingCids = useFollowingOnce()
+  const {posts, next, hasMore} = useFeedPosts()
+  debug({posts})
 
-  let feed = <PostsFeed posts={posts} />
+  let feed = <PostsFeed posts={posts} next={next} hasMore={hasMore} />
   if (!posts.length) {
     feed = (
       <Box width='100%' py={4} display='flex' justifyContent='center' alignItems='center'>
@@ -45,7 +34,7 @@ function Feed () {
   }
 
   // less than 2 to include own cid
-  if (!posts.length && followingCids.length < 2) {
+  if (!posts.length && !followingCids.length) {
     feed = (
       <Box width='100%' py={4} display='flex' justifyContent='center' alignItems='center'>
         <Typography variant='body1'>{t['Not following anyone']() + '...'}</Typography>
