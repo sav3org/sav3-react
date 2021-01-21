@@ -46,6 +46,8 @@ const useStyles = makeStyles((theme) => ({
     }
   },
   root: {
+    position: 'fixed',
+    width: 'inherit', // makes width 100% with position fixed
     [theme.breakpoints.up('lg')]: {
       paddingLeft: theme.spacing(2),
       paddingRight: theme.spacing(2)

@@ -3,14 +3,16 @@ todo next
 
 todo feed
 ---------
-sorting and loading new posts algo
 refresh new user cids in the background (or possibly as it happens?)
 
 todo before finished prototype
 ------------------------------
-refactor data names (ts instead of timestamp, etc), sav3 function names
-import/export private key
+refactor data names (ts instead of timestamp, etc)
 left sidebar should be sticked on long feed
+release version
+import/export private key
+release version
+script to run node
 show "replying to" when post is a reply on feed, (need to implement better design for replies like the line on twitter)
 like
 resav3
