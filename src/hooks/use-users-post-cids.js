@@ -98,6 +98,4 @@ const getDefaultUsersPostCids = (userCids) => {
   return defaultUsersPostCids
 }
 
-const usersIpnsContentsIsEmpty = (usersIpnsContents) => JSON.stringify(usersIpnsContents) === JSON.stringify({})
-
 export default useUsersPostCids

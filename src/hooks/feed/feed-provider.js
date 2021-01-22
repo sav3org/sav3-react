@@ -1,13 +1,12 @@
 import {createContext, useState, useEffect} from 'react'
 import usePrevious from 'src/hooks/utils/use-previous'
-import useFollowingOnce from 'src/hooks/following/use-following-once'
+import useFollowing from 'src/hooks/following/use-following'
 import useBootstrapUsersCids from 'src/hooks/following/use-bootstrap-users-cids'
 import useOwnUserCid from 'src/hooks/use-own-user-cid'
 import useUsersFollowing from 'src/hooks/use-users-following'
 import useUsersPostCids from 'src/hooks/use-users-post-cids'
 import useUsersProfiles from 'src/hooks/use-users-profiles'
 import sav3Ipfs from 'src/lib/sav3-ipfs'
-import bootstrapUsersUtils from 'src/lib/sav3-ipfs/utils/bootstrap-users'
 import Debug from 'debug'
 const debug = Debug('sav3:hooks:feed:feed-provider')
 
@@ -18,7 +17,7 @@ const FeedProvider = (props) => {
   const [posts, setPosts] = useState({})
 
   const ownCid = useOwnUserCid()
-  const followingCids = useFollowingOnce()
+  const [followingCids] = useFollowing()
   const bootstrapUsersCids = useBootstrapUsersCids()
   const followingOfFollowingCids = useUsersFollowing([...followingCids, ...bootstrapUsersCids])
 
@@ -27,8 +26,6 @@ const FeedProvider = (props) => {
     uniqueUserCids.add(ownCid)
   }
   const userCids = [...uniqueUserCids]
-  const uniqueUserCidsString = JSON.stringify(userCids)
-  const previousUniqueUserCids = usePrevious(uniqueUserCids)
   const usersPostCids = useUsersPostCids(userCids)
   const uniquePostCids = usersPostCidsToUniquePostCids(usersPostCids)
   const previousUniquePostCids = usePrevious(uniquePostCids)

@@ -14,11 +14,12 @@ profile: the profile of a user
 profile.nam (profile.diplayNameCid)
 profile.des (profile.descriptionCid)
 profile.thu (profile.thumbnailUrlCid)
+profile.ban (profile.bannerUrlCid)
 
 saves?
 array of user and post cids saved?
 
-following: array of user cids a user is following
+following: array of user cids that a user is following
 
 userUserIpnsContent: latest ipns record of a user, contains pointers to a user's latest data
 userUserIpnsContent.pro (userUserIpnsContent.profileCid)
