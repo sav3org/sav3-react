@@ -12,6 +12,7 @@ import createWindowSav3IpfsTestMethods from './utils/create-window-sav3-ipfs-tes
 import uint8ArrayToString from 'uint8arrays/to-string'
 import config from 'src/config'
 import postRepliesUtils from './utils/post-replies'
+import serialize from './utils/serialize'
 import Debug from 'debug'
 const debug = Debug('sav3:sav3-ipfs:index')
 
@@ -213,16 +214,22 @@ class Sav3Ipfs extends EventEmitter {
     return content
   }
 
-  async getOwnIpnsContent () {
+  async getUserIpnsContent (userIpnsContentCid) {
+    await this.waitForReady()
+    assert(userIpnsContentCid && typeof userIpnsContentCid === 'string', `sav3Ipfs.getUserIpnsContent userIpnsContentCid '${userIpnsContentCid}' not a string`)
+    return serialize.deserializeUserIpnsContent(await this.getIpfsContent(userIpnsContentCid))
+  }
+
+  async getOwnUserIpnsContent () {
     await this.waitForReady()
     const record = await this.getOwnIpnsRecord()
     const ownIpfsValue = record.value.toString()
     const lastIpnsContent = await this.getIpfsContent(ownIpfsValue)
-    debug('getOwnIpnsContent', {ownIpfsValue, lastIpnsContent})
+    debug('getOwnUserIpnsContent', {ownIpfsValue, lastIpnsContent})
     if (!lastIpnsContent) {
       return {}
     }
-    return JSON.parse(lastIpnsContent)
+    return serialize.deserializeUserIpnsContent(lastIpnsContent)
   }
 
   async subscribeToIpnsPath (ipnsPath) {
@@ -248,16 +255,16 @@ class Sav3Ipfs extends EventEmitter {
     assert(content.length <= 140, `sav3Ipfs.publishPost content '${content}' longer than 140 chars`)
     assert(!parentPostCid || typeof parentPostCid === 'string', `sav3Ipfs.publishPost parentPostCid '${parentPostCid}' not a string`)
 
-    const ipnsContent = await this.getOwnIpnsContent()
+    const ipnsContent = await this.getOwnUserIpnsContent()
     const newPost = {}
     newPost.previousPostCid = ipnsContent.lastPostCid
     newPost.timestamp = Math.round(Date.now() / 1000)
     newPost.userCid = (await this.ipfs.id()).id
     newPost.contentCid = (await this.ipfs.add(content)).cid.toString()
 
-    const newPostCid = (await this.ipfs.add(JSON.stringify(newPost))).cid.toString()
+    const newPostCid = (await this.ipfs.add(serialize.serializePost(newPost))).cid.toString()
     const newIpnsContent = {...ipnsContent, lastPostCid: newPostCid}
-    const newIpnsContentCid = (await this.ipfs.add(JSON.stringify(newIpnsContent))).cid.toString()
+    const newIpnsContentCid = (await this.ipfs.add(serialize.serializeUserIpnsContent(newIpnsContent))).cid.toString()
 
     await this.publishIpnsRecord(newIpnsContentCid)
     debug('publishPost', {newIpnsContentCid, newPost, newIpnsContent, ipnsContent, newPostCid, parentPostCid})
@@ -276,14 +283,14 @@ class Sav3Ipfs extends EventEmitter {
     // sort to avoid creating cids if unnecessary
     userCids = [...userCids].sort()
 
-    const ipnsContent = await this.getOwnIpnsContent()
+    const ipnsContent = await this.getOwnUserIpnsContent()
     const followingCid = (await this.ipfs.add(JSON.stringify(userCids))).cid.toString()
     if (ipnsContent.followingCid === followingCid) {
       debug('setFollowing duplicate following cid', {userCids})
       return
     }
     const newIpnsContent = {...ipnsContent, followingCid}
-    const newIpnsContentCid = (await this.ipfs.add(JSON.stringify(newIpnsContent))).cid.toString()
+    const newIpnsContentCid = (await this.ipfs.add(serialize.serializeUserIpnsContent(newIpnsContent))).cid.toString()
 
     await this.publishIpnsRecord(newIpnsContentCid)
     debug('setFollowing', {newIpnsContentCid, userCids, followingCid, newIpnsContent, ipnsContent})
@@ -298,7 +305,7 @@ class Sav3Ipfs extends EventEmitter {
 
     const [ipnsValue] = await this.ipnsClient.subscribe([userCid])
     if (ipnsValue) {
-      const ipnsContent = JSON.parse(await this.getIpfsContent(ipnsValue))
+      const ipnsContent = await this.getUserIpnsContent(ipnsValue)
       if (ipnsContent.followingCid) {
         following = JSON.parse(await this.getIpfsContent(ipnsContent.followingCid))
       }
@@ -345,11 +352,11 @@ class Sav3Ipfs extends EventEmitter {
       profile.bannerUrlCid = (await this.ipfs.add(bannerUrl)).cid.toString()
     }
 
-    const profileCid = (await this.ipfs.add(JSON.stringify(profile))).cid.toString()
+    const profileCid = (await this.ipfs.add(serialize.serializeProfile(profile))).cid.toString()
 
-    const ipnsContent = await this.getOwnIpnsContent()
+    const ipnsContent = await this.getOwnUserIpnsContent()
     ipnsContent.profileCid = profileCid
-    const newIpnsContentCid = (await this.ipfs.add(JSON.stringify(ipnsContent))).cid.toString()
+    const newIpnsContentCid = (await this.ipfs.add(serialize.serializeUserIpnsContent(ipnsContent))).cid.toString()
     await this.publishIpnsRecord(newIpnsContentCid)
     debug('editProfile', {displayName, description, thumbnailUrl, bannerUrl, ipnsContent, profile, profileCid, newIpnsContentCid})
 
@@ -359,7 +366,7 @@ class Sav3Ipfs extends EventEmitter {
   async getUserProfile (profileCid) {
     await this.waitForReady()
     assert(typeof profileCid === 'string', `sav3Ipfs.getUserProfile profileCid '${profileCid}' not a string`)
-    const profileCids = JSON.parse(await this.getIpfsContent(profileCid))
+    const profileCids = serialize.deserializeProfile(await this.getIpfsContent(profileCid))
     const profile = {}
     if (profileCids.diplayNameCid) {
       profile.displayName = await this.getIpfsContent(profileCids.diplayNameCid)
@@ -424,12 +431,14 @@ class Sav3Ipfs extends EventEmitter {
     assert(lastPostCid && typeof lastPostCid === 'string', `sav3Ipfs.getPostCidsFromLastPostCid lastPostCid '${lastPostCid}' not a string`)
 
     let previousPostCid = lastPostCid
+    let postCount = 0
 
     // loop over every post and yield
     while (true) {
+      postCount++
       yield previousPostCid
-      const post = JSON.parse(await this.getIpfsContent(previousPostCid))
-      debug('getPreviousPostCids', {lastPostCid, previousPostCid, post})
+      const post = serialize.deserializePost(await this.getIpfsContent(previousPostCid))
+      debug('getPreviousPostCids', {lastPostCid, previousPostCid, post, postCount})
       if (!post.previousPostCid) {
         return
       }
@@ -442,7 +451,7 @@ class Sav3Ipfs extends EventEmitter {
     assert(postCid && typeof postCid === 'string', `sav3Ipfs.getPost postCid '${postCid}' not a string`)
     debug('getPost', {postCid})
 
-    const post = JSON.parse(await this.getIpfsContent(postCid))
+    const post = serialize.deserializePost(await this.getIpfsContent(postCid))
     post.cid = postCid
 
     if (post.parentPostCid) {

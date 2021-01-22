@@ -1,5 +1,7 @@
 import createTheme from '../create-theme'
 
+const lightPrimary = '#857990'
+
 const theme = createTheme({
   palette: {
     type: 'dark',
@@ -13,6 +15,20 @@ const theme = createTheme({
       // main: '#a9a7a8',
       // blue
       main: '#484854'
+    }
+  },
+  overrides: {
+    MuiTypography: {
+      colorPrimary: {
+        // link colors are too dark
+        color: lightPrimary
+      }
+    },
+    MuiButton: {
+      outlinedPrimary: {
+        // outline buttons are too dark
+        color: lightPrimary
+      }
     }
   }
 })

@@ -24,8 +24,8 @@ const useUserIpnsContent = (ipnsPath) => {
         // publish event is a different user
         return
       }
-      const ipnsContent = await sav3Ipfs.getIpfsContent(ipnsValue)
-      setUserIpnsContent(JSON.parse(ipnsContent))
+      const ipnsContent = await sav3Ipfs.getUserIpnsContent(ipnsValue)
+      setUserIpnsContent(ipnsContent)
     }
     sav3Ipfs.on('publish', onPublish)
 
@@ -37,8 +37,8 @@ const useUserIpnsContent = (ipnsPath) => {
         setUserIpnsContent()
         return
       }
-      const ipnsContent = await sav3Ipfs.getIpfsContent(ipnsValue)
-      setUserIpnsContent(JSON.parse(ipnsContent))
+      const ipnsContent = await sav3Ipfs.getUserIpnsContent(ipnsValue)
+      setUserIpnsContent(ipnsContent)
     })()
 
     // unsubscribe after component unmounts

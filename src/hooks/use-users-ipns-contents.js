@@ -76,7 +76,7 @@ const useUsersIpnsContents = (ipnsPaths) => {
       }
 
       // update usersIpnsContents state asynchronously as new ipfs files arrive
-      const ipnsContent = JSON.parse(await sav3Ipfs.getIpfsContent(ipnsValue))
+      const ipnsContent = await sav3Ipfs.getUserIpnsContent(ipnsValue)
       setUsersIpnsContents((previousUsersIpnsContents) => ({
         ...previousUsersIpnsContents,
         [newIpnsPath]: ipnsContent
@@ -95,10 +95,10 @@ const useUsersIpnsContents = (ipnsPaths) => {
 
         // update usersIpnsContent state asynchronously as new ipfs files arrive
         const ipnsPath = unsubscribedIpnsPaths[i]
-        sav3Ipfs.getIpfsContent(ipnsValue).then((ipnsContent) => {
+        sav3Ipfs.getUserIpnsContent(ipnsValue).then((ipnsContent) => {
           setUsersIpnsContents((previousUsersIpnsContents) => ({
             ...previousUsersIpnsContents,
-            [ipnsPath]: JSON.parse(ipnsContent)
+            [ipnsPath]: ipnsContent
           }))
         })
       }
