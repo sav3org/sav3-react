@@ -10,6 +10,7 @@ import useTranslation from 'src/translations/use-translation'
 import Feed from 'src/components/feeds/posts'
 import urlUtils from 'src/lib/utils/url'
 import CircularProgress from '@material-ui/core/CircularProgress'
+import useParentPostsWithProfiles from 'src/hooks/use-parent-posts-with-profiles'
 import Debug from 'debug'
 const debug = Debug('sav3:views:post')
 
@@ -22,6 +23,7 @@ function Post () {
   }
 
   const postWithReplies = usePostWithReplies(postCid)
+  const parentPostsObject = useParentPostsWithProfiles(postWithReplies ? [postWithReplies] : [])
 
   const history = useHistory()
   const t = useTranslation()
@@ -31,8 +33,22 @@ function Post () {
   if (postWithReplies) {
     posts.push(postWithReplies)
     for (const i in postWithReplies.replies) {
+      if (!postWithReplies.replies[i]) {
+        continue
+      }
       posts.push(postWithReplies.replies[i])
     }
+  }
+
+  // TODO: use post.isParent temporarily, /post/ view should eventually be
+  // refactored to a full width post like twitter instead of just a line
+  if (posts.length > 1) {
+    posts[0] = {...posts[0], isParent: true}
+  }
+
+  // add parent parent post if parent post is a reply
+  if (parentPostsObject[posts[0] && posts[0].parentPostCid]) {
+    posts[0] = {...posts[0], parentPost: parentPostsObject[posts[0].parentPostCid]}
   }
 
   // get profiles

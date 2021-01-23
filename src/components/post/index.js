@@ -25,6 +25,7 @@ import usePostRepliesCids from 'src/hooks/use-post-replies-cids'
 import useCopyClipboard from 'src/hooks/utils/use-copy-clipboard'
 import useTranslation from 'src/translations/use-translation'
 import themesUtils from 'src/themes/utils'
+import Divider from '@material-ui/core/Divider'
 
 const useStyles = makeStyles((theme) => ({
   imgMedia: {
@@ -40,6 +41,11 @@ const useStyles = makeStyles((theme) => ({
     borderWidth: theme.sav3.borderWidth,
     borderStyle: 'solid',
     borderColor: theme.sav3.borderColor
+  },
+  parentPostLine: {
+    // center the line
+    margin: 'auto',
+    width: 2
   },
   userCid: {
     wordBreak: 'break-all',
@@ -77,7 +83,18 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-function Post ({post} = {}) {
+function Posts ({post} = {}) {
+  const posts = []
+  if (post.parentPost) {
+    posts.push(<Post key='parent' isParent={true} post={post.parentPost} />)
+  }
+  // TODO: use post.isParent temporarily, /post/ view should eventually be
+  // refactored to a full width post like twitter instead of just a line
+  posts.push(<Post key={post.cid} isParent={post.isParent} post={post} />)
+  return <Fragment>{posts}</Fragment>
+}
+
+function Post ({post, isParent} = {}) {
   const location = useLocation()
   const history = useHistory()
   const languageCode = useLanguageCode()
@@ -115,6 +132,7 @@ function Post ({post} = {}) {
       {/* left col avatar */}
       <Box pr={1.5}>
         <Avatar component={RouterLink} to={userProfileUrl} src={post.profile.thumbnailUrl && forceHttps(post.profile.thumbnailUrl)} className={classes.avatar} />
+        {isParent && <Divider className={classes.parentPostLine} orientation='vertical' />}
       </Box>
 
       {/* right col header + content + bottom actions */}
@@ -288,12 +306,12 @@ const forceHttps = (link) => {
 
 const linkIsVideo = (link) => {
   // remove query string and match extension
-  return link.replace(/[#?].*/).match(/\.(mp4|webm)$/)
+  return link.replace(/[#?].*/, '').match(/\.(mp4|webm)$/)
 }
 
 const linkIsMedia = (link) => {
   // remove query string and match extension
-  return link.replace(/[#?].*/).match(/\.(jpeg|jpg|png|gif|mp4|webm)$/)
+  return link.replace(/[#?].*/, '').match(/\.(jpeg|jpg|png|gif|mp4|webm)$/)
 }
 
 const useDate = (timestamp, languageCode) => {
@@ -320,4 +338,4 @@ const formatDate = (postTimestamp, languageCode) => {
   return date
 }
 
-export default Post
+export default Posts

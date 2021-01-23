@@ -257,6 +257,7 @@ class Sav3Ipfs extends EventEmitter {
 
     const ipnsContent = await this.getOwnUserIpnsContent()
     const newPost = {}
+    newPost.parentPostCid = parentPostCid
     newPost.previousPostCid = ipnsContent.lastPostCid
     newPost.timestamp = Math.round(Date.now() / 1000)
     newPost.userCid = (await this.ipfs.id()).id
@@ -342,13 +343,15 @@ class Sav3Ipfs extends EventEmitter {
     if (thumbnailUrl) {
       assert(typeof thumbnailUrl === 'string', 'thumbnail url not a string')
       assert(thumbnailUrl.startsWith('https://'), `thumbnail url '${thumbnailUrl}' does not start with https://`)
+      assert(thumbnailUrl.replace(/[#?].*/, '').match(/\.(jpeg|jpg|png|gif|mp4|webm)$/), `thumbnail url '${thumbnailUrl}' does not end with jpeg|jpg|png|gif|mp4|webm`)
       assert(thumbnailUrl.length <= 140, `thumbnail url '${thumbnailUrl}' longer than 140 chars`)
       profile.thumbnailUrlCid = (await this.ipfs.add(thumbnailUrl)).cid.toString()
     }
     if (bannerUrl) {
       assert(typeof bannerUrl === 'string', 'banner url not a string')
       assert(bannerUrl.startsWith('https://'), `banner url '${bannerUrl}' does not start with https://`)
-      assert(bannerUrl.length <= 140, `banner url '${thumbnailUrl}' longer than 140 chars`)
+      assert(bannerUrl.replace(/[#?].*/, '').match(/\.(jpeg|jpg|png|gif|mp4|webm)$/), `banner url '${bannerUrl}' does not end with jpeg|jpg|png|gif|mp4|webm`)
+      assert(bannerUrl.length <= 140, `banner url '${bannerUrl}' longer than 140 chars`)
       profile.bannerUrlCid = (await this.ipfs.add(bannerUrl)).cid.toString()
     }
 

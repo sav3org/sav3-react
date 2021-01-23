@@ -12,6 +12,7 @@ import useOwnUserCid from 'src/hooks/use-own-user-cid'
 import Avatar from '@material-ui/core/Avatar'
 import Box from '@material-ui/core/Box'
 import Typography from '@material-ui/core/Typography'
+import Divider from '@material-ui/core/Divider'
 
 const useStyles = makeStyles((theme) => ({
   errorMessage: {
@@ -25,7 +26,10 @@ const useStyles = makeStyles((theme) => ({
     '& fieldset': {
       border: 'none'
     },
-    marginBottom: theme.spacing(1)
+    marginBottom: theme.spacing(1),
+    '& .MuiInputBase-root': {
+      paddingLeft: theme.spacing(1)
+    }
   },
   avatar: {
     // slightly higher placement than the user name seems more pleasing
@@ -39,6 +43,10 @@ const useStyles = makeStyles((theme) => ({
   },
   userCid: {
     wordBreak: 'break-all'
+  },
+  parentPostLine: {
+    margin: 'auto',
+    width: 2
   }
 }))
 
@@ -125,9 +133,10 @@ PublishPostModal.propTypes = {
 function ParentPost ({parentPost} = {}) {
   const classes = useStyles()
   return (
-    <Box display='flex'>
+    <Box display='flex' mb={1}>
       <Box pr={1} py={1.5}>
         <Avatar src={parentPost.profile.thumbnailUrl} className={classes.avatar} />
+        <Divider className={classes.parentPostLine} orientation='vertical' />
       </Box>
       <Box pt={1.5} pl={0.5} flexGrow={1}>
         {parentPost.profile.displayName && <Typography variant='subtitle2'>{parentPost.profile.displayName}</Typography>}

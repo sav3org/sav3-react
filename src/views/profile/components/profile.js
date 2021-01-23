@@ -18,6 +18,7 @@ import useIsFollowing from 'src/hooks/following/use-is-following'
 import MoreMenuButton from './more-menu'
 import useUserPostCids from 'src/hooks/use-user-post-cids'
 import usePosts from 'src/hooks/use-posts'
+import useParentPostsWithProfiles from 'src/hooks/use-parent-posts-with-profiles'
 import Debug from 'debug'
 const debug = Debug('sav3:views:profile')
 
@@ -59,9 +60,11 @@ function Profile ({userCid} = {}) {
 
   // ordered posts with profile
   const postsObject = usePosts(userPostCids)
+  const parentPostsObject = useParentPostsWithProfiles(postsObject)
   const posts = Object.values(postsObject).sort((a, b) => b.timestamp - a.timestamp)
-  for (const post of posts) {
-    post.profile = profile
+  for (const i in posts) {
+    const parentPost = parentPostsObject[posts[i].parentPostCid]
+    posts[i] = {...posts[i], profile, parentPost}
   }
   const loadedPosts = [...posts]
   if (loadedPosts.length > loadedPostCount) {

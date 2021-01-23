@@ -6,6 +6,7 @@ import useOwnUserCid from 'src/hooks/use-own-user-cid'
 import useUsersFollowing from 'src/hooks/use-users-following'
 import useUsersPostCids from 'src/hooks/use-users-post-cids'
 import useUsersProfiles from 'src/hooks/use-users-profiles'
+import useParentPostsWithProfiles from 'src/hooks/use-parent-posts-with-profiles'
 import sav3Ipfs from 'src/lib/sav3-ipfs'
 import Debug from 'debug'
 const debug = Debug('sav3:hooks:feed:feed-provider')
@@ -15,6 +16,7 @@ export const FeedContext = createContext()
 const FeedProvider = (props) => {
   // set posts once on load, and refresh every 5min
   const [posts, setPosts] = useState({})
+  const parentPosts = useParentPostsWithProfiles(posts)
 
   const ownCid = useOwnUserCid()
   const [followingCids] = useFollowing()
@@ -43,8 +45,6 @@ const FeedProvider = (props) => {
     }))
   }
 
-  debug({ownCid, followingCids, bootstrapUsersCids, followingOfFollowingCids, usersPostCids, posts, profiles, feedPostCids, homePostCids})
-
   // get users posts
   useEffect(() => {
     for (const userCid in usersPostCids) {
@@ -56,7 +56,10 @@ const FeedProvider = (props) => {
     }
   }, [usersPostCidsString])
 
+  debug({ownCid, followingCids, bootstrapUsersCids, followingOfFollowingCids, usersPostCids, posts, profiles, feedPostCids, homePostCids, parentPosts})
+
   const contextValue = {
+    parentPosts,
     posts,
     profiles,
     feedPostCids,
@@ -65,6 +68,14 @@ const FeedProvider = (props) => {
 
   const {children} = props
   return <FeedContext.Provider value={contextValue}>{children}</FeedContext.Provider>
+}
+
+const getPostsWithParentPosts = (posts, parentPosts) => {
+  const postsWithParentPosts = JSON.parse(JSON.stringify(posts))
+  for (const postCid in postsWithParentPosts) {
+    postsWithParentPosts[postCid].parentPost = parentPosts[postsWithParentPosts[postCid].parentPostCid]
+  }
+  return postsWithParentPosts
 }
 
 const getFeedCids = (usersPostCids, userCids) => {

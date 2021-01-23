@@ -6,7 +6,7 @@ const debug = Debug('sav3:hooks:feed:use-home-posts')
 const postsPerPage = 10
 
 const useHomePosts = () => {
-  const {posts, profiles, homePostCids} = useContext(FeedContext)
+  const {posts, profiles, homePostCids, parentPosts} = useContext(FeedContext)
   const [postCount, setPostCount] = useState(postsPerPage)
   const [homePosts, setHomePosts] = useState([])
 
@@ -60,6 +60,11 @@ const useHomePosts = () => {
       // set profiles
       for (const nextHomePost of nextHomePosts) {
         nextHomePost.profile = profiles[nextHomePost.userCid] || {}
+      }
+
+      // set parent posts
+      for (const nextHomePost of nextHomePosts) {
+        nextHomePost.parentPost = parentPosts[nextHomePost.parentPostCid]
       }
 
       return nextHomePosts
