@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-working_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/.." && cd "$working_dir" || exit
+working_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/../.." && cd "$working_dir" || exit
 
 dockerfile="
 FROM buildkite/puppeteer:5.2.1
