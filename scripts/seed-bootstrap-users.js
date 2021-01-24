@@ -32,11 +32,11 @@ const isDocker = require('is-docker')
   })
 
   page.goto('https://testnet.sav3.org')
-    // .then(() => 
-    //   page.evaluate(() => {
-    //     localStorage.debug = 'sav3:sav3-ipfs:index'
-    //   })
-    // )
+    .then(() => 
+      page.evaluate(() => {
+        localStorage.debug = 'sav3:sav3-ipfs:index'
+      })
+    )
 
   // reload the page every 60 seconds
   setInterval(() => page.reload().catch(console.log), 1000 * 60)
