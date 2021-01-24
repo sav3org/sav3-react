@@ -7,7 +7,10 @@ const isDocker = require('is-docker')
   if (isDocker()) {
     puppeteerOptions = {executablePath: '/usr/bin/google-chrome-stable', args: ['--no-sandbox']}
   }
-  const browser = await puppeteer.launch({...puppeteerOptions, product: 'chrome'})
+
+  // default puppeteer args that prevent webrtc from working (puppeteer.defaultArgs() to list all default args)
+  const ignoreDefaultArgs = ['--disable-background-networking']
+  const browser = await puppeteer.launch({...puppeteerOptions, ignoreDefaultArgs, headless: true})
   const page = await browser.newPage()
 
   // log browser console logs
@@ -29,16 +32,23 @@ const isDocker = require('is-docker')
   })
 
   page.goto('https://testnet.sav3.org')
+    // .then(() => 
+    //   page.evaluate(() => {
+    //     localStorage.debug = 'sav3:sav3-ipfs:index'
+    //   })
+    // )
 
   // reload the page every 60 seconds
   setInterval(() => page.reload().catch(console.log), 1000 * 60)
 
   // docker auto restart every 5min to refresh posts and make sure it's still alive
-  // setTimeout(async () => {
-  //   try {
-  //     await browser.close()
-  //   }
-  //   catch (e) {}
-  //   process.exit()
-  // }, 1000 * 60 * 5)
+  if (isDocker()) {
+    setTimeout(async () => {
+      try {
+        await browser.close()
+      }
+      catch (e) {}
+      process.exit()
+    }, 1000 * 60 * 5)
+  }
 })()

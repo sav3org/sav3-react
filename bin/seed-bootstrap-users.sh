@@ -1,7 +1,5 @@
 #!/usr/bin/env bash
 
-# TODO: doesn't work because webrtc doesn't work inside docker for unknown reason
-
 working_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/.." && cd "$working_dir" || exit
 
 docker rm -f "sav3-seed-bootstrap-users" 2> /dev/null

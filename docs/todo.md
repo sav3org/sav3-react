@@ -11,7 +11,7 @@ resav3
 
 todo after prototype
 --------------------
-automatically get image url from imgur for profile
+automatically get image url from imgur link for profile images
 add embeds for imgur, reddit, twitter, youtube, instagram, vimeo, bitchute, gab
 add drag and drop media uploads to cloudflare ipfs
 if click on post from feed, scroll to that same post when clicking back
