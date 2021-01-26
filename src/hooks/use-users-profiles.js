@@ -35,9 +35,11 @@ const useUsersProfiles = (userCids) => {
 
     for (const userCid in profileCids) {
       const profileCid = profileCids[userCid]
-      if (!profileCid || typeof profileCid !== 'string') {
+      // user hasn't set a profile yet
+      if (!profileCid) {
         continue
       }
+      assert(typeof profileCid === 'string', `useUsersProfiles invalid profileCid '${profileCid}' in '${JSON.stringify(profileCids)}'`)
       if (getUserProfileIsPending(userCid)) {
         continue
       }

@@ -1,6 +1,8 @@
 import {useEffect, useState} from 'react'
 import sav3Ipfs from 'src/lib/sav3-ipfs'
 import ipUtils from 'src/lib/utils/ip'
+import Debug from 'debug'
+const debug = Debug('sav3:hooks:use-peers-stats')
 
 // TODO: convert to useInterval
 
@@ -21,6 +23,8 @@ const usePeersStats = () => {
   useEffect(() => {
     ;(async () => {
       const peersStats = await sav3Ipfs.getPeersStats()
+
+      // try adding country codes and flags
       for (const peersStat of peersStats) {
         if (!peersStat.ip) {
           continue
@@ -30,14 +34,14 @@ const usePeersStats = () => {
           isoCountryCode = await ipUtils.getIsoCountryCodeFromIpCached(peersStat.ip)
         }
         catch (e) {
-          console.error(e)
+          debug(e.message)
           continue
         }
         const countryFlagEmoji = ipUtils.isoCountryCodeToCountryFlagEmoji(isoCountryCode)
-
         peersStat.isoCountryCode = isoCountryCode
         peersStat.countryFlagEmoji = countryFlagEmoji
       }
+
       setPeersStats(peersStats)
     })()
   }, [pollCount])

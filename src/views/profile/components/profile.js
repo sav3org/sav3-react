@@ -16,9 +16,7 @@ import assert from 'assert'
 import Divider from '@material-ui/core/Divider'
 import useIsFollowing from 'src/hooks/following/use-is-following'
 import MoreMenuButton from './more-menu'
-import useUserPostCids from 'src/hooks/use-user-post-cids'
-import usePosts from 'src/hooks/use-posts'
-import useParentPostsWithProfiles from 'src/hooks/use-parent-posts-with-profiles'
+import useUserFeedPosts from 'src/hooks/feed/use-user-posts'
 import Debug from 'debug'
 const debug = Debug('sav3:views:profile')
 
@@ -54,23 +52,7 @@ function Profile ({userCid} = {}) {
   const ownCid = useOwnUserCid()
   const classes = useStyles()
   const profile = useUserProfile(userCid)
-  const userPostCids = useUserPostCids(userCid)
-  const [loadedPostCount, setLoadedPostCount] = useState(10)
-  const next = () => setLoadedPostCount((loadedPostCount) => loadedPostCount + 10)
-
-  // ordered posts with profile
-  const postsObject = usePosts(userPostCids)
-  const parentPostsObject = useParentPostsWithProfiles(postsObject)
-  const posts = Object.values(postsObject).sort((a, b) => b.timestamp - a.timestamp)
-  for (const i in posts) {
-    const parentPost = parentPostsObject[posts[i].parentPostCid]
-    posts[i] = {...posts[i], profile, parentPost}
-  }
-  const loadedPosts = [...posts]
-  if (loadedPosts.length > loadedPostCount) {
-    loadedPosts.length = loadedPostCount
-  }
-  const hasMore = posts.length > loadedPosts.length
+  const {posts, next, hasMore} = useUserFeedPosts(userCid)
 
   debug({ownCid, userCid, posts, profile})
 
@@ -101,7 +83,7 @@ function Profile ({userCid} = {}) {
         <Description description={description} />
       </Box>
       <Divider />
-      <PostsFeed posts={loadedPosts} next={next} hasMore={hasMore} />
+      <PostsFeed posts={posts} next={next} hasMore={hasMore} />
     </div>
   )
 }

@@ -14,6 +14,8 @@ import useParentPostsWithProfiles from 'src/hooks/use-parent-posts-with-profiles
 import Debug from 'debug'
 const debug = Debug('sav3:views:post')
 
+// TODO: refactor this view to use hooks/feed/use-post-replies
+
 function Post () {
   const {encodedCid} = useParams()
   const urlIsExpired = encodedCid && urlUtils.encodedCidIsExpired(encodedCid)

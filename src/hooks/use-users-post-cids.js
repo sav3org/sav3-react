@@ -58,6 +58,7 @@ const useUsersPostCids = (userCids) => {
     for (const userCid in usersIpnsContents) {
       const lastPostCid = usersIpnsContents[userCid] && usersIpnsContents[userCid].lastPostCid
       const previousLastPostCid = previousUsersIpnsContents && previousUsersIpnsContents[userCid] && previousUsersIpnsContents[userCid].lastPostCid
+      // user hasn't posted yet, or his last post hasn't changed
       if (!lastPostCid || lastPostCid === previousLastPostCid) {
         continue
       }

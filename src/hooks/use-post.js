@@ -19,6 +19,15 @@ const usePost = (postCid) => {
     ;(async () => {
       const post = await sav3Ipfs.getPost(postCid)
       setPost(post)
+
+      const parentPostCid = post.parentPostCid
+      const quotedPostCid = post.quotedPostCid
+      if (parentPostCid) {
+        sav3Ipfs.getPost(parentPostCid).then((parentPost) => setPost((post) => ({...post, parentPost})))
+      }
+      if (quotedPostCid) {
+        sav3Ipfs.getPost(quotedPostCid).then((quotedPost) => setPost((post) => ({...post, quotedPost})))
+      }
     })()
   }, [postCid])
 
