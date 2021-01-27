@@ -42,6 +42,10 @@ const useStyles = makeStyles((theme) => ({
     borderStyle: 'solid',
     borderColor: theme.sav3.borderColor
   },
+  resav3d: {
+    // slightly higher placement than the user name seems more pleasing
+    marginTop: theme.spacing(-0.25)
+  },
   parentPostLine: {
     // center the line
     margin: 'auto',
@@ -206,12 +210,13 @@ function Resaved ({post, quoterCid} = {}) {
   const encodedQuoterProfileUrl = `/profile/${encodedQuoterCid}`
 
   return (
-    <Box px={2} pb={0.75} display='flex' alignItems='center'>
+    <Box className={classes.resav3d} px={2} pb={0.5} display='flex' alignItems='center'>
       <Box width={theme.spacing(6)} mr={1.5} display='flex' justifyContent='flex-end'>
         <RepeatIcon
           color='textSecondary'
           style={{
-            transform: 'rotate(90deg) translate(0px, -1px)',
+            // looks better if more on the right
+            transform: 'rotate(90deg) translateX(-1px)',
             color: theme.palette.text.secondary,
             fontSize: '1.4rem'
           }}
