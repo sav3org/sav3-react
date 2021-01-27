@@ -47,19 +47,13 @@ const useUserPosts = (userCid) => {
       return
     }
 
-    const postsNotAddedYet = allUserPosts.filter((post) => {
-      for (const userPost of userPosts) {
-        if (userPost.cid === post.cid) {
-          return false
-        }
-      }
-      return true
-    })
-    const postsNotAddedYetSortedByTimestamp = postsNotAddedYet.sort((a, b) => b.timestamp - a.timestamp)
+    const postsSortedByTimestamp = allUserPosts.sort((a, b) => b.timestamp - a.timestamp)
 
+    // don't use previous posts in user feed, always put newest post at top
+    // which should be superior user experience
     setUserPosts((previousUserPosts) => {
-      const nextUserPosts = JSON.parse(JSON.stringify(previousUserPosts))
-      for (const post of postsNotAddedYetSortedByTimestamp) {
+      const nextUserPosts = []
+      for (const post of postsSortedByTimestamp) {
         if (nextUserPosts.length >= postCount) {
           break
         }
