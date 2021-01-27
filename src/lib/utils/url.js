@@ -37,6 +37,18 @@ export const encodeCid = (cid) => {
   return window.btoa(`${cipheredCid},${expireTimestamp}`).replace(/=/g, '')
 }
 
+export const encodedCidIsExpired = (encodedCid) => {
+  try {
+    decodeCid(encodedCid)
+    return false
+  }
+  catch (e) {
+    debug('encodedCidIsExpired', e.message)
+    return true
+  }
+}
+
+// cipher the cids a bit so urls look more random
 // higher numbers bug out sometimes
 const cipherNumber = 7
 
@@ -60,17 +72,6 @@ const decipherCid = (cid, expireTimestamp) => {
     deciphered += letter
   }
   return deciphered
-}
-
-export const encodedCidIsExpired = (encodedCid) => {
-  try {
-    decodeCid(encodedCid)
-    return false
-  }
-  catch (e) {
-    debug('encodedCidIsExpired', e.message)
-    return true
-  }
 }
 
 export default {
