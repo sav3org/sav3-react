@@ -35,6 +35,11 @@ const usePostWithReplies = (postCid) => {
         parentPost = await sav3Ipfs.getPost(post.parentPostCid)
       }
       setParentPost(parentPost)
+
+      const quotedPostCid = parentPost.quotedPostCid
+      if (quotedPostCid) {
+        sav3Ipfs.getPost(quotedPostCid).then((quotedPost) => setParentPost((post) => ({...post, quotedPost})))
+      }
     })()
   }, [postCid])
 

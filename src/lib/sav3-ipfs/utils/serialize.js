@@ -4,6 +4,7 @@ data in sav3
 ----
 post: a post or reply to a post
 post.cid
+post.quo (post.quotedPostCid): cid of post quoted (resav3)
 post.par (post.parentPostCid): cid of post replying to
 post.pre (post.previousPostCid): cid of previous post (to be able to iterate through all)
 post.usr (post.userCid): cid of publisher (to be able to get profile)
@@ -60,6 +61,7 @@ export const deserializePost = (data) => {
     userCid: data.usr,
     contentCid: data.cnt,
     timestamp: data.tmp,
+    quotedPostCid: data.quo,
     parentPostCid: data.par,
     previousPostCid: data.pre
   }
@@ -109,6 +111,9 @@ export const serializePost = (post) => {
   }
   if (post.previousPostCid) {
     serializedPost.pre = post.previousPostCid
+  }
+  if (post.quotedPostCid) {
+    serializedPost.quo = post.quotedPostCid
   }
   return JSON.stringify(serializedPost)
 }

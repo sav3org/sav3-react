@@ -11,6 +11,7 @@ resav3
 like
 after like and resav3 are implemented:
   refactor post view into hooks/feed/use-post-replies
+if the parent post appears multiple times, merge all the replies, multiple replies will require changing the <Post> component
 
 todo after prototype
 --------------------
@@ -42,3 +43,7 @@ write jest/enzyme tests for hooks by mocking sav3Ipfs
 possible way to do likes
 ------------------------
 possibly use pubsub for likes/retweets counts, but only display the usernames of people in your follow circle so people dont have incentive to spam, possibly use cloudflare country api to get own ip and country, and include it in the like/retweet count statistics?
+
+possible way to do free user/content voting
+-------------------------------------------
+only use the chain to read sav3 balances, use ipns signed ethereum messages to calculate votes, download all ipns votes and use it to rank stuff

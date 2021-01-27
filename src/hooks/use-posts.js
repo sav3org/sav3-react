@@ -37,16 +37,26 @@ const usePosts = (postCids) => {
       }
 
       // fetch main post, then fetch related posts like parent and quoted if any
+      // if post has reply or quoted, don't set it yet until the reply or quote is
+      // fetched, otherwise you don't get any context for the post
       sav3Ipfs.getPost(postCid).then((post) => {
         const parentPostCid = post.parentPostCid
         const quotedPostCid = post.quotedPostCid
-        if (parentPostCid && !posts[parentPostCid]) {
-          sav3Ipfs.getPost(parentPostCid).then((post) => setPost(parentPostCid, post))
-        }
         if (quotedPostCid && !posts[quotedPostCid]) {
-          sav3Ipfs.getPost(quotedPostCid).then((post) => setPost(quotedPostCid, post))
+          sav3Ipfs.getPost(quotedPostCid).then((quotedPost) => {
+            setPost(postCid, post)
+            setPost(quotedPostCid, quotedPost)
+          })
         }
-        setPost(postCid, post)
+        else if (parentPostCid && !posts[parentPostCid]) {
+          sav3Ipfs.getPost(parentPostCid).then((parentPost) => {
+            setPost(postCid, post)
+            setPost(parentPostCid, parentPost)
+          })
+        }
+        else {
+          setPost(postCid, post)
+        }
       })
     }
   }, [JSON.stringify(postCids)])

@@ -11,8 +11,11 @@ const useUserPosts = (userCid) => {
   const userPostCids = useUserPostCids(userCid)
   const posts = usePosts(userPostCids)
   const postsUserCids = getUserCidsFromPosts(posts)
-  const userCidsThatNeedProfiles = [...new Set([userCid, ...postsUserCids])]
-  const profiles = useUsersProfiles(userCidsThatNeedProfiles)
+  const postsUserCidsSet = new Set(postsUserCids)
+  if (userCid) {
+    postsUserCidsSet.add(userCid)
+  }
+  const profiles = useUsersProfiles([...postsUserCidsSet])
 
   const [postCount, setPostCount] = useState(postsPerPage)
   const [userPosts, setUserPosts] = useState([])

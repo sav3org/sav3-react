@@ -1,5 +1,5 @@
 import {Fragment, useEffect, useState} from 'react'
-import {makeStyles} from '@material-ui/core/styles'
+import {makeStyles, useTheme} from '@material-ui/core/styles'
 import Card from '@material-ui/core/Card'
 import CardMedia from '@material-ui/core/CardMedia'
 import Avatar from '@material-ui/core/Avatar'
@@ -50,12 +50,18 @@ const useStyles = makeStyles((theme) => ({
   userCid: {
     wordBreak: 'break-all',
     // remove added styles from link component
-    textDecoration: 'inherit'
+    textDecoration: 'inherit',
+    '&:hover': {
+      textDecoration: 'underline'
+    }
   },
   displayName: {
     // remove added styles from link component
     color: 'inherit',
-    textDecoration: 'inherit'
+    textDecoration: 'inherit',
+    '&:hover': {
+      textDecoration: 'underline'
+    }
   },
   contentLink: {
     wordBreak: 'break-all'
@@ -85,16 +91,21 @@ const useStyles = makeStyles((theme) => ({
 
 function Posts ({post} = {}) {
   const posts = []
-  if (post.parentPost) {
+  if (post.parentPost && !post.quotedPost) {
     posts.push(<Post key='parent' isParent={true} post={post.parentPost} />)
   }
-  // TODO: use post.isParent temporarily, /post/ view should eventually be
-  // refactored to a full width post like twitter instead of just a line
-  posts.push(<Post key={post.cid} isParent={post.isParent} post={post} />)
+  if (post.quotedPost) {
+    posts.push(<Post key='quoted' quoterCid={post.userCid} isResav3={true} post={post.quotedPost} />)
+  }
+  else {
+    // TODO: use post.isParent temporarily, /post/ view should eventually be
+    // refactored to a full width post like twitter instead of just a line
+    posts.push(<Post key={post.cid} isParent={post.isParent} post={post} />)
+  }
   return <Fragment>{posts}</Fragment>
 }
 
-function Post ({post, isParent} = {}) {
+function Post ({post, isParent, isResav3, quoterCid} = {}) {
   const location = useLocation()
   const history = useHistory()
   const languageCode = useLanguageCode()
@@ -128,59 +139,93 @@ function Post ({post, isParent} = {}) {
   }
 
   return (
-    <Box px={2} pt={1.5} pb={0.5} display='flex' className={classes.post} onClick={navigateToPostUrl}>
-      {/* left col avatar */}
-      <Box pr={1.5}>
-        <Avatar component={RouterLink} to={userProfileUrl} src={post.profile.thumbnailUrl && forceHttps(post.profile.thumbnailUrl)} className={classes.avatar} />
-        {isParent && <Divider className={classes.parentPostLine} orientation='vertical' />}
-      </Box>
+    <Box pt={1.5} className={classes.post} onClick={navigateToPostUrl}>
+      {isResav3 && <Resaved post={post} quoterCid={quoterCid} />}
 
-      {/* right col header + content + bottom actions */}
-      <Box width='100%'>
-        {/* header */}
-        <Box display='flex'>
-          <Box flexGrow={1}>
-            <Box display='flex'>
-              {post.profile.displayName && (
-                <Fragment>
-                  <Typography className={classes.displayName} component={RouterLink} to={userProfileUrl} variant='subtitle2'>
-                    {post.profile.displayName}
-                  </Typography>
-                  &nbsp;
-                  <Typography variant='subtitle2'>·</Typography>
-                  &nbsp;
-                </Fragment>
-              )}
-              <Typography variant='subtitle2'>{date}</Typography>
-            </Box>
-            <Box>
-              <Typography component={RouterLink} to={userProfileUrl} variant='caption' color='textSecondary' className={classes.userCid}>
-                {post.userCid}
-              </Typography>
-            </Box>
-          </Box>
-          <Box>
-            <PostMoreMenu post={post} />
-          </Box>
+      <Box px={2} pb={0.5} display='flex'>
+        {/* left col avatar */}
+        <Box pr={1.5}>
+          <Avatar component={RouterLink} to={userProfileUrl} src={post.profile.thumbnailUrl && forceHttps(post.profile.thumbnailUrl)} className={classes.avatar} />
+          {isParent && <Divider className={classes.parentPostLine} orientation='vertical' />}
         </Box>
 
-        {/* content */}
-        <PostContent content={post.content} />
+        {/* right col header + content + bottom actions */}
+        <Box width='100%'>
+          {/* header */}
+          <Box display='flex'>
+            <Box flexGrow={1}>
+              <Box display='flex'>
+                {post.profile.displayName && (
+                  <Fragment>
+                    <Typography className={classes.displayName} component={RouterLink} to={userProfileUrl} variant='subtitle2'>
+                      {post.profile.displayName}
+                    </Typography>
+                    &nbsp;
+                    <Typography variant='subtitle2'>·</Typography>
+                    &nbsp;
+                  </Fragment>
+                )}
+                <Typography variant='subtitle2'>{date}</Typography>
+              </Box>
+              <Box>
+                <Typography component={RouterLink} to={userProfileUrl} variant='caption' color='textSecondary' className={classes.userCid}>
+                  {post.userCid}
+                </Typography>
+              </Box>
+            </Box>
+            <Box>
+              <PostMoreMenu post={post} />
+            </Box>
+          </Box>
 
-        {/* actions */}
-        <Box display='flex' justifyContent='space-between' className={classes.actions}>
-          <ReplyIconButton parentPost={post} />
-          <IconButton className={classes.actionIconButton}>
-            <RepeatIcon style={{transform: 'rotate(90deg)'}} />
-          </IconButton>
-          <IconButton className={classes.actionIconButton}>
-            <FavoriteIcon />
-          </IconButton>
-          <ShareButton postCid={post.cid} />
+          {/* content */}
+          <PostContent content={post.content} />
+
+          {/* actions */}
+          <Box display='flex' justifyContent='space-between' className={classes.actions}>
+            <ReplyIconButton parentPost={post} />
+            <IconButton className={classes.actionIconButton}>
+              <RepeatIcon style={{transform: 'rotate(90deg)'}} />
+            </IconButton>
+            <IconButton className={classes.actionIconButton}>
+              <FavoriteIcon />
+            </IconButton>
+            <ShareButton postCid={post.cid} />
+          </Box>
         </Box>
       </Box>
     </Box>
   )
+}
+
+function Resaved ({post, quoterCid} = {}) {
+  const theme = useTheme()
+  const classes = useStyles()
+
+  const encodedQuoterCid = urlUtils.encodeCid(quoterCid)
+  const encodedQuoterProfileUrl = `/profile/${encodedQuoterCid}`
+
+  return (
+    <Box px={2} pb={0.75} display='flex' alignItems='center'>
+      <Box width={theme.spacing(6)} mr={1.5} display='flex' justifyContent='flex-end'>
+        <RepeatIcon
+          color='textSecondary'
+          style={{
+            transform: 'rotate(90deg) translate(0px, -1px)',
+            color: theme.palette.text.secondary,
+            fontSize: '1.4rem'
+          }}
+        />
+      </Box>
+      <Typography style={{fontWeight: 'bold'}} color='textSecondary' variant='overline' className={classes.userCid} component={RouterLink} to={encodedQuoterProfileUrl}>
+        {post.profile.displayName || post.userCid.substring(0, 8)} RESAV3D
+      </Typography>
+    </Box>
+  )
+}
+Resaved.propTypes = {
+  post: PropTypes.object.isRequired,
+  quoterCid: PropTypes.string.isRequired
 }
 
 function ReplyIconButton ({parentPost} = {}) {

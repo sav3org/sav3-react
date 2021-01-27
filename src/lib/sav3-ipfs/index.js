@@ -249,14 +249,17 @@ class Sav3Ipfs extends EventEmitter {
     return ipnsValues
   }
 
-  async publishPost ({content, parentPostCid} = {}) {
+  async publishPost ({content, parentPostCid, quotedPostCid} = {}) {
     await this.waitForReady()
     assert(content && typeof content === 'string', `sav3Ipfs.publishPost content '${content}' not a string`)
     assert(content.length <= 140, `sav3Ipfs.publishPost content '${content}' longer than 140 chars`)
     assert(!parentPostCid || typeof parentPostCid === 'string', `sav3Ipfs.publishPost parentPostCid '${parentPostCid}' not a string`)
+    assert(!quotedPostCid || typeof quotedPostCid === 'string', `sav3Ipfs.publishPost quotedPostCid '${quotedPostCid}' not a string`)
+    assert(Boolean(parentPostCid && quotedPostCid) === false, `sav3Ipfs.publishPost cannot have both parentPostCid '${parentPostCid}' and quotedPostCid '${quotedPostCid}'`)
 
     const ipnsContent = await this.getOwnUserIpnsContent()
     const newPost = {}
+    newPost.quotedPostCid = quotedPostCid
     newPost.parentPostCid = parentPostCid
     newPost.previousPostCid = ipnsContent.lastPostCid
     newPost.timestamp = Math.round(Date.now() / 1000)
