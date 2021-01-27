@@ -213,7 +213,6 @@ function Resaved ({post, quoterCid} = {}) {
     <Box className={classes.resav3d} px={2} pb={0.5} display='flex' alignItems='center'>
       <Box width={theme.spacing(6)} mr={1.5} display='flex' justifyContent='flex-end'>
         <RepeatIcon
-          color='textSecondary'
           style={{
             // looks better if more on the right
             transform: 'rotate(90deg) translateX(-1px)',

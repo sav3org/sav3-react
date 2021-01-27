@@ -8,17 +8,24 @@ import/export private key
 release version
 script to run node
 resav3
+  add reply overtext "john replied"
+  resav3 button
+  quote design
+  quote button
 like
 after like and resav3 are implemented:
   refactor post view into hooks/feed/use-post-replies
 if the parent post appears multiple times, merge all the replies, multiple replies will require changing the <Post> component
+right sidebar
+  improved theme and language buttons
+  footer linkers
 
 todo after prototype
 --------------------
 research metamask integration
 research signing in solidity using ipfs private key for userIpnsContent.terminated
 automatically get image url from imgur link for profile images
-add embeds for imgur, reddit, twitter, youtube, instagram, vimeo, bitchute, gab
+add embeds for imgur, reddit, twitter, youtube, instagram, vimeo, bitchute, gab, soundcloud
 add drag and drop media uploads to cloudflare ipfs
 if click on post from feed, scroll to that same post when clicking back
 loading publish/edit profile indicators
