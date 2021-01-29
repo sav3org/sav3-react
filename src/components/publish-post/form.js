@@ -7,7 +7,7 @@ import Alert from '@material-ui/lab/Alert'
 import {makeStyles, useTheme} from '@material-ui/core/styles'
 import Box from '@material-ui/core/Box'
 import Divider from '@material-ui/core/Divider'
-import useUserProfile from 'src/hooks/use-user-profile'
+import useUserProfile from 'src/hooks/user/use-user-profile'
 import useOwnUserCid from 'src/hooks/use-own-user-cid'
 import Avatar from '@material-ui/core/Avatar'
 

@@ -20,7 +20,9 @@ const useStyles = makeStyles((theme) => ({
     }
   },
   menuItemIcon: {
-    minWidth: 28
+    minWidth: 28,
+    paddingTop: theme.spacing(1),
+    paddingBottom: theme.spacing(1)
   },
   moreIconButton: {
     padding: theme.spacing(1.25)
@@ -45,6 +47,7 @@ function ProfileMoreMenu ({userCid} = {}) {
         <MoreVertIcon />
       </IconButton>
       <Menu
+        MenuListProps={{disablePadding: true}}
         className={classes.menu}
         elevation={4}
         anchorOrigin={{
@@ -89,11 +92,11 @@ function ShareMenuItem ({userCid, onClose} = {}) {
 
   return (
     <Tooltip title={t['Copied to clipboard']()} open={isCopied} enterDelay={500} leaveDelay={200}>
-      <MenuItem onClick={handleClick}>
+      <MenuItem button={true} onClick={handleClick}>
         <ListItemIcon className={classes.menuItemIcon}>
           <ShareIcon fontSize='small' />
         </ListItemIcon>
-        <Typography>{t.Share()}</Typography>
+        <Typography variant='body1'>{t.Share()}</Typography>
       </MenuItem>
     </Tooltip>
   )

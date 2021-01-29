@@ -10,7 +10,7 @@ export const decodeCid = (encodedCid) => {
   assert(encodedCid && typeof encodedCid === 'string', `utils.url.decodeCid encodedCid '${encodedCid}' not a string`)
   let cid, expireTimestamp, cipheredCid
   try {
-    const res = window.atob(encodedCid).split(',')
+    const res = window.atob(unescapeReactRouterChars(encodedCid)).split(',')
     cipheredCid = res[0]
     expireTimestamp = res[1]
     cid = decipherCid(cipheredCid, expireTimestamp)
@@ -34,7 +34,7 @@ export const encodeCid = (cid) => {
   const expireTimestamp = Math.floor((Date.now() + timeToLive) / 1000) // use Math.floor because can expire too early with Math.round
   const cipheredCid = cipherCid(cid, expireTimestamp)
   debug('encodeCid', {cid, expireTimestamp, cipheredCid})
-  return window.btoa(`${cipheredCid},${expireTimestamp}`).replace(/=/g, '')
+  return escapeReactRouterChars(window.btoa(`${cipheredCid},${expireTimestamp}`).replace(/=/g, ''))
 }
 
 export const encodedCidIsExpired = (encodedCid) => {
@@ -73,6 +73,10 @@ const decipherCid = (cid, expireTimestamp) => {
   }
   return deciphered
 }
+
+const escapeReactRouterChars = (string) => string.replace('/', '-')
+
+const unescapeReactRouterChars = (string) => string.replace('-', '/')
 
 export default {
   decodeCid,

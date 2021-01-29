@@ -54,7 +54,6 @@ export const deserializePost = (data) => {
 
   // validate mandatory post fields
   assert(data.usr && typeof data.usr === 'string', `invalid post '${JSON.stringify(data)}' post.usr not a string`)
-  assert(data.cnt && typeof data.cnt === 'string', `invalid post '${JSON.stringify(data)}' post.cnt not a string`)
   assert(data.tmp && typeof data.tmp === 'number', `invalid post '${JSON.stringify(data)}' post.tmp not a number`)
 
   const post = {
@@ -95,16 +94,18 @@ export const serializePost = (post) => {
   // validate mandatory post fields
   assert(post && typeof post === 'object', `invalid post '${JSON.stringify(post)}' post not an object`)
   assert(post.userCid && typeof post.userCid === 'string', `invalid post '${JSON.stringify(post)}' post.userCid not a string`)
-  assert(post.contentCid && typeof post.contentCid === 'string', `invalid post '${JSON.stringify(post)}' post.contentCid not a string`)
   assert(post.timestamp && typeof post.timestamp === 'number', `invalid post '${JSON.stringify(post)}' post.timestamp not a number`)
   // validate optional post fields
+  assert(post.contentCid === undefined || (post.contentCid && typeof post.contentCid === 'string'), `invalid post '${JSON.stringify(post)}' post.contentCid not a string`)
   assert(post.parentPostCid === undefined || (post.parentPostCid && typeof post.parentPostCid === 'string'), `invalid post '${JSON.stringify(post)}' post.parentPostCid not a string`)
   assert(post.previousPostCid === undefined || (post.previousPostCid && typeof post.previousPostCid === 'string'), `invalid post '${JSON.stringify(post)}' post.previousPostCid not a string`)
 
   const serializedPost = {
     usr: post.userCid,
-    cnt: post.contentCid,
     tmp: post.timestamp
+  }
+  if (post.contentCid) {
+    serializedPost.cnt = post.contentCid
   }
   if (post.parentPostCid) {
     serializedPost.par = post.parentPostCid

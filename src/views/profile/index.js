@@ -1,5 +1,5 @@
 import Box from '@material-ui/core/Box'
-import useUserProfile from 'src/hooks/use-user-profile'
+import useUserProfile from 'src/hooks/user/use-user-profile'
 import TopBar from 'src/components/top-bar'
 import IconButton from '@material-ui/core/IconButton'
 import Typography from '@material-ui/core/Typography'

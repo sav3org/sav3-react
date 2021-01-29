@@ -11,7 +11,8 @@ import crypto from 'libp2p-crypto'
 import createWindowSav3IpfsTestMethods from './utils/create-window-sav3-ipfs-test-methods'
 import uint8ArrayToString from 'uint8arrays/to-string'
 import config from 'src/config'
-import postRepliesUtils from './utils/post-replies'
+import postReplyUtils from './utils/post-reply'
+import postQuoteUtils from './utils/post-quote'
 import serialize from './utils/serialize'
 import Debug from 'debug'
 const debug = Debug('sav3:sav3-ipfs:index')
@@ -251,8 +252,9 @@ class Sav3Ipfs extends EventEmitter {
 
   async publishPost ({content, parentPostCid, quotedPostCid} = {}) {
     await this.waitForReady()
-    assert(content && typeof content === 'string', `sav3Ipfs.publishPost content '${content}' not a string`)
-    assert(content.length <= 140, `sav3Ipfs.publishPost content '${content}' longer than 140 chars`)
+    assert(content || quotedPostCid, `sav3Ipfs.publishPost content '${content}' is empty, quotedPostCid '${quotedPostCid}'`)
+    assert(!content || typeof content === 'string', `sav3Ipfs.publishPost content '${content}' not a string`)
+    assert(!content || content.length <= 140, `sav3Ipfs.publishPost content '${content}' longer than 140 chars`)
     assert(!parentPostCid || typeof parentPostCid === 'string', `sav3Ipfs.publishPost parentPostCid '${parentPostCid}' not a string`)
     assert(!quotedPostCid || typeof quotedPostCid === 'string', `sav3Ipfs.publishPost quotedPostCid '${quotedPostCid}' not a string`)
     assert(Boolean(parentPostCid && quotedPostCid) === false, `sav3Ipfs.publishPost cannot have both parentPostCid '${parentPostCid}' and quotedPostCid '${quotedPostCid}'`)
@@ -264,7 +266,9 @@ class Sav3Ipfs extends EventEmitter {
     newPost.previousPostCid = ipnsContent.lastPostCid
     newPost.timestamp = Math.round(Date.now() / 1000)
     newPost.userCid = (await this.ipfs.id()).id
-    newPost.contentCid = (await this.ipfs.add(content)).cid.toString()
+    if (content) {
+      newPost.contentCid = (await this.ipfs.add(content)).cid.toString()
+    }
 
     const newPostCid = (await this.ipfs.add(serialize.serializePost(newPost))).cid.toString()
     const newIpnsContent = {...ipnsContent, lastPostCid: newPostCid}
@@ -274,7 +278,10 @@ class Sav3Ipfs extends EventEmitter {
     debug('publishPost', {newIpnsContentCid, newPost, newIpnsContent, ipnsContent, newPostCid, parentPostCid})
 
     if (parentPostCid) {
-      await postRepliesUtils.cachePostReplyCid({cid: newPostCid, parentPostCid})
+      await postReplyUtils.cachePostReplyCid({cid: newPostCid, parentPostCid})
+    }
+    if (quotedPostCid) {
+      await postQuoteUtils.cachePostQuoteCid({cid: newPostCid, quotedPostCid})
     }
 
     return newPostCid
@@ -461,19 +468,31 @@ class Sav3Ipfs extends EventEmitter {
     post.cid = postCid
 
     if (post.parentPostCid) {
-      await postRepliesUtils.cachePostReplyCid({cid: post.cid, parentPostCid: post.parentPostCid})
+      await postReplyUtils.cachePostReplyCid({cid: post.cid, parentPostCid: post.parentPostCid})
+    }
+    if (post.quotedPostCid) {
+      await postQuoteUtils.cachePostQuoteCid({cid: post.cid, quotedPostCid: post.quotedPostCid})
+    }
+    if (post.contentCid) {
+      post.content = await this.getIpfsContent(post.contentCid)
     }
 
-    post.content = await this.getIpfsContent(post.contentCid)
     debug('getPost returns', {postCid, post})
     return post
   }
 
-  async getPostRepliesCids (postCid) {
+  async getPostReplyCids (postCid) {
     await this.waitForReady()
-    assert(postCid && typeof postCid === 'string', `sav3Ipfs.getPostRepliesCids postCid '${postCid}' not a string`)
-    const repliesCids = await postRepliesUtils.getPostRepliesCids(postCid)
-    return repliesCids
+    assert(postCid && typeof postCid === 'string', `sav3Ipfs.getPostReplyCids postCid '${postCid}' not a string`)
+    const replyCids = await postReplyUtils.getPostReplyCids(postCid)
+    return replyCids
+  }
+
+  async getPostQuoteCids (postCid) {
+    await this.waitForReady()
+    assert(postCid && typeof postCid === 'string', `sav3Ipfs.getPostQuoteCids postCid '${postCid}' not a string`)
+    const quoteCids = await postQuoteUtils.getPostQuoteCids(postCid)
+    return quoteCids
   }
 
   /**

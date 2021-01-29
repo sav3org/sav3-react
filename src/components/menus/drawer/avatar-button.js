@@ -1,6 +1,6 @@
 import {useState} from 'react'
 import Avatar from '@material-ui/core/Avatar'
-import useUserProfile from 'src/hooks/use-user-profile'
+import useUserProfile from 'src/hooks/user/use-user-profile'
 import IconButton from '@material-ui/core/IconButton'
 import useOwnPeerCid from 'src/hooks/use-own-peer-cid'
 import {makeStyles} from '@material-ui/core/styles'

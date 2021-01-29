@@ -103,11 +103,14 @@ const createWindowSav3IpfsTestMethods = (sav3Ipfs) => {
     let previousPostCid
     while (amount--) {
       const mediaUrl = Math.random() > 0.5 ? getRandomItemFromArray(mediaUrls) : ''
-      let quotedPostCid
+      let quotedPostCid, parentPostCid
       if (amount === 3) {
         quotedPostCid = previousPostCid
       }
-      previousPostCid = await sav3Ipfs.publishPost({quotedPostCid, content: `${getRandomItemFromArray(contents).substring(0, 100)} ${mediaUrl}`})
+      if (amount === 1) {
+        parentPostCid = previousPostCid
+      }
+      previousPostCid = await sav3Ipfs.publishPost({quotedPostCid, parentPostCid, content: `${getRandomItemFromArray(contents).substring(0, 100)} ${mediaUrl}`})
     }
   }
 

@@ -21,7 +21,9 @@ const useStyles = makeStyles((theme) => ({
     }
   },
   menuItemIcon: {
-    minWidth: 28
+    minWidth: 28,
+    paddingTop: theme.spacing(),
+    paddingBottom: theme.spacing()
   },
   moreIconButton: {
     padding: theme.spacing(0.5),
@@ -56,6 +58,7 @@ function PostMoreMenu ({post} = {}) {
         <MoreVertIcon />
       </IconButton>
       <Menu
+        MenuListProps={{disablePadding: true}}
         className={classes.menu}
         elevation={4}
         anchorOrigin={{
@@ -76,7 +79,6 @@ function PostMoreMenu ({post} = {}) {
     </div>
   )
 }
-
 PostMoreMenu.propTypes = {
   post: PropTypes.object.isRequired
 }
@@ -91,7 +93,7 @@ function FollowMenuItem ({userCid} = {}) {
       <ListItemIcon className={classes.menuItemIcon}>
         <PersonAdd fontSize='small' />
       </ListItemIcon>
-      <Typography>{t.Follow()}</Typography>
+      <Typography variant='body1'>{t.Follow()}</Typography>
     </MenuItem>
   )
   if (isFollowing) {
@@ -100,13 +102,12 @@ function FollowMenuItem ({userCid} = {}) {
         <ListItemIcon className={classes.menuItemIcon}>
           <PersonAddDisabled fontSize='small' />
         </ListItemIcon>
-        <Typography>{t.Unfollow()}</Typography>
+        <Typography variant='body1'>{t.Unfollow()}</Typography>
       </MenuItem>
     )
   }
   return followButton
 }
-
 FollowMenuItem.propTypes = {
   userCid: PropTypes.string.isRequired
 }

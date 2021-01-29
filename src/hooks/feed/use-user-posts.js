@@ -1,7 +1,7 @@
 import {useState, useEffect} from 'react'
-import useUserPostCids from 'src/hooks/use-user-post-cids'
-import usePosts from 'src/hooks/use-posts'
-import useUsersProfiles from 'src/hooks/use-users-profiles'
+import useUserPostCids from 'src/hooks/user/use-user-post-cids'
+import usePosts from 'src/hooks/post/use-posts'
+import useUsersProfiles from 'src/hooks/user/use-users-profiles'
 import Debug from 'debug'
 const debug = Debug('sav3:hooks:feed:use-user-posts')
 

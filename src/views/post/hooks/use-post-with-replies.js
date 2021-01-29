@@ -1,21 +1,23 @@
 import {useEffect, useState} from 'react'
 import sav3Ipfs from 'src/lib/sav3-ipfs'
 import assert from 'assert'
-import usePosts from 'src/hooks/use-posts'
-import usePostRepliesCids from 'src/hooks/use-post-replies-cids'
+import usePosts from 'src/hooks/post/use-posts'
+import usePostReplyCids from 'src/hooks/post/use-post-reply-cids'
 import Debug from 'debug'
 const debug = Debug('sav3:hooks:use-post-with-replies')
+
+// TODO: delete this hook after refactoring the /post/ feed, fetching replies with post is probably a bad design
 
 const usePostWithReplies = (postCid) => {
   assert(!postCid || typeof postCid === 'string', `invalid postCid '${JSON.stringify(postCid)}'`)
   const [parentPost, setParentPost] = useState()
-  const repliesCids = usePostRepliesCids(parentPost && parentPost.cid)
-  const posts = usePosts(repliesCids)
+  const replyCids = usePostReplyCids(parentPost && parentPost.cid)
+  const posts = usePosts(replyCids)
 
-  // usePosts doesn't delete removed replies on repliesCids change
-  // but usePostRepliesCids does so must assign like below
+  // usePosts doesn't delete removed replies on replyCids change
+  // but usePostReplyCids does so must assign like below
   const replies = {}
-  for (const replyCid of repliesCids) {
+  for (const replyCid of replyCids) {
     replies[replyCid] = posts[replyCid]
   }
 
@@ -43,7 +45,7 @@ const usePostWithReplies = (postCid) => {
     })()
   }, [postCid])
 
-  debug({parentPost, repliesCids, replies})
+  debug({parentPost, replyCids, replies})
 
   if (!parentPost) {
     return

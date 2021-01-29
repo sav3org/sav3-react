@@ -3,27 +3,19 @@ import {makeStyles, useTheme} from '@material-ui/core/styles'
 import Card from '@material-ui/core/Card'
 import CardMedia from '@material-ui/core/CardMedia'
 import Avatar from '@material-ui/core/Avatar'
-import IconButton from '@material-ui/core/IconButton'
 import Typography from '@material-ui/core/Typography'
-import FavoriteIcon from '@material-ui/icons/FavoriteBorderOutlined'
-import ShareIcon from '@material-ui/icons/ShareOutlined'
 import RepeatIcon from '@material-ui/icons/Repeat'
-import CommentIcon from '@material-ui/icons/ModeCommentOutlined'
 import Link from '@material-ui/core/Link'
-import Tooltip from '@material-ui/core/Tooltip'
 import Box from '@material-ui/core/Box'
 import {format as formatTimeAgo} from 'timeago.js'
 import useLanguageCode from 'src/translations/use-language-code'
 import assert from 'assert'
 import urlRegex from 'url-regex'
-import PostMoreMenu from './more-menu'
+import PostMoreMenu from './components/more-menu'
+import PostActions from './components/actions'
 import {Link as RouterLink, useHistory, useLocation} from 'react-router-dom'
-import PublishPostModal from 'src/components/publish-post/modal'
 import PropTypes from 'prop-types'
 import urlUtils from 'src/lib/utils/url'
-import usePostRepliesCids from 'src/hooks/use-post-replies-cids'
-import useCopyClipboard from 'src/hooks/utils/use-copy-clipboard'
-import useTranslation from 'src/translations/use-translation'
 import themesUtils from 'src/themes/utils'
 import Divider from '@material-ui/core/Divider'
 
@@ -69,18 +61,6 @@ const useStyles = makeStyles((theme) => ({
   },
   contentLink: {
     wordBreak: 'break-all'
-  },
-  actions: {
-    paddingTop: theme.spacing(0.5),
-    maxWidth: theme.sav3.layout.columns.middle.width.md * 0.75,
-    marginLeft: theme.spacing(-1)
-  },
-  actionIconButton: {
-    padding: theme.spacing(1),
-    '& .MuiSvgIcon-root': {
-      fontSize: '1rem',
-      color: theme.palette.text.secondary
-    }
   },
   post: {
     cursor: 'pointer',
@@ -144,7 +124,7 @@ function Post ({post, isParent, isResav3, quoterCid} = {}) {
 
   return (
     <Box pt={1.5} className={classes.post} onClick={navigateToPostUrl}>
-      {isResav3 && <Resaved post={post} quoterCid={quoterCid} />}
+      {isResav3 && <Resav3dLabel post={post} quoterCid={quoterCid} />}
 
       <Box px={2} pb={0.5} display='flex'>
         {/* left col avatar */}
@@ -186,23 +166,14 @@ function Post ({post, isParent, isResav3, quoterCid} = {}) {
           <PostContent content={post.content} />
 
           {/* actions */}
-          <Box display='flex' justifyContent='space-between' className={classes.actions}>
-            <ReplyIconButton parentPost={post} />
-            <IconButton className={classes.actionIconButton}>
-              <RepeatIcon style={{transform: 'rotate(90deg)'}} />
-            </IconButton>
-            <IconButton className={classes.actionIconButton}>
-              <FavoriteIcon />
-            </IconButton>
-            <ShareButton postCid={post.cid} />
-          </Box>
+          <PostActions post={post} />
         </Box>
       </Box>
     </Box>
   )
 }
 
-function Resaved ({post, quoterCid} = {}) {
+function Resav3dLabel ({post, quoterCid} = {}) {
   const theme = useTheme()
   const classes = useStyles()
 
@@ -222,50 +193,15 @@ function Resaved ({post, quoterCid} = {}) {
         />
       </Box>
       <Typography style={{fontWeight: 'bold'}} color='textSecondary' variant='overline' className={classes.userCid} component={RouterLink} to={encodedQuoterProfileUrl}>
-        {post.profile.displayName || post.userCid.substring(0, 8)} RESAV3D
+        {post.profile.displayName || quoterCid.substring(0, 8)} RESAV3D
       </Typography>
     </Box>
   )
 }
-Resaved.propTypes = {
+Resav3dLabel.propTypes = {
   post: PropTypes.object.isRequired,
   quoterCid: PropTypes.string.isRequired
 }
-
-function ReplyIconButton ({parentPost} = {}) {
-  const classes = useStyles()
-  const postRepliesCids = usePostRepliesCids(parentPost.cid)
-
-  const [openPublishPostModal, setOpenPublishPostModal] = useState(false)
-  return (
-    <Box display='flex' alignItems='center' onClick={(event) => event.stopPropagation()}>
-      <IconButton className={classes.actionIconButton} onClick={() => setOpenPublishPostModal(true)}>
-        <CommentIcon />
-      </IconButton>
-      {postRepliesCids.length !== 0 && <Typography variant='caption'>{postRepliesCids.length}</Typography>}
-      <PublishPostModal parentPost={parentPost} open={openPublishPostModal} onClose={() => setOpenPublishPostModal(false)} />
-    </Box>
-  )
-}
-ReplyIconButton.propTypes = {parentPost: PropTypes.object.isRequired}
-
-function ShareButton ({postCid} = {}) {
-  const classes = useStyles()
-  const t = useTranslation()
-  const [isCopied, setCopied] = useCopyClipboard(1100)
-  const getUrl = () => {
-    const encodedPostCid = urlUtils.encodeCid(postCid)
-    return `${window.location.origin}/#/post/${encodedPostCid}`
-  }
-  return (
-    <Tooltip title={t['Copied to clipboard']()} open={isCopied} enterDelay={500} leaveDelay={200}>
-      <IconButton onClick={() => setCopied(getUrl())} className={classes.actionIconButton}>
-        <ShareIcon />
-      </IconButton>
-    </Tooltip>
-  )
-}
-ShareButton.propTypes = {postCid: PropTypes.string.isRequired}
 
 function PostContent ({content} = {}) {
   const classes = useStyles()

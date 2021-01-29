@@ -2,7 +2,7 @@ import {useEffect, useState} from 'react'
 import usePrevious from 'src/hooks/utils/use-previous'
 import sav3Ipfs from 'src/lib/sav3-ipfs'
 import assert from 'assert'
-import useUsersIpnsContents from 'src/hooks/use-users-ipns-contents'
+import useUsersIpnsContents from 'src/hooks/user/use-users-ipns-contents'
 import Debug from 'debug'
 const debug = Debug('sav3:hooks:use-users-post-cids')
 

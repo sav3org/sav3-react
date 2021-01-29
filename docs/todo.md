@@ -8,7 +8,6 @@ import/export private key
 release version
 script to run node
 resav3
-  add reply overtext "john replied"
   resav3 button
   quote design
   quote button
@@ -22,6 +21,7 @@ right sidebar
 
 todo after prototype
 --------------------
+add reply overtext "john replied"
 research metamask integration
 research signing in solidity using ipfs private key for userIpnsContent.terminated
 automatically get image url from imgur link for profile images
@@ -46,6 +46,9 @@ redo /post/ view to a full width post like twitter
 improve design of useParentPostsWithProfiles to possibly integrate it with the feed provider instead of being seperate hook
 fix reply duplicates, possible solution, if the same parent post shows on a feed page, merge them into a single thread
 write jest/enzyme tests for hooks by mocking sav3Ipfs
+followers/following page
+extract sav3-ipfs to npm package
+highlight is own reply/resav3 is present on a post
 
 possible way to do likes
 ------------------------
