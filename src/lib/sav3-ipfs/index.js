@@ -275,7 +275,7 @@ class Sav3Ipfs extends EventEmitter {
     const newIpnsContentCid = (await this.ipfs.add(serialize.serializeUserIpnsContent(newIpnsContent))).cid.toString()
 
     await this.publishIpnsRecord(newIpnsContentCid)
-    debug('publishPost', {newIpnsContentCid, newPost, newIpnsContent, ipnsContent, newPostCid, parentPostCid})
+    debug('publishPost', {newIpnsContentCid, newPost, newIpnsContent, ipnsContent, newPostCid, parentPostCid, quotedPostCid})
 
     if (parentPostCid) {
       await postReplyUtils.cachePostReplyCid({cid: newPostCid, parentPostCid})

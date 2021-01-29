@@ -79,7 +79,7 @@ function Posts ({post} = {}) {
     posts.push(<Post key='parent' isParent={true} post={post.parentPost} />)
   }
   if (post.quotedPost) {
-    posts.push(<Post key='quoted' quoterCid={post.userCid} isResav3={true} post={post.quotedPost} />)
+    posts.push(<Post key='quoted' quotingPost={post} isResav3={true} post={post.quotedPost} />)
   }
   else {
     // TODO: use post.isParent temporarily, /post/ view should eventually be
@@ -89,7 +89,7 @@ function Posts ({post} = {}) {
   return <Fragment>{posts}</Fragment>
 }
 
-function Post ({post, isParent, isResav3, quoterCid} = {}) {
+function Post ({post, isParent, isResav3, quotingPost} = {}) {
   const location = useLocation()
   const history = useHistory()
   const languageCode = useLanguageCode()
@@ -124,7 +124,7 @@ function Post ({post, isParent, isResav3, quoterCid} = {}) {
 
   return (
     <Box pt={1.5} className={classes.post} onClick={navigateToPostUrl}>
-      {isResav3 && <Resav3dLabel post={post} quoterCid={quoterCid} />}
+      {isResav3 && <Resav3dLabel post={post} quotingPost={quotingPost} />}
 
       <Box px={2} pb={0.5} display='flex'>
         {/* left col avatar */}
@@ -173,11 +173,11 @@ function Post ({post, isParent, isResav3, quoterCid} = {}) {
   )
 }
 
-function Resav3dLabel ({post, quoterCid} = {}) {
+function Resav3dLabel ({quotingPost} = {}) {
   const theme = useTheme()
   const classes = useStyles()
 
-  const encodedQuoterCid = urlUtils.encodeCid(quoterCid)
+  const encodedQuoterCid = urlUtils.encodeCid(quotingPost.userCid)
   const encodedQuoterProfileUrl = `/profile/${encodedQuoterCid}`
 
   return (
@@ -193,14 +193,13 @@ function Resav3dLabel ({post, quoterCid} = {}) {
         />
       </Box>
       <Typography style={{fontWeight: 'bold'}} color='textSecondary' variant='overline' className={classes.userCid} component={RouterLink} to={encodedQuoterProfileUrl}>
-        {post.profile.displayName || quoterCid.substring(0, 8)} RESAV3D
+        {quotingPost.profile.displayName || quotingPost.userCid.substring(0, 8)} RESAV3D
       </Typography>
     </Box>
   )
 }
 Resav3dLabel.propTypes = {
-  post: PropTypes.object.isRequired,
-  quoterCid: PropTypes.string.isRequired
+  quotingPost: PropTypes.object.isRequired
 }
 
 function PostContent ({content} = {}) {

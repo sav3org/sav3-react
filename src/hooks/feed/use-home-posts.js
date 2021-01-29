@@ -18,6 +18,20 @@ const useHomePosts = () => {
     allHomePosts.push(posts[homePostCid])
   }
 
+  // load next posts while scrolling
+  const next = () => {
+    setPostCount((previousPostCount) => previousPostCount + postsPerPage)
+  }
+
+  // go back to page 1, undo all scrolling
+  const reset = () => {
+    setPostCount(postsPerPage)
+    setHomePosts([])
+  }
+
+  // has more posts that can be loaded from scrolling
+  const hasMore = allHomePosts.length > homePosts.length
+
   // set home posts every time new posts are added to context
   useEffect(() => {
     /* algo
@@ -53,52 +67,36 @@ const useHomePosts = () => {
         if (nextHomePosts.length >= postCount) {
           break
         }
-
         nextHomePosts.push(post)
       }
-
-      // set profiles
-      for (const nextHomePost of nextHomePosts) {
-        nextHomePost.profile = profiles[nextHomePost.userCid] || {}
-      }
-
-      // set parent posts
-      for (const nextHomePost of nextHomePosts) {
-        nextHomePost.parentPost = posts[nextHomePost.parentPostCid]
-        if (nextHomePost.parentPost) {
-          nextHomePost.parentPost.profile = profiles[nextHomePost.parentPost.userCid] || {}
-        }
-      }
-
-      // set quoted posts
-      for (const nextHomePost of nextHomePosts) {
-        nextHomePost.quotedPost = posts[nextHomePost.quotedPostCid]
-        if (nextHomePost.quotedPost) {
-          nextHomePost.quotedPost.profile = profiles[nextHomePost.quotedPost.userCid] || {}
-        }
-      }
-
       return nextHomePosts
     })
   }, [postCount, JSON.stringify(allHomePosts), JSON.stringify(profiles)])
 
-  // load next posts while scrolling
-  const next = () => {
-    setPostCount((previousPostCount) => previousPostCount + postsPerPage)
+  // add all data to posts
+  const postsWithAllData = JSON.parse(JSON.stringify(homePosts))
+  // set profiles
+  for (const post of postsWithAllData) {
+    post.profile = profiles[post.userCid] || {}
+  }
+  // set parent posts
+  for (const post of postsWithAllData) {
+    post.parentPost = posts[post.parentPostCid]
+    if (post.parentPost) {
+      post.parentPost.profile = profiles[post.parentPost.userCid] || {}
+    }
+  }
+  // set quoted posts
+  for (const post of postsWithAllData) {
+    post.quotedPost = posts[post.quotedPostCid]
+    if (post.quotedPost) {
+      post.quotedPost.profile = profiles[post.quotedPost.userCid] || {}
+    }
   }
 
-  // go back to page 1, undo all scrolling
-  const reset = () => {
-    setPostCount(postsPerPage)
-    setHomePosts([])
-  }
+  debug({homePosts, postsWithAllData, postCount, posts, hasMore})
 
-  // has more posts that can be loaded from scrolling
-  const hasMore = allHomePosts.length > homePosts.length
-
-  debug({homePosts, postCount, posts, hasMore})
-
-  return {posts: homePosts, next, hasMore, reset}
+  return {posts: postsWithAllData, next, hasMore, reset}
 }
 
 export default useHomePosts

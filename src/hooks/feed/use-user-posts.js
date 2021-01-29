@@ -2,12 +2,14 @@ import {useState, useEffect} from 'react'
 import useUserPostCids from 'src/hooks/user/use-user-post-cids'
 import usePosts from 'src/hooks/post/use-posts'
 import useUsersProfiles from 'src/hooks/user/use-users-profiles'
+import usePrevious from 'src/hooks/utils/use-previous'
 import Debug from 'debug'
 const debug = Debug('sav3:hooks:feed:use-user-posts')
 
 const postsPerPage = 10
 
 const useUserPosts = (userCid) => {
+  const previousUserCid = usePrevious(userCid)
   const userPostCids = useUserPostCids(userCid)
   const posts = usePosts(userPostCids)
   const postsUserCids = getUserCidsFromPosts(posts)
@@ -28,8 +30,27 @@ const useUserPosts = (userCid) => {
     allUserPosts.push(posts[userPostCid])
   }
 
+  // load next posts while scrolling
+  const next = () => {
+    setPostCount((previousPostCount) => previousPostCount + postsPerPage)
+  }
+
+  // go back to page 1, undo all scrolling
+  const reset = () => {
+    setPostCount(postsPerPage)
+    setUserPosts([])
+  }
+
+  // has more posts that can be loaded from scrolling
+  const hasMore = allUserPosts.length > userPosts.length
+
   // set user posts every time new posts are added to context
   useEffect(() => {
+    // user has changed
+    if (previousUserCid && previousUserCid !== userCid) {
+      reset()
+    }
+
     /* algo
       if user posts length is greater or equal to post count, do nothing
       if user posts length is greater or equal to all posts length, do nothing
@@ -57,52 +78,36 @@ const useUserPosts = (userCid) => {
         if (nextUserPosts.length >= postCount) {
           break
         }
-
         nextUserPosts.push(post)
       }
-
-      // set profiles
-      for (const nextUserPost of nextUserPosts) {
-        nextUserPost.profile = profiles[nextUserPost.userCid] || {}
-      }
-
-      // set parent posts
-      for (const nextUserPost of nextUserPosts) {
-        nextUserPost.parentPost = posts[nextUserPost.parentPostCid]
-        if (nextUserPost.parentPost) {
-          nextUserPost.parentPost.profile = profiles[nextUserPost.parentPost.userCid] || {}
-        }
-      }
-
-      // set quoted posts
-      for (const nextUserPost of nextUserPosts) {
-        nextUserPost.quotedPost = posts[nextUserPost.quotedPostCid]
-        if (nextUserPost.quotedPost) {
-          nextUserPost.quotedPost.profile = profiles[nextUserPost.quotedPost.userCid] || {}
-        }
-      }
-
       return nextUserPosts
     })
-  }, [postCount, JSON.stringify(allUserPosts), JSON.stringify(profiles)])
+  }, [userCid, postCount, JSON.stringify(allUserPosts), JSON.stringify(profiles)])
 
-  // load next posts while scrolling
-  const next = () => {
-    setPostCount((previousPostCount) => previousPostCount + postsPerPage)
+  // add all data to posts
+  const postsWithAllData = JSON.parse(JSON.stringify(userPosts))
+  // set profiles
+  for (const post of postsWithAllData) {
+    post.profile = profiles[post.userCid] || {}
+  }
+  // set parent posts
+  for (const post of postsWithAllData) {
+    post.parentPost = posts[post.parentPostCid]
+    if (post.parentPost) {
+      post.parentPost.profile = profiles[post.parentPost.userCid] || {}
+    }
+  }
+  // set quoted posts
+  for (const post of postsWithAllData) {
+    post.quotedPost = posts[post.quotedPostCid]
+    if (post.quotedPost) {
+      post.quotedPost.profile = profiles[post.quotedPost.userCid] || {}
+    }
   }
 
-  // go back to page 1, undo all scrolling
-  const reset = () => {
-    setPostCount(postsPerPage)
-    setUserPosts([])
-  }
+  debug({userPosts, postsWithAllData, postCount, posts, hasMore})
 
-  // has more posts that can be loaded from scrolling
-  const hasMore = allUserPosts.length > userPosts.length
-
-  debug({userPosts, postCount, posts, hasMore})
-
-  return {posts: userPosts, next, hasMore, reset}
+  return {posts: postsWithAllData, next, hasMore, reset}
 }
 
 const getUserCidsFromPosts = (posts) => {
