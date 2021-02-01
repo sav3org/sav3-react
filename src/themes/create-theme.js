@@ -9,6 +9,8 @@ const borderColor = 'rgb(127, 127, 127, 0.05)'
 // regular top bar is too big
 const topBarHeight = 54
 
+const buttonBorderRadius = 24
+
 const baseMuiThemeOptions = {
   breakpoints: {
     values: {
@@ -61,7 +63,7 @@ const baseMuiThemeOptions = {
   },
   shape: {
     // buttons are not rounded enough
-    borderRadius: 24
+    borderRadius: buttonBorderRadius
   },
   overrides: {
     MuiToolbar: {
@@ -94,6 +96,14 @@ const baseMuiThemeOptions = {
     MuiButton: {
       outlined: {
         fontWeight: 900
+      }
+    },
+    MuiSelect: {
+      // need to give select:focus the same border radius as buttons
+      select: {
+        '&:focus': {
+          borderRadius: buttonBorderRadius
+        }
       }
     }
   }

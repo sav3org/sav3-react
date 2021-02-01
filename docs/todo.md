@@ -7,10 +7,6 @@ renew sav3 server
 import/export private key
 release version
 script to run node
-resav3
-  resav3 button
-  quote design
-  quote button
 like
 after like and resav3 are implemented:
   refactor post view into hooks/feed/use-post-replies
@@ -21,6 +17,7 @@ right sidebar
 
 todo after prototype
 --------------------
+resav3 quote button and design
 add reply overtext "john replied"
 research metamask integration
 research signing in solidity using ipfs private key for userIpnsContent.terminated

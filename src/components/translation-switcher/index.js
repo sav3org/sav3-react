@@ -3,8 +3,20 @@ import {useContext} from 'react'
 import Select from '@material-ui/core/Select'
 import MenuItem from '@material-ui/core/MenuItem'
 import translations from 'src/translations'
+import {makeStyles} from '@material-ui/core/styles'
+
+const useStyles = makeStyles((theme) => ({
+  switcher: {
+    fontSize: '0.8rem',
+    '& .MuiSelect-root': {
+      paddingTop: theme.spacing(1),
+      paddingBottom: theme.spacing(1)
+    }
+  }
+}))
 
 function TranslationSwitcher () {
+  const classes = useStyles()
   const {languageCode, setLanguageCode} = useContext(LanguageCodeContext)
   const handleTranslationChange = (event) => {
     setLanguageCode(event.target.value)
@@ -19,7 +31,7 @@ function TranslationSwitcher () {
   }
 
   return (
-    <Select value={languageCode} onChange={handleTranslationChange} label='Translation' variant='outlined'>
+    <Select className={classes.switcher} value={languageCode} onChange={handleTranslationChange} label='Translation' variant='outlined'>
       {translationMenuItems}
     </Select>
   )

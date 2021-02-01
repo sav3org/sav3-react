@@ -3,10 +3,12 @@ import Grid from '@material-ui/core/Grid'
 import {makeStyles, useTheme} from '@material-ui/core/styles'
 import LeftMenu from 'src/components/menus/left'
 import BottomMenu from 'src/components/menus/bottom'
+import Box from '@material-ui/core/Box'
 
 // components
 import ThemeSwitcher from 'src/components/theme-switcher'
 import TranslationSwitcher from 'src/components/translation-switcher'
+import FooterLinks from 'src/components/footer/links'
 
 // routes
 import Profile from 'src/views/profile'
@@ -120,8 +122,13 @@ function App () {
           </Switch>
         </Grid>
         <Grid item className={classes.rightColumn}>
-          <ThemeSwitcher />
-          <TranslationSwitcher />
+          <Box mt={2} mb={2}>
+            <ThemeSwitcher />
+            <TranslationSwitcher />
+          </Box>
+          <Box>
+            <FooterLinks />
+          </Box>
         </Grid>
       </Grid>
       <BottomMenu className={classes.bottomMenu} />
