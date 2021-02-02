@@ -28,7 +28,9 @@ const useStyles = makeStyles((theme) => ({
   },
   root: {
     // the text container has inherent extra padding at the top that can't be removed
-    marginTop: -6
+    marginTop: -6,
+    // too bright
+    opacity: 1 / 3
   }
 }))
 
@@ -50,13 +52,13 @@ function FooterLinks () {
         Token{' '}
       </Typography>
       <Typography className={classes.link} component={RouterLink} variant={variant}>
-        Github{' '}
+        Twitter{' '}
       </Typography>
       <Typography className={classes.link} component={RouterLink} variant={variant}>
         Telegram{' '}
       </Typography>
       <Typography className={classes.link} component={RouterLink} variant={variant}>
-        Twitter{' '}
+        Github{' '}
       </Typography>
       <Typography className={classes.link} component={RouterLink} variant={variant}>
         Open source{' '}

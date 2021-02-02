@@ -10,11 +10,14 @@ import {Link as RouterLink} from 'react-router-dom'
 import useTranslation from 'src/translations/use-translation'
 import ThemeSwitcher from 'src/components/theme-switcher'
 import TranslationSwitcher from 'src/components/translation-switcher'
+import FooterLinks from 'src/components/footer/links'
+import Box from '@material-ui/core/Box'
 
 const useStyles = makeStyles((theme) => ({
   text: {},
   root: {
-    width: theme.sav3.drawerMenu.width
+    width: theme.sav3.drawerMenu.width,
+    height: '100vh'
   }
 }))
 
@@ -23,7 +26,7 @@ function HomeMenu () {
   const t = useTranslation()
 
   return (
-    <div className={classes.root}>
+    <Box display='flex' flexDirection='column' className={classes.root}>
       <List>
         <ListItem button component={RouterLink} to='/following'>
           <ListItemIcon>
@@ -57,12 +60,16 @@ function HomeMenu () {
           </ListItemIcon>
           <ListItemText primary={t.Profile()} className={classes.text} />
         </ListItem>
-        <ListItem>
-          <ThemeSwitcher />
-          <TranslationSwitcher />
-        </ListItem>
       </List>
-    </div>
+      <Box style={{opacity: 0.75}} mx={2} mb={2}>
+        <ThemeSwitcher />
+        <TranslationSwitcher />
+      </Box>
+      <Box flexGrow={1} />
+      <Box mx={3} mb={3}>
+        <FooterLinks />
+      </Box>
+    </Box>
   )
 }
 

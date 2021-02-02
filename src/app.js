@@ -122,7 +122,7 @@ function App () {
           </Switch>
         </Grid>
         <Grid item className={classes.rightColumn}>
-          <Box mt={2} mb={2}>
+          <Box style={{opacity: 0.75}} mt={2} mb={2}>
             <ThemeSwitcher />
             <TranslationSwitcher />
           </Box>
