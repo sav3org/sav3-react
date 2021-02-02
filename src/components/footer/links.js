@@ -2,10 +2,9 @@ import {makeStyles} from '@material-ui/core/styles'
 import Typography from '@material-ui/core/Typography'
 import Box from '@material-ui/core/Box'
 import {Link as RouterLink} from 'react-router-dom'
-import useTranslation from 'src/translations/use-translation'
 import WtfplIcon from 'src/components/icons/Wtfpl'
 
-// NOTE: for some reason the only way to make these links work is to add a space before </Typography>
+// NOTE: for some reason the only way to make these links work is to add a {' '} before </Typography>
 // and to make the margin right 0.75 instead of 1
 
 const useStyles = makeStyles((theme) => ({
@@ -36,8 +35,6 @@ const useStyles = makeStyles((theme) => ({
 
 function FooterLinks () {
   const classes = useStyles()
-  const t = useTranslation()
-
   const variant = 'caption'
 
   return (
@@ -48,17 +45,17 @@ function FooterLinks () {
       <Typography className={classes.link} component={RouterLink} variant={variant}>
         How does it work under the hood?{' '}
       </Typography>
-      <Typography className={classes.link} component={RouterLink} variant={variant}>
-        Token{' '}
-      </Typography>
-      <Typography className={classes.link} component={RouterLink} variant={variant}>
+      <Typography href='https://twitter.com/sav3org' className={classes.link} component='a' target='_blank' rel='noopener' variant={variant}>
         Twitter{' '}
       </Typography>
-      <Typography className={classes.link} component={RouterLink} variant={variant}>
+      <Typography href='https://t.me/sav3org' className={classes.link} component='a' target='_blank' rel='noopener' variant={variant}>
         Telegram{' '}
       </Typography>
-      <Typography className={classes.link} component={RouterLink} variant={variant}>
+      <Typography href='https://github.com/sav3org' className={classes.link} component='a' target='_blank' rel='noopener' variant={variant}>
         Github{' '}
+      </Typography>
+      <Typography href='https://sav3.org' className={classes.link} component='a' target='_blank' rel='noopener' variant={variant}>
+        Token{' '}
       </Typography>
       <Typography className={classes.link} component={RouterLink} variant={variant}>
         Open source{' '}
@@ -66,7 +63,7 @@ function FooterLinks () {
           <WtfplIcon className={classes.icon} height={9} /> WTFPL
         </span>{' '}
       </Typography>
-      <Typography style={{whiteSpace: 'nowrap'}} className={classes.text} variant={variant}>
+      <Typography style={{whiteSpace: 'nowrap'}} component={RouterLink} className={classes.link} variant={variant}>
         Build FKD3KDSF
       </Typography>
     </Box>
