@@ -3,6 +3,7 @@ import Typography from '@material-ui/core/Typography'
 import Box from '@material-ui/core/Box'
 import {Link as RouterLink} from 'react-router-dom'
 import WtfplIcon from 'src/components/icons/Wtfpl'
+import config from 'src/config'
 
 // NOTE: for some reason the only way to make these links work is to add a {' '} before </Typography>
 // and to make the margin right 0.75 instead of 1
@@ -37,6 +38,8 @@ function FooterLinks () {
   const classes = useStyles()
   const variant = 'caption'
 
+  const download = window.location.protocol !== 'file:' && 'sav3.html'
+
   return (
     <Box className={classes.root}>
       <Typography className={classes.link} component={RouterLink} variant={variant}>
@@ -63,8 +66,19 @@ function FooterLinks () {
           <WtfplIcon className={classes.icon} height={9} /> WTFPL
         </span>{' '}
       </Typography>
-      <Typography style={{whiteSpace: 'nowrap'}} component={RouterLink} className={classes.link} variant={variant}>
-        Build FKD3KDSF
+      <Typography href='' download={download} style={{whiteSpace: 'nowrap'}} component='a' className={classes.link} variant={variant}>
+        Version {config.sav3Version}{' '}
+      </Typography>
+      <Typography
+        href={`https://github.com/workingtim/sav3-test/tree/${config.gitCommitHash}`}
+        style={{whiteSpace: 'nowrap'}}
+        component='a'
+        target='_blank'
+        rel='noopener'
+        className={classes.link}
+        variant={variant}
+      >
+        Build {config.gitCommitHash}{' '}
       </Typography>
     </Box>
   )

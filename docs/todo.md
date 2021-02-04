@@ -12,8 +12,7 @@ after like and resav3 are implemented:
   refactor post view into hooks/feed/use-post-replies
 if the parent post appears multiple times, merge all the replies, multiple replies will require changing the <Post> component
 right sidebar
-  footer links
-    about pages
+  make about pages
 
 todo after prototype
 --------------------
