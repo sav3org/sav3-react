@@ -30,6 +30,7 @@ function WhatIsSav3 () {
           <Box pb={spacing} />
           <Typography variant={variantHeading}>How does it deal with spam/illegal content?</Typography>
           <Typography variant={variantBody}>By only showing you content from players you save, and players they also save.</Typography>
+          <Box pb={spacing} />
           <Typography variant={variantHeading}>How does it deal with illegal media?</Typography>
           <Typography variant={variantBody}>By storing text only, it doesn't store any media.</Typography>
           <Box pb={spacing} />
