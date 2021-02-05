@@ -20,6 +20,7 @@ import Stats from 'src/views/stats'
 import Following from 'src/views/following'
 import Export from 'src/views/export'
 import Post from 'src/views/post'
+import Page from 'src/views/page'
 
 const useStyles = makeStyles((theme) => ({
   leftColumn: {
@@ -115,6 +116,9 @@ function App () {
             </Route>
             <Route path='/export' exact>
               <Export />
+            </Route>
+            <Route path='/page/:page' exact>
+              <Page />
             </Route>
             <Route path='/post/:encodedCid' exact>
               <Post />

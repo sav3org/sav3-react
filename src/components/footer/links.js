@@ -42,10 +42,10 @@ function FooterLinks () {
 
   return (
     <Box className={classes.root}>
-      <Typography className={classes.link} component={RouterLink} variant={variant}>
+      <Typography to='/page/what-is-sav3' className={classes.link} component={RouterLink} variant={variant}>
         What is SAV3?{' '}
       </Typography>
-      <Typography className={classes.link} component={RouterLink} variant={variant}>
+      <Typography to='/page/how-does-sav3-work' className={classes.link} component={RouterLink} variant={variant}>
         How does it work under the hood?{' '}
       </Typography>
       <Typography href='https://twitter.com/sav3org' className={classes.link} component='a' target='_blank' rel='noopener' variant={variant}>
@@ -60,7 +60,7 @@ function FooterLinks () {
       <Typography href='https://sav3.org' className={classes.link} component='a' target='_blank' rel='noopener' variant={variant}>
         Token{' '}
       </Typography>
-      <Typography className={classes.link} component={RouterLink} variant={variant}>
+      <Typography to='/page/license' className={classes.link} component={RouterLink} variant={variant}>
         Open source{' '}
         <span style={{whiteSpace: 'nowrap'}}>
           <WtfplIcon className={classes.icon} height={9} /> WTFPL
