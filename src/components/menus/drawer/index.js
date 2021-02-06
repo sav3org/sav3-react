@@ -61,7 +61,7 @@ function HomeMenu () {
           <ListItemText primary={t.Profile()} className={classes.text} />
         </ListItem>
       </List>
-      <Box style={{opacity: 0.75}} mx={2} mb={2.25}>
+      <Box style={{opacity: 0.75}} mx={2} mb={2.1}>
         <ThemeSwitcher />
         <TranslationSwitcher />
       </Box>
