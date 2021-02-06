@@ -70,6 +70,17 @@ const useStyles = makeStyles((theme) => ({
       paddingRight: theme.spacing(4)
     }
   },
+  // need to repeat rightColumn settings because position 'fixed'
+  // behaves strangely
+  rightColumnStickyContainer: {
+    position: 'fixed',
+    [theme.breakpoints.down('lg')]: {
+      width: theme.sav3.layout.columns.right.width.md - theme.spacing(3)
+    },
+    [theme.breakpoints.up('lg')]: {
+      width: theme.sav3.layout.columns.right.width.lg - theme.spacing(4)
+    }
+  },
   bottomMenu: {
     [theme.breakpoints.up('sm')]: {
       display: 'none'
@@ -126,12 +137,14 @@ function App () {
           </Switch>
         </Grid>
         <Grid item className={classes.rightColumn}>
-          <Box style={{opacity: 0.75}} mt={2.15} mb={2}>
-            <ThemeSwitcher />
-            <TranslationSwitcher />
-          </Box>
-          <Box>
-            <FooterLinks />
+          <Box className={classes.rightColumnStickyContainer}>
+            <Box style={{opacity: 0.75}} mt={2.15} mb={2}>
+              <ThemeSwitcher />
+              <TranslationSwitcher />
+            </Box>
+            <Box>
+              <FooterLinks />
+            </Box>
           </Box>
         </Grid>
       </Grid>
