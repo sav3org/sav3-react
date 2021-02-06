@@ -70,8 +70,8 @@ const useStyles = makeStyles((theme) => ({
       paddingRight: theme.spacing(4)
     }
   },
-  // need to repeat rightColumn settings because position 'fixed'
-  // behaves strangely
+  // need to repeat rightColumn width because
+  // position 'fixed' behaves strangely
   rightColumnStickyContainer: {
     position: 'fixed',
     [theme.breakpoints.down('lg')]: {
