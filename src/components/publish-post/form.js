@@ -69,7 +69,7 @@ function PublishPostForm () {
 
   const handlePublish = async () => {
     try {
-      await sav3Ipfs.publishPost({content})
+      await sav3Ipfs.addPost({content})
       setErrorMessage(null)
       setContent('')
     }

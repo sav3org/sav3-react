@@ -94,7 +94,7 @@ function Resav3Button ({quotedPost} = {}) {
   }
 
   const handleResav3 = async () => {
-    await sav3Ipfs.publishPost({quotedPostCid: quotedPost.cid})
+    await sav3Ipfs.addPost({quotedPostCid: quotedPost.cid})
     handleClose()
   }
 

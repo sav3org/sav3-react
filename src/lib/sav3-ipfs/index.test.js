@@ -14,13 +14,13 @@ describe('sav3Ipfs', () => {
     expect(await browser.page.evaluate(() => window.sav3Ipfs && typeof window.sav3Ipfs === 'object')).toBe(true)
   })
 
-  test('sav3Ipfs sav3Ipfs.publishPost and sav3Ipfs.getUserPostsFromLastPostCid', async () => {
+  test('sav3Ipfs sav3Ipfs.addPost and sav3Ipfs.getUserPostsFromLastPostCid', async () => {
     const lastPostCid = await browser.page.evaluate(async () => {
       // publish 15 times
       let postCount = 15
       let lastPostCid
       while (--postCount) {
-        lastPostCid = await window.sav3Ipfs.publishPost({content: `test ${postCount}`})
+        lastPostCid = await window.sav3Ipfs.addPost({content: `test ${postCount}`})
       }
       return lastPostCid
     })
@@ -36,11 +36,11 @@ describe('sav3Ipfs', () => {
     expect(typeof posts[0].timestamp).toBe('number')
   })
 
-  test('sav3Ipfs sav3Ipfs.editUserProfile and sav3Ipfs.getUserProfile', async () => {
+  test('sav3Ipfs sav3Ipfs.setUserProfile and sav3Ipfs.getUserProfile', async () => {
     const profileCid = await browser.page.evaluate(async () => {
-      const profileCid = await window.sav3Ipfs.editUserProfile({
+      const profileCid = await window.sav3Ipfs.setUserProfile({
         displayName: 'John J',
-        description: 'John J\'s description',
+        description: "John J's description",
         thumbnailUrl: 'https://i.imgur.com/Jkua4yg.jpeg',
         bannerUrl: 'https://i.imgur.com/DWCOaz9.jpeg'
       })
@@ -54,7 +54,7 @@ describe('sav3Ipfs', () => {
     }, profileCid)
     expect(profile && typeof profile === 'object').toBe(true)
     expect(profile.displayName).toBe('John J')
-    expect(profile.description).toBe('John J\'s description')
+    expect(profile.description).toBe("John J's description")
     expect(profile.thumbnailUrl).toBe('https://i.imgur.com/Jkua4yg.jpeg')
     expect(profile.bannerUrl).toBe('https://i.imgur.com/DWCOaz9.jpeg')
   })

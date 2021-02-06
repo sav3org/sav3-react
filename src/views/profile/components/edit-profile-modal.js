@@ -63,7 +63,7 @@ function EditProfileModal ({open, onClose, previousProfile}) {
 
   const handlePublish = async () => {
     try {
-      await sav3Ipfs.editUserProfile(profile)
+      await sav3Ipfs.setUserProfile(profile)
       setErrorMessage(null)
       onClose()
     }

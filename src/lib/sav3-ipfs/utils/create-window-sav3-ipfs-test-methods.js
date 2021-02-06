@@ -91,7 +91,7 @@ const createWindowSav3IpfsTestMethods = (sav3Ipfs) => {
 
   window.sav3IpfsTest.editProfile = async () => {
     const descriptionUrl = Math.random() > 0.5 ? getRandomItemFromArray(descriptionUrls) : ''
-    await sav3Ipfs.editUserProfile({
+    await sav3Ipfs.setUserProfile({
       displayName: getRandomItemFromArray(displayNames),
       description: `${getRandomItemFromArray(descriptions).substring(0, 100)} ${descriptionUrl}`,
       thumbnailUrl: getRandomItemFromArray(thumbnailUrls),
@@ -99,7 +99,7 @@ const createWindowSav3IpfsTestMethods = (sav3Ipfs) => {
     })
   }
 
-  window.sav3IpfsTest.publishPosts = async (amount = 5) => {
+  window.sav3IpfsTest.addPosts = async (amount = 5) => {
     let previousPostCid
     while (amount--) {
       const mediaUrl = Math.random() > 0.5 ? getRandomItemFromArray(mediaUrls) : ''
@@ -110,13 +110,13 @@ const createWindowSav3IpfsTestMethods = (sav3Ipfs) => {
       if (amount === 1) {
         parentPostCid = previousPostCid
       }
-      previousPostCid = await sav3Ipfs.publishPost({quotedPostCid, parentPostCid, content: `${getRandomItemFromArray(contents).substring(0, 100)} ${mediaUrl}`})
+      previousPostCid = await sav3Ipfs.addPost({quotedPostCid, parentPostCid, content: `${getRandomItemFromArray(contents).substring(0, 100)} ${mediaUrl}`})
     }
   }
 
-  window.sav3IpfsTest.editProfileAndPublishPosts = async (amount) => {
+  window.sav3IpfsTest.setProfileAndAddPosts = async (amount) => {
     await window.sav3IpfsTest.editProfile()
-    await window.sav3IpfsTest.publishPosts(amount)
+    await window.sav3IpfsTest.addPosts(amount)
   }
 
   window.sav3IpfsTest.importExport = async (_newPrivateKey) => {

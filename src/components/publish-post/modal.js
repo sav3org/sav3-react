@@ -74,7 +74,7 @@ function PublishPostModal ({open, onClose, parentPost} = {}) {
     const parentPostCid = parentPost && parentPost.cid
 
     try {
-      await sav3Ipfs.publishPost({content, parentPostCid})
+      await sav3Ipfs.addPost({content, parentPostCid})
       setErrorMessage(null)
       setContent('')
       onClose()
