@@ -61,12 +61,11 @@ function HomeMenu () {
           <ListItemText primary={t.Profile()} className={classes.text} />
         </ListItem>
       </List>
-      <Box style={{opacity: 0.75}} mx={2} mb={2}>
+      <Box style={{opacity: 0.75}} mx={2} mb={2.25}>
         <ThemeSwitcher />
         <TranslationSwitcher />
       </Box>
-      <Box flexGrow={1} />
-      <Box mx={3} mb={3}>
+      <Box mx={2} mr={4} mb={2}>
         <FooterLinks />
       </Box>
     </Box>
