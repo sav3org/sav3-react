@@ -11,6 +11,7 @@ import Box from '@material-ui/core/Box'
 import PublishPostModal from 'src/components/publish-post/modal'
 import PropTypes from 'prop-types'
 import urlUtils from 'src/lib/utils/url'
+import usePostLikeUserCids from 'src/hooks/post/use-post-like-user-cids'
 import usePostReplyCids from 'src/hooks/post/use-post-reply-cids'
 import usePostQuoteCids from 'src/hooks/post/use-post-quote-cids'
 import useCopyClipboard from 'src/hooks/utils/use-copy-clipboard'
@@ -141,12 +142,33 @@ function Resav3MenuItem ({onClick} = {}) {
   )
 }
 
-function LikeButton () {
+function LikeButton ({postCid}) {
   const classes = useStyles()
+  const likeUserCids = usePostLikeUserCids(postCid)
+  const [liked, setLiked] = useState(false)
+
+  const addLike = async () => {
+    // try to prevent bugs against spamming like button
+    if (liked === true) {
+      return
+    }
+    setLiked(true)
+    // try to prevent liking same post twice
+    const likeUserCids = await sav3Ipfs.getPostLikeUserCids(postCid)
+    const ownUserCid = await sav3Ipfs.getOwnUserCid()
+    if (likeUserCids.includes(ownUserCid)) {
+      return
+    }
+    await sav3Ipfs.addLike(postCid)
+  }
+
   return (
-    <IconButton className={classes.actionIconButton}>
-      <FavoriteIcon />
-    </IconButton>
+    <Box display='flex' alignItems='center' onClick={(event) => event.stopPropagation()}>
+      <IconButton onClick={addLike} className={classes.actionIconButton}>
+        <FavoriteIcon />
+      </IconButton>
+      {likeUserCids.length !== 0 && <Typography variant='caption'>{likeUserCids.length}</Typography>}
+    </Box>
   )
 }
 
@@ -157,7 +179,7 @@ function PostActions ({post} = {}) {
     <Box display='flex' justifyContent='space-between' className={classes.actions}>
       <ReplyButton parentPost={post} />
       <Resav3Button quotedPost={post} />
-      <LikeButton />
+      <LikeButton postCid={post.cid} />
       <ShareButton postCid={post.cid} />
     </Box>
   )

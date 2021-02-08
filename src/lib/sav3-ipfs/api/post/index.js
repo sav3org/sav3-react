@@ -1,7 +1,8 @@
-import postReplyUtils from '../utils/post-reply'
-import postQuoteUtils from '../utils/post-quote'
+import postReplyUtils from './utils/reply'
+import postQuoteUtils from './utils/quote'
+import postLikeUtils from './utils/like'
 import assert from 'assert'
-import serialize from '../utils/serialize'
+import serialize from '../../utils/serialize'
 import Debug from 'debug'
 const debug = Debug('sav3:sav3-ipfs:api:post')
 
@@ -20,7 +21,7 @@ async function addPost ({content, parentPostCid, quotedPostCid} = {}) {
   newPost.parentPostCid = parentPostCid
   newPost.previousPostCid = ipnsContent.lastPostCid
   newPost.timestamp = Math.round(Date.now() / 1000)
-  newPost.userCid = (await this.ipfs.id()).id
+  newPost.userCid = await this.getOwnUserCid()
   if (content) {
     newPost.contentCid = (await this.ipfs.add(content)).cid.toString()
   }
@@ -124,11 +125,19 @@ async function getPostQuoteCids (postCid) {
   return quoteCids
 }
 
+async function getPostLikeUserCids (postCid) {
+  await this.waitForReady()
+  assert(postCid && typeof postCid === 'string', `sav3Ipfs.getPostLikeUserCids postCid '${postCid}' not a string`)
+  const likeUserCids = await postLikeUtils.getPostLikeUserCids(postCid)
+  return likeUserCids
+}
+
 export default {
   addPost,
   getUserPostsFromLastPostCid,
   getPreviousPostCids,
   getPost,
   getPostReplyCids,
-  getPostQuoteCids
+  getPostQuoteCids,
+  getPostLikeUserCids
 }

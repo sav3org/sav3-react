@@ -3,17 +3,20 @@ todo next
 
 todo before finished prototype
 ------------------------------
-renew sav3 server
 import/export private key
-release version
-script to run node
-like
-after like and resav3 are implemented:
-  refactor post view into hooks/feed/use-post-replies
-if the parent post appears multiple times, merge all the replies, multiple replies will require changing the <Post> component
+
+highest priority after prototype
+--------------------------------
+embeds
+node based clients to run accounts programatically and headless
 
 todo after prototype
 --------------------
+script to run node on server
+refactor post view into hooks/feed/use-post-replies
+if the parent post appears multiple times, merge all the replies, multiple replies will require changing the <Post> component
+list of likes on profile
+fetch user likes and add them to like count cache
 resav3 quote button and design
 add reply overtext "john replied"
 research metamask integration

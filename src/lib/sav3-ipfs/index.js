@@ -19,6 +19,7 @@ import postApi from './api/post'
 import profileApi from './api/profile'
 import followingApi from './api/following'
 import statsApi from './api/stats'
+import likeApi from './api/like'
 const debug = Debug('sav3:sav3-ipfs:sav3-ipfs')
 
 class Sav3Ipfs extends EventEmitter {
@@ -39,6 +40,9 @@ class Sav3Ipfs extends EventEmitter {
     }
     for (const method in statsApi) {
       this[method] = statsApi[method]
+    }
+    for (const method in likeApi) {
+      this[method] = likeApi[method]
     }
 
     this._initIpfs().catch(console.error)
