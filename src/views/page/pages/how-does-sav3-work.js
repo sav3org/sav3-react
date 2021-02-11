@@ -36,7 +36,7 @@ function HowDoesSav3Work () {
           </Typography>
           <Box pb={spacing} />
           <Typography variant={variantHeading}>Where is content hosted?</Typography>
-          <Typography variant={variantBody}>There is no server. All content is stored in each user's browser cache.</Typography>
+          <Typography variant={variantBody}>There are no servers. All content is stored in each user's browser cache.</Typography>
           <Box pb={spacing} />
           <Typography variant={variantHeading}>How do peers connect to each other to download content in the browser?</Typography>
           <Typography variant={variantBody}>

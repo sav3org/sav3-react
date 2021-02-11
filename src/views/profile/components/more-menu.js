@@ -6,12 +6,15 @@ import MoreVertIcon from '@material-ui/icons/MoreVert'
 import {makeStyles} from '@material-ui/core/styles'
 import Typography from '@material-ui/core/Typography'
 import ListItemIcon from '@material-ui/core/ListItemIcon'
+import ExportIcon from '@material-ui/icons/ImportExport'
 import PropTypes from 'prop-types'
 import useTranslation from 'src/translations/use-translation'
 import ShareIcon from '@material-ui/icons/ShareOutlined'
 import Tooltip from '@material-ui/core/Tooltip'
 import urlUtils from 'src/lib/utils/url'
 import useCopyClipboard from 'src/hooks/utils/use-copy-clipboard'
+import useOwnUserCid from 'src/hooks/use-own-user-cid'
+import {Link as RouterLink} from 'react-router-dom'
 
 const useStyles = makeStyles((theme) => ({
   menu: {
@@ -26,10 +29,16 @@ const useStyles = makeStyles((theme) => ({
   },
   moreIconButton: {
     padding: theme.spacing(1.25)
+  },
+  link: {
+    textDecoration: 'inherit',
+    color: 'inherit'
   }
 }))
 
 function ProfileMoreMenu ({userCid} = {}) {
+  const ownCid = useOwnUserCid()
+  const t = useTranslation()
   const classes = useStyles()
   const [anchorEl, setAnchorEl] = useState(null)
 
@@ -40,6 +49,8 @@ function ProfileMoreMenu ({userCid} = {}) {
   const handleClose = () => {
     setAnchorEl(null)
   }
+
+  const isOwnProfile = ownCid === userCid
 
   return (
     <div>
@@ -64,6 +75,16 @@ function ProfileMoreMenu ({userCid} = {}) {
         onClose={handleClose}
       >
         <ShareMenuItem userCid={userCid} onClose={handleClose} />
+        {isOwnProfile && (
+          <MenuItem button={true} onClick={handleClick}>
+            <ListItemIcon className={classes.menuItemIcon}>
+              <ExportIcon fontSize='small' />
+            </ListItemIcon>
+            <Typography className={classes.link} component={RouterLink} to='/export' variant='body1'>
+              {t.Import()} / {t.Export()}
+            </Typography>
+          </MenuItem>
+        )}
       </Menu>
     </div>
   )

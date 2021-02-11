@@ -62,7 +62,7 @@ function ImportForm () {
     setSuccessMessage(null)
     try {
       const following = await followManager.getAllFollowing()
-      const privateKey = await sav3Ipfs.getPrivateKey()
+      const privateKey = await sav3Ipfs.getUserPrivateKeyBase64()
       const data = JSON.stringify({privateKey, following})
       setErrorMessage(null)
       setData(data)
@@ -83,7 +83,8 @@ function ImportForm () {
       dataObject = JSON.parse(data)
     }
     catch (e) {
-      setErrorMessage(`Invalid JSON: ${e.message}`)
+      console.error(e)
+      setErrorMessage(`Invalid JSON data: ${e.message}`)
       return
     }
 
@@ -101,17 +102,17 @@ function ImportForm () {
       setFollowing(dataObject.following)
     }
     catch (e) {
+      console.error(e)
       setErrorMessage(`Invalid following: ${e.message}`)
       return
     }
 
     // validate private key
     try {
-      // use follow manager to validate because setFollowing is a react hook that doesnt validate
-      await followManager.setAllFollowing(dataObject.following)
-      setFollowing(dataObject.following)
+      await sav3Ipfs.setUserPrivateKey(dataObject.privateKey)
     }
     catch (e) {
+      console.error(e)
       setErrorMessage(`Invalid privateKey: ${e.message}`)
       return
     }

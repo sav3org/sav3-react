@@ -4,6 +4,11 @@ todo next
 todo before finished prototype
 ------------------------------
 import/export private key
+  remove the peer posts page
+  disclaimer pop up
+  add homepage blacklist
+
+add disclaimer pop up: 'SAV3 is a P2P application with no content policy or moderation. Most accounts are fake or impersonations. Do not send money to anyone, it's a scam.
 
 highest priority after prototype
 --------------------------------
@@ -22,7 +27,7 @@ add reply overtext "john replied"
 research metamask integration
 research signing in solidity using ipfs private key for userIpnsContent.terminated
 automatically get image url from imgur link for profile images
-add embeds for imgur, reddit, twitter, youtube, instagram, vimeo, bitchute, gab, soundcloud
+add embeds for imgur, reddit, twitter, youtube, instagram, vimeo, bitchute, gab, soundcloud, rumble, odysee
 add drag and drop media uploads to cloudflare ipfs
 if click on post from feed, scroll to that same post when clicking back
 loading publish/edit profile indicators

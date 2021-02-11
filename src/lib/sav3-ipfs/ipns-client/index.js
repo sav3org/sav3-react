@@ -1,7 +1,6 @@
 import assert from 'assert'
 import WebSocketClient from 'socket.io-client'
 import EventEmitter from 'events'
-import crypto from 'libp2p-crypto'
 import ipns from 'ipns'
 import delay from 'delay'
 import uint8ArrayToString from 'uint8arrays/to-string'
@@ -13,25 +12,21 @@ import Debug from 'debug'
 const debug = Debug('sav3:sav3-ipfs:ipns-client')
 
 class IpnsClient extends EventEmitter {
-  constructor ({ipfs} = {}) {
+  constructor ({sav3Ipfs} = {}) {
     super()
-    assert(ipfs && typeof ipfs === 'object')
-    this.ipfs = ipfs
-    this.privateKey = null
+    assert(sav3Ipfs && typeof sav3Ipfs === 'object')
+    this.sav3Ipfs = sav3Ipfs
     this.webSocketClient = null
-    this.peerCid = null
     this.url = config.ipnsServer
     this.subscriptionIpnsValueCache = new QuickLRU({maxSize: 10000})
 
     this.start()
   }
 
+  // eslint-disable-next-line require-await
   async start () {
     assert(this.webSocketClient === null)
     this.webSocketClient = WebSocketClient(this.url)
-    const encryptedPrivateKeyString = await this.ipfs.key.export('self', 'password')
-    this.privateKey = await crypto.keys.import(encryptedPrivateKeyString, 'password')
-    this.peerCid = (await this.ipfs.id()).id
 
     // subscribe to new publishes
     this.webSocketClient.on('publish', async (ipnsPath, ipnsRecord) => {
@@ -47,7 +42,7 @@ class IpnsClient extends EventEmitter {
   }
 
   isReady () {
-    return this.webSocketClient && this.privateKey
+    return this.webSocketClient && this.sav3Ipfs.isReady()
   }
 
   async waitForReady () {
@@ -125,11 +120,12 @@ class IpnsClient extends EventEmitter {
 
     const validity = 1000 * 60 * 60 * 24 * 365 * 10 // 10 years
 
-    const record = await ipns.create(this.privateKey, value, sequence, validity)
-    await ipns.embedPublicKey(this.privateKey.public, record) // required to verify marshalled record
+    const privateKey = await this.sav3Ipfs.getUserPrivateKey()
+    const record = await ipns.create(privateKey, value, sequence, validity)
+    await ipns.embedPublicKey(privateKey.public, record) // required to verify marshalled record
     const marshalledRecord = Buffer.from(ipns.marshal(record))
 
-    const ipnsPath = this.peerCid
+    const ipnsPath = await this.sav3Ipfs.getOwnUserCid()
     await this.webSocketClient.emit('publish', ipnsPath, marshalledRecord)
   }
 }
