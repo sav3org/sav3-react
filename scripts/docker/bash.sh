@@ -2,10 +2,13 @@
 
 working_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/../.." && cd "$working_dir" || exit
 
+# python, build-essential & make needed to npm install ipfs-js
+# git needed to commit and build react app
+
 dockerfile="
 FROM buildkite/puppeteer:5.2.1
 
-RUN apt-get update && apt-get install -y git
+RUN apt-get update && apt-get install -y git python make build-essential
 
 RUN git config --global user.name 'Tim Templeton' && git config --global user.email 'tim@sav3.org'
 

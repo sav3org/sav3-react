@@ -1,11 +1,11 @@
 import PeerId from 'peer-id'
 import assert from 'assert'
-import Debug from 'debug'
+// import Debug from 'debug'
 import uint8ArrayToString from 'uint8arrays/to-string'
 import uint8ArrayFromString from 'uint8arrays/from-string'
 
 import * as localForage from 'localforage'
-const debug = Debug('sav3:sav3-ipfs:api:key')
+// const debug = Debug('sav3:sav3-ipfs:api:key')
 const database = localForage.createInstance({name: 'sav3ApiKey'})
 
 let peerId

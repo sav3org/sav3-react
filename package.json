@@ -43,7 +43,7 @@
     "timeago.js": "4.0.2",
     "url-regex": "5.0.0",
     "web-vitals": "0.2.4",
-    "webpack-bundle-analyzer": "^4.4.0"
+    "webpack-bundle-analyzer": "4.4.0"
   },
   "scripts": {
     "start": "react-app-rewired start",

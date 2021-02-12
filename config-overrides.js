@@ -46,7 +46,7 @@ module.exports = function override(config, env) {
       keepGeneratedAssets: false
     }))
 
-    // analyze bundle sizes
+    // analyze bundle sizes (doesn't work with ScriptExtHtmlWebpackPlugin)
     config.plugins.push(
       new BundleAnalyzerPlugin({
         analyzerMode: 'static',
