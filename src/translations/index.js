@@ -1,6 +1,7 @@
 import en from './translations/en'
 import es from './translations/es'
 import hu from './translations/hu'
+import tr from './translations/tr'
 
 /* list of language codes
 
@@ -22,7 +23,8 @@ ji, zu
 const translations = {
   en,
   es,
-  hu
+  hu,
+  tr
 }
 Object.freeze(translations)
 
