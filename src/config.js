@@ -4,6 +4,7 @@ const config = {
   gitCommitHash: process.env.REACT_APP_GIT_COMMIT_HASH,
   sav3Version: packageJson.version,
   bootstrapUsersGoogleSheetId: '1O4Wutfc34QeBEKIP5X4XtwpmRLOt5ytoDc1qv4nSHIg',
+  bootstrapBlacklistedUsersGoogleSheetId: '1_AbVdW5xqEKJC1pOJBPTcdzv2rNHdDEImkTi90fVPHg',
   starServers: ['/dns4/star.sav3.org/tcp/443/wss/p2p-webrtc-star/'],
   ipnsServer: 'https://ipns.sav3.org',
   urlTimeToLive: 1000 * 60 * 60 * 24

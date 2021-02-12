@@ -3,7 +3,7 @@ todo next
 
 todo before finished prototype
 ------------------------------
-add homepage blacklist
+change domains in footer, change domains for token page
 
 highest priority after prototype
 --------------------------------
@@ -46,6 +46,7 @@ write jest/enzyme tests for hooks by mocking sav3Ipfs
 followers/following page
 extract sav3-ipfs to npm package
 highlight is own reply/resav3 is present on a post
+recommended users to follow in sidebar
 
 possible way to do likes
 ------------------------

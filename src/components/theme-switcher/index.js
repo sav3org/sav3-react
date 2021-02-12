@@ -11,6 +11,10 @@ const useStyles = makeStyles((theme) => ({
     '& .MuiSelect-root': {
       paddingTop: theme.spacing(1),
       paddingBottom: theme.spacing(1)
+    },
+    // fix bug with select with only 2 letter text
+    '& fieldset': {
+      padding: 0
     }
   }
 }))

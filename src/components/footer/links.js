@@ -57,7 +57,7 @@ function FooterLinks () {
       <Typography href='https://github.com/sav3org' className={classes.link} component='a' target='_blank' rel='noopener' variant={variant}>
         Github{' '}
       </Typography>
-      <Typography href='https://sav3.org' className={classes.link} component='a' target='_blank' rel='noopener' variant={variant}>
+      <Typography href='https://token.sav3.org' className={classes.link} component='a' target='_blank' rel='noopener' variant={variant}>
         Token{' '}
       </Typography>
       <Typography to='/page/license' className={classes.link} component={RouterLink} variant={variant}>

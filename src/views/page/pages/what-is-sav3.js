@@ -29,13 +29,13 @@ function WhatIsSav3 () {
           <Typography variant={variantBody}>SAV3 is an experimental uncensorable platform with no CEO, no servers, and no content policy, with one objective: save the world.</Typography>
           <Box pb={spacing} />
           <Typography variant={variantHeading}>How does it deal with spam/illegal content?</Typography>
-          <Typography variant={variantBody}>By only showing you content from players you save, and players they also save.</Typography>
+          <Typography variant={variantBody}>By only showing you content from users you save, and users they also save.</Typography>
           <Box pb={spacing} />
           <Typography variant={variantHeading}>How does it deal with illegal media?</Typography>
           <Typography variant={variantBody}>By storing text only, it doesn't store any media.</Typography>
           <Box pb={spacing} />
           <Typography variant={variantHeading}>How does it deal with content discovery?</Typography>
-          <Typography variant={variantBody}>If you are a new player saving no one, it suggests players to save from a list voted by the governance SAV3 holders.</Typography>
+          <Typography variant={variantBody}>If you are a new user saving no one, it suggests users to save from a list voted by the governance SAV3 holders.</Typography>
           <Box pb={spacing} />
           <Typography variant={variantHeading}>How does it deal with app store bans?</Typography>
           <Typography variant={variantBody}>By not having an official app, it works in the browser through WebRTC.</Typography>

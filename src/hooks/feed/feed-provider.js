@@ -1,6 +1,7 @@
 import {createContext} from 'react'
 import useFollowing from 'src/hooks/following/use-following'
 import useBootstrapUsersCids from 'src/hooks/following/use-bootstrap-users-cids'
+import useBootstrapBlacklistedUsersCids from 'src/hooks/following/use-bootstrap-blacklisted-users-cids'
 import useOwnUserCid from 'src/hooks/use-own-user-cid'
 import useUsersFollowing from 'src/hooks/user/use-users-following'
 import useUsersPostCids from 'src/hooks/user/use-users-post-cids'
@@ -15,10 +16,18 @@ export const FeedContext = createContext()
 const FeedProvider = (props) => {
   const ownCid = useOwnUserCid()
   const [followingCids] = useFollowing()
-  const bootstrapUsersCids = useBootstrapUsersCids()
-  const followingOfFollowingCids = useUsersFollowing([...followingCids, ...bootstrapUsersCids])
+  const followingOfFollowingCids = useUsersFollowing(followingCids)
 
-  const uniqueUserCids = new Set([...followingCids, ...bootstrapUsersCids, ...followingOfFollowingCids])
+  // bootstrap users
+  const bootstrapUsersCids = useBootstrapUsersCids()
+  const bootstrapBlacklistedUsersCids = useBootstrapBlacklistedUsersCids()
+  // remove blacklisted, and don't get following of following twice for followingCids
+  const bootstrapUsersCidsWithoutFollowingAndBlacklistedCids = filterArrayByArray(bootstrapUsersCids, [...followingCids, ...bootstrapBlacklistedUsersCids])
+  const bootstrapFollowingOfFollowingCids = useUsersFollowing(bootstrapUsersCidsWithoutFollowingAndBlacklistedCids)
+  // remove blacklisted from following of following
+  const bootstrapFollowingOfFollowingWithoutBlacklistedCids = filterArrayByArray(bootstrapFollowingOfFollowingCids, bootstrapBlacklistedUsersCids)
+
+  const uniqueUserCids = new Set([...followingCids, ...followingOfFollowingCids, ...bootstrapUsersCidsWithoutFollowingAndBlacklistedCids, ...bootstrapFollowingOfFollowingWithoutBlacklistedCids])
   if (ownCid) {
     uniqueUserCids.add(ownCid)
   }
@@ -35,7 +44,20 @@ const FeedProvider = (props) => {
   const userCidsThatNeedProfiles = [...new Set([...userCids, ...postsUserCids])]
   const profiles = useUsersProfiles(userCidsThatNeedProfiles)
 
-  debug({ownCid, followingCids, bootstrapUsersCids, followingOfFollowingCids, usersPostCids, posts, profiles, feedPostCids, homePostCids})
+  debug({
+    ownCid,
+    bootstrapUsersCids,
+    bootstrapBlacklistedUsersCids,
+    followingCids,
+    bootstrapUsersCidsWithoutFollowingAndBlacklistedCids,
+    bootstrapFollowingOfFollowingWithoutBlacklistedCids,
+    followingOfFollowingCids,
+    usersPostCids,
+    posts,
+    profiles,
+    feedPostCids,
+    homePostCids
+  })
 
   const contextValue = {
     posts,
@@ -80,6 +102,20 @@ const getFeedCids = (usersPostCids, userCids) => {
     }
   }
   return feedCids
+}
+
+const filterArrayByArray = (array1, array2) => {
+  assert(Array.isArray(array1), 'FeedProvider filterArrayByArray array1 not array')
+  assert(Array.isArray(array2), 'FeedProvider filterArrayByArray array2 not array')
+  const array2Set = new Set(array2)
+  const filteredArray = []
+  for (const item of array1) {
+    if (array2Set.has(item)) {
+      continue
+    }
+    filteredArray.push(item)
+  }
+  return filteredArray
 }
 
 export default FeedProvider

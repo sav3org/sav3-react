@@ -11,14 +11,20 @@ const LanguageCodeProvider = (props) => {
   const preferredLanguageCode = window.navigator.language
   let localStorageLanguageCode = localStorage.getItem('languageCode') || preferredLanguageCode || defaultLanguageCode
   if (!translations[localStorageLanguageCode]) {
-    console.warn(`no available translation for '${localStorageLanguageCode}'`)
-    localStorageLanguageCode = defaultLanguageCode
+    const localStorageLanguageCodeWithoutCountryCode = getLanguageCodeWithoutCountryCode(localStorageLanguageCode)
+    if (!translations[localStorageLanguageCodeWithoutCountryCode]) {
+      console.warn(`no available translation for '${localStorageLanguageCode}' and '${localStorageLanguageCodeWithoutCountryCode}'`)
+      localStorageLanguageCode = defaultLanguageCode
+    }
+    else {
+      localStorageLanguageCode = localStorageLanguageCodeWithoutCountryCode
+    }
   }
 
   const [languageCode, _setLanguageCode] = useState(localStorageLanguageCode)
 
   const setLanguageCode = (languageCode) => {
-    const languageCodeWithoutCountryCode = languageCode.replace(/-.+/, '')
+    const languageCodeWithoutCountryCode = getLanguageCodeWithoutCountryCode(languageCode)
     if (!translations[languageCode]) {
       if (!translations[languageCodeWithoutCountryCode]) {
         console.warn(`no available translation for '${languageCode}' and '${languageCodeWithoutCountryCode}'`)
@@ -41,5 +47,7 @@ const LanguageCodeProvider = (props) => {
   const {children} = props
   return <LanguageCodeContext.Provider value={contextValue}>{children}</LanguageCodeContext.Provider>
 }
+
+const getLanguageCodeWithoutCountryCode = (languageCode) => languageCode.replace(/-.+/, '')
 
 export default LanguageCodeProvider
