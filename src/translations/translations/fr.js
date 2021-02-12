@@ -17,8 +17,8 @@ const timeAgo = (number, index, totalSec) => {
     ['il y a 1 mois', 'dans 1 mois'],
     ['il y a %s mois', 'dans %s mois'],
     ['il y a 1 an', 'dans 1 an'],
-    ['il y a %s ans', 'dans %s ans'],
-  ][index] as [string, string];
+    ['il y a %s ans', 'dans %s ans']
+  ][index]
 }
 registerTimeAgo('fr', timeAgo)
 
@@ -38,9 +38,7 @@ const translation = createTranslation({
   Search: () => 'Rechercher',
   'Search user ID': () => 'Rechercher un ID utilisateur',
   Peers: () => 'Pair',
-  'Connected peers posts': () => 'Postes des pairs connectés',
-  Stats: () => 'Statistiques',
-  'Connected peers stats': () => 'Statistiques des utilisateurs connecté',
+  'Connected peers': () => 'Pairs connectés',
   'Connecting to peers': () => 'Connexion aux pairs',
   Following: () => 'Abonnements',
   'Not following anyone': () => 'Ne plus suivre',
