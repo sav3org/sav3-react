@@ -70,7 +70,7 @@ function FooterLinks () {
         Version {config.sav3Version}{' '}
       </Typography>
       <Typography
-        href={`https://github.com/workingtim/sav3-test/tree/${config.gitCommitHash}`}
+        href={`https://github.com/sav3org/sav3-react/tree/${config.gitCommitHash}`}
         style={{whiteSpace: 'nowrap'}}
         component='a'
         target='_blank'
