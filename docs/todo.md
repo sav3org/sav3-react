@@ -5,10 +5,7 @@ todo before finished prototype
 ------------------------------
 import/export private key
   remove the peer posts page
-  disclaimer pop up
   add homepage blacklist
-
-add disclaimer pop up: 'SAV3 is a P2P application with no content policy or moderation. Most accounts are fake or impersonations. Do not send money to anyone, it's a scam.
 
 highest priority after prototype
 --------------------------------

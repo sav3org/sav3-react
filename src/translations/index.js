@@ -1,5 +1,5 @@
-import enUs from './translations/en-us'
-import esMx from './translations/es-mx'
+import en from './translations/en'
+import es from './translations/es'
 import hu from './translations/hu'
 
 /* list of language codes
@@ -20,9 +20,9 @@ ji, zu
 */
 
 const translations = {
-  'en-US': enUs,
-  'es-MX': esMx,
-  hu: hu
+  en,
+  es,
+  hu
 }
 Object.freeze(translations)
 

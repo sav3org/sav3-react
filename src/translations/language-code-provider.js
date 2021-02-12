@@ -2,12 +2,12 @@ import {useState, createContext} from 'react'
 import translations from './index'
 
 export const LanguageCodeContext = createContext({
-  languageCode: 'en-US',
+  languageCode: 'en',
   setLanguageCode: null
 })
 
 const LanguageCodeProvider = (props) => {
-  const defaultLanguageCode = 'en-US'
+  const defaultLanguageCode = 'en'
   const preferredLanguageCode = window.navigator.language
   let localStorageLanguageCode = localStorage.getItem('languageCode') || preferredLanguageCode || defaultLanguageCode
   if (!translations[localStorageLanguageCode]) {
@@ -18,9 +18,16 @@ const LanguageCodeProvider = (props) => {
   const [languageCode, _setLanguageCode] = useState(localStorageLanguageCode)
 
   const setLanguageCode = (languageCode) => {
+    const languageCodeWithoutCountryCode = languageCode.replace(/-.+/, '')
     if (!translations[languageCode]) {
-      console.warn(`no available translation for '${languageCode}'`)
-      return
+      if (!translations[languageCodeWithoutCountryCode]) {
+        console.warn(`no available translation for '${languageCode}' and '${languageCodeWithoutCountryCode}'`)
+        return
+      }
+      else {
+        // language code is available but not with country code
+        languageCode = languageCodeWithoutCountryCode
+      }
     }
     localStorage.setItem('languageCode', languageCode)
     _setLanguageCode(languageCode)

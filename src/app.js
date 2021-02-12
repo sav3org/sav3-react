@@ -9,6 +9,7 @@ import Box from '@material-ui/core/Box'
 import ThemeSwitcher from 'src/components/theme-switcher'
 import TranslationSwitcher from 'src/components/translation-switcher'
 import FooterLinks from 'src/components/footer/links'
+import OneTimeWarning from 'src/components/one-time-warning'
 
 // routes
 import Profile from 'src/views/profile'
@@ -149,6 +150,8 @@ function App () {
         </Grid>
       </Grid>
       <BottomMenu className={classes.bottomMenu} />
+
+      <OneTimeWarning message={'Most accounts are fake or impersonations. Do not send money to anyone, it\'s a scam.'} />
     </div>
   )
 }
