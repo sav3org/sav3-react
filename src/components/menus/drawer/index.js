@@ -21,7 +21,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-function HomeMenu () {
+function DrawerMenu () {
   const classes = useStyles()
   const t = useTranslation()
 
@@ -34,24 +34,12 @@ function HomeMenu () {
           </ListItemIcon>
           <ListItemText primary={t.Following()} className={classes.text} />
         </ListItem>
-        <ListItem button component={RouterLink} to='/stats'>
-          <ListItemIcon>
-            <BarChartIcon fontSize='large' />
-          </ListItemIcon>
-          <ListItemText primary={t.Stats()} className={classes.text} />
-        </ListItem>
         {/* temporarily added to bottom menu
         <ListItem button component={RouterLink} to='/peers'>
           <ListItemIcon>
             <PeersIcon fontSize='large' />
           </ListItemIcon>
           <ListItemText primary={t.Peers()} className={classes.text} />
-        </ListItem>
-        <ListItem button component={RouterLink} to='/stats'>
-          <ListItemIcon>
-            <BarChartIcon fontSize='large' />
-          </ListItemIcon>
-          <ListItemText primary={t.Stats()} className={classes.text} />
         </ListItem>
         */}
         <ListItem button component={RouterLink} to='/profile'>
@@ -72,4 +60,4 @@ function HomeMenu () {
   )
 }
 
-export default HomeMenu
+export default DrawerMenu

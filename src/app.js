@@ -17,7 +17,6 @@ import Home from 'src/views/home'
 import Feed from 'src/views/feed'
 import Search from 'src/views/search'
 import Peers from 'src/views/peers'
-import Stats from 'src/views/stats'
 import Following from 'src/views/following'
 import Export from 'src/views/export'
 import Post from 'src/views/post'
@@ -120,9 +119,6 @@ function App () {
             <Route path='/peers' exact>
               <Peers />
             </Route>
-            <Route path='/stats' exact>
-              <Stats />
-            </Route>
             <Route path='/following' exact>
               <Following />
             </Route>
@@ -151,7 +147,7 @@ function App () {
       </Grid>
       <BottomMenu className={classes.bottomMenu} />
 
-      <OneTimeWarning message={'Most accounts are fake or impersonations. Do not send money to anyone, it\'s a scam.'} />
+      <OneTimeWarning message={"Most accounts are fake or impersonations. Do not send money to anyone, it's a scam."} />
     </div>
   )
 }

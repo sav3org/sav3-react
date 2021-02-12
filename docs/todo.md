@@ -3,9 +3,7 @@ todo next
 
 todo before finished prototype
 ------------------------------
-import/export private key
-  remove the peer posts page
-  add homepage blacklist
+add homepage blacklist
 
 highest priority after prototype
 --------------------------------

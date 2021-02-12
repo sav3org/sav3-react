@@ -92,12 +92,6 @@ function LeftMenu () {
           </ListItemIcon>
           <ListItemText primary={t.Peers()} className={classes.text} />
         </ListItem>
-        <ListItem button component={RouterLink} to='/stats'>
-          <ListItemIcon>
-            <BarChartIcon fontSize='large' />
-          </ListItemIcon>
-          <ListItemText primary={t.Stats()} className={classes.text} />
-        </ListItem>
         <ListItem button component={RouterLink} to='/profile'>
           <ListItemIcon>
             <AccountCircle fontSize='large' />
