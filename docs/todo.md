@@ -1,10 +1,6 @@
 todo next
 ---------
 
-todo before finished prototype
-------------------------------
-change domains in footer, change domains for token page
-
 highest priority after prototype
 --------------------------------
 embeds
@@ -47,6 +43,7 @@ followers/following page
 extract sav3-ipfs to npm package
 highlight is own reply/resav3 is present on a post
 recommended users to follow in sidebar
+self host discourse
 
 possible way to do likes
 ------------------------
@@ -55,3 +52,10 @@ possibly use pubsub for likes/retweets counts, but only display the usernames of
 possible way to do free user/content voting
 -------------------------------------------
 only use the chain to read sav3 balances, use ipns signed ethereum messages to calculate votes, download all ipns votes and use it to rank stuff
+
+possible way to do reddit like communities
+------------------------------------------
+have centralized KYC services that signs each KYCed account
+have mods be the ones publishing ipns records for users
+users subscribe to ipns records of the mods
+the mods run a pub/sub node to catch all data published by users and KYC services

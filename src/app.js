@@ -147,7 +147,15 @@ function App () {
       </Grid>
       <BottomMenu className={classes.bottomMenu} />
 
-      <OneTimeWarning message={"Most accounts are fake or impersonations. Do not send money to anyone, it's a scam."} />
+      {/* show fake account scam warning on profile and post permalinks */}
+      <Switch>
+        <Route path='/profile/:encodedCid' exact>
+          <OneTimeWarning message={'Warning: Some accounts may be fake or impersonations. Do not send money to anyone.'} />
+        </Route>
+        <Route path='/post/:encodedCid' exact>
+          <OneTimeWarning message={'Warning: Some accounts may be fake or impersonations. Do not send money to anyone.'} />
+        </Route>
+      </Switch>
     </div>
   )
 }

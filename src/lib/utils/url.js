@@ -74,9 +74,9 @@ const decipherCid = (cid, expireTimestamp) => {
   return deciphered
 }
 
-const escapeReactRouterChars = (string) => string.replace('/', '-')
+const escapeReactRouterChars = (string) => string.replaceAll('/', '-')
 
-const unescapeReactRouterChars = (string) => string.replace('-', '/')
+const unescapeReactRouterChars = (string) => string.replaceAll('-', '/')
 
 export default {
   decodeCid,
