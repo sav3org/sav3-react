@@ -1,16 +1,11 @@
 import {Fragment, useEffect, useState} from 'react'
 import {makeStyles, useTheme} from '@material-ui/core/styles'
-import Card from '@material-ui/core/Card'
-import CardMedia from '@material-ui/core/CardMedia'
 import Avatar from '@material-ui/core/Avatar'
 import Typography from '@material-ui/core/Typography'
 import RepeatIcon from '@material-ui/icons/Repeat'
-import Link from '@material-ui/core/Link'
 import Box from '@material-ui/core/Box'
 import {format as formatTimeAgo} from 'timeago.js'
 import useLanguageCode from 'src/translations/use-language-code'
-import assert from 'assert'
-import urlRegex from 'url-regex'
 import PostMoreMenu from './components/more-menu'
 import PostActions from './components/actions'
 import {Link as RouterLink, useHistory, useLocation} from 'react-router-dom'
@@ -18,12 +13,10 @@ import PropTypes from 'prop-types'
 import urlUtils from 'src/lib/utils/url'
 import themesUtils from 'src/themes/utils'
 import Divider from '@material-ui/core/Divider'
+import PostContent from './components/content'
+import {forceHttps} from './utils'
 
 const useStyles = makeStyles((theme) => ({
-  imgMedia: {
-    height: 0,
-    paddingTop: '56.25%' // 16:9
-  },
   avatar: {
     // slightly higher placement than the user name seems more pleasing
     marginTop: theme.spacing(-0.25),
@@ -59,9 +52,6 @@ const useStyles = makeStyles((theme) => ({
       textDecoration: 'underline'
     }
   },
-  contentLink: {
-    wordBreak: 'break-all'
-  },
   post: {
     cursor: 'pointer',
     '&:hover': {
@@ -73,6 +63,8 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
+// note: a single "Post" component can actually be a
+// group of posts when it includes a reply or thread
 function Posts ({post} = {}) {
   const posts = []
   if (post.parentPost && !post.quotedPost) {
@@ -200,102 +192,6 @@ function Resav3dLabel ({quotingPost} = {}) {
 }
 Resav3dLabel.propTypes = {
   quotingPost: PropTypes.object.isRequired
-}
-
-function PostContent ({content} = {}) {
-  const classes = useStyles()
-  let contentComponents = [content]
-
-  const link = getPostContentLink(content)
-  if (link) {
-    const [contentPart1, contentPart2] = content.split(link)
-    let href = link
-    if (!link.match(/^https?:\/\//)) {
-      href = `https://${link}`
-    }
-    contentComponents = []
-    if (contentPart1) {
-      contentComponents.push(contentPart1)
-    }
-    contentComponents.push(
-      <Link className={classes.contentLink} key='content link' variant='body2' href={href} target='_blank' rel='noopener'>
-        {link}
-      </Link>
-    )
-    if (contentPart2) {
-      contentComponents.push(contentPart2)
-    }
-  }
-
-  const mediaSrc = getPostContentMediaSrc(content)
-  let cardMedia
-  if (mediaSrc) {
-    cardMedia = <CardMedia className={classes.imgMedia} image={mediaSrc} />
-    if (linkIsVideo(mediaSrc)) {
-      cardMedia = <CardMedia controls autoPlay muted component='video' image={mediaSrc} />
-    }
-  }
-
-  const media = mediaSrc && (
-    <Box pt={1}>
-      <Card variant='outlined'>{cardMedia}</Card>
-    </Box>
-  )
-
-  return (
-    <Box>
-      <Typography variant='body2'>{contentComponents}</Typography>
-      {media}
-    </Box>
-  )
-}
-PostContent.propTypes = {content: PropTypes.string.isRequired}
-
-// only use the first link in a post
-const getPostContentLink = (content) => {
-  if (!content) {
-    return
-  }
-  assert(typeof content === 'string', `post content '${content}' is not a string`)
-  const links = content.match(urlRegex({strict: false}))
-  return links && links[0]
-}
-
-const getPostContentMediaSrc = (content) => {
-  if (!content) {
-    return
-  }
-  assert(typeof content === 'string', `post content '${content}' is not a string`)
-  const links = content.match(urlRegex({strict: false}))
-  let link = links && links[0]
-  if (!link) {
-    return
-  }
-  link = forceHttps(link)
-  if (linkIsMedia(link)) {
-    // add protocol if missing
-    if (!link.match(/^https?:\/\//)) {
-      link = `https://${link}`
-    }
-    return link
-  }
-}
-
-const forceHttps = (link) => {
-  assert(typeof link === 'string', `forceHttps link '${link}' not a string`)
-  link = link.trim()
-  link = link.replace(/^http:\/\//, 'https://')
-  return link
-}
-
-const linkIsVideo = (link) => {
-  // remove query string and match extension
-  return link.replace(/[#?].*/, '').match(/\.(mp4|webm)$/)
-}
-
-const linkIsMedia = (link) => {
-  // remove query string and match extension
-  return link.replace(/[#?].*/, '').match(/\.(jpeg|jpg|png|gif|mp4|webm)$/)
 }
 
 const useDate = (timestamp, languageCode) => {

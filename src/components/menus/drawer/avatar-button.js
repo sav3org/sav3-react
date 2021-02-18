@@ -2,7 +2,7 @@ import {useState} from 'react'
 import Avatar from '@material-ui/core/Avatar'
 import useUserProfile from 'src/hooks/user/use-user-profile'
 import IconButton from '@material-ui/core/IconButton'
-import useOwnPeerCid from 'src/hooks/use-own-peer-cid'
+import useOwnUserCid from 'src/hooks/use-own-user-cid'
 import {makeStyles} from '@material-ui/core/styles'
 import Drawer from '@material-ui/core/Drawer'
 import Menu from './index'
@@ -15,7 +15,7 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 function AvatarDrawerMenuButton () {
-  const userCid = useOwnPeerCid()
+  const userCid = useOwnUserCid()
   const classes = useStyles()
   const profile = useUserProfile(userCid)
   const [drawerOpen, setDrawerOpen] = useState(false)

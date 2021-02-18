@@ -114,6 +114,14 @@ const createWindowSav3IpfsTestMethods = (sav3Ipfs) => {
     }
   }
 
+  window.sav3IpfsTest.addAudioPost = async () => {
+    await sav3Ipfs.addPost({content: 'https://files.freemusicarchive.org/storage-freemusicarchive-org/tracks/yahMXaXV1EOuV6HPb3zHt5f1smaeC09yu7fTo1gu.mp3'})
+  }
+
+  window.sav3IpfsTest.addTwitterPost = async () => {
+    await sav3Ipfs.addPost({content: 'https://twitter.com/TheTimTempleton/status/1334547971984117760'})
+  }
+
   window.sav3IpfsTest.setProfileAndAddPosts = async (amount) => {
     await window.sav3IpfsTest.editProfile()
     await window.sav3IpfsTest.addPosts(amount)

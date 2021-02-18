@@ -11,7 +11,7 @@ function Description ({description} = {}) {
   if (link) {
     const [descriptionPart1, descriptionPart2] = description.split(link)
     let href = link
-    if (!link.match(/$https?:\/\//)) {
+    if (!link.match(/^https?:\/\//)) {
       href = `https://${link}`
     }
     descriptionComponents = []
